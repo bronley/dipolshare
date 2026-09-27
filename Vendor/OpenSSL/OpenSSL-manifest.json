@@ -1,0 +1,112 @@
+{
+  "openssl_version": "3.5.8",
+  "source_url": "https://github.com/openssl/openssl/releases/download/openssl-3.5.8/openssl-3.5.8.tar.gz",
+  "source_sha256": "a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2",
+  "commands": {
+    "armv7": "./Configure ios-xcrun no-shared no-module no-tests no-apps no-asm no-legacy no-dtls no-ssl3 no-comp -miphoneos-version-min=5.0 -DOPENSSL_AES_CONST_TIME -DBROKEN_CLANG_ATOMICS --prefix=/private/tmp/openssl-reviewed-armv7/install && make -j4 build_libs",
+    "host": "./Configure darwin64-arm64-cc no-shared no-module no-tests no-apps no-asm no-legacy no-dtls no-ssl3 no-comp -DOPENSSL_AES_CONST_TIME -DBROKEN_CLANG_ATOMICS --prefix=/private/tmp/openssl-reviewed-host/install && make -j4 build_libs",
+    "ios4_universal": "./Scripts/build-openssl-ios4.sh OUTPUT_DIRECTORY VERIFIED_SOURCE_ARCHIVE (builds armv6 and armv7 with iOS 4.2 minimum, then lipo -create)"
+  },
+  "build_compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "headers": [
+    "asn1.h",
+    "asn1err.h",
+    "async.h",
+    "asyncerr.h",
+    "bio.h",
+    "bioerr.h",
+    "bn.h",
+    "bnerr.h",
+    "buffer.h",
+    "buffererr.h",
+    "comp.h",
+    "comperr.h",
+    "conf.h",
+    "conferr.h",
+    "configuration.h",
+    "conftypes.h",
+    "core.h",
+    "core_dispatch.h",
+    "crypto.h",
+    "cryptoerr.h",
+    "cryptoerr_legacy.h",
+    "ct.h",
+    "cterr.h",
+    "dh.h",
+    "dherr.h",
+    "dsa.h",
+    "dsaerr.h",
+    "dtls1.h",
+    "e_os2.h",
+    "e_ostime.h",
+    "ebcdic.h",
+    "ec.h",
+    "ecerr.h",
+    "err.h",
+    "evp.h",
+    "evperr.h",
+    "hmac.h",
+    "http.h",
+    "indicator.h",
+    "lhash.h",
+    "macros.h",
+    "obj_mac.h",
+    "objects.h",
+    "objectserr.h",
+    "opensslconf.h",
+    "opensslv.h",
+    "params.h",
+    "pem.h",
+    "pemerr.h",
+    "pkcs7.h",
+    "pkcs7err.h",
+    "prov_ssl.h",
+    "quic.h",
+    "rand.h",
+    "randerr.h",
+    "rsa.h",
+    "rsaerr.h",
+    "safestack.h",
+    "sha.h",
+    "srtp.h",
+    "ssl.h",
+    "ssl2.h",
+    "ssl3.h",
+    "sslerr.h",
+    "sslerr_legacy.h",
+    "stack.h",
+    "symhacks.h",
+    "tls1.h",
+    "types.h",
+    "x509.h",
+    "x509_vfy.h",
+    "x509err.h"
+  ],
+  "files": {
+    "libcrypto-3.5.8-host.a": {
+      "size": 7755488,
+      "sha256": "45b4482a6971ec27a3bd98ade1d007a81eb85692b7782a1273dd45fe2888da87"
+    },
+    "libssl-3.5.8-host.a": {
+      "size": 1600480,
+      "sha256": "c9fa48d877c2256d30723f40d446fe213d51a712f828364f73090896fe270045"
+    },
+    "OpenSSLHeaders-3.5.8.tar.gz": {
+      "size": 250055,
+      "sha256": "278af61b60813ae2259f46002f7dfab7af705e8361b3ffdad999ff9256a9965e"
+    },
+    "OpenSSLHiddenSymbols.txt": {
+      "size": 269504,
+      "sha256": "e9e69ff3034798067f23c936092d9e65efeeebddd4a042fd95b806ec64e88f18"
+    },
+    "libcrypto-3.5.8-ios4.a": {
+      "size": 12322944,
+      "sha256": "a8764af6edf334413ae08f7786b31276982a1dbb1c8d871e0d19b627be673dba"
+    },
+    "libssl-3.5.8-ios4.a": {
+      "size": 2630840,
+      "sha256": "a19b8568b8494bcf23e0dd43f94d133e826a65ae0051642f2234ae783f634fad"
+    }
+  },
+  "hidden_symbols_count": 10704
+}

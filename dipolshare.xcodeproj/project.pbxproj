@@ -1,0 +1,1956 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0EA44541A636364FA0E66F49 /* Send file active@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = AA7417A9E41E57FC082A7068 /* Send file active@2x.png */;
+		};
+		100000000000000000000003 /* UIKit.framework in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = 200000000000000000000004 /* UIKit.framework */;
+		};
+		100000000000000000000004 /* Foundation.framework in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = 200000000000000000000005 /* Foundation.framework */;
+		};
+		100000000000000000000009 /* Security.framework in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = 200000000000000000000016 /* Security.framework */;
+		};
+		11B1055A17A62318C64C1AA5 /* IncomingTransfer.caf in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 4B9E80B7754F1A99B8E07151 /* IncomingTransfer.caf */;
+		};
+		122878C59B9D30CB4EEAA73B /* LocalSendDeviceBlobView.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 99D43C376503C62192BC1C83 /* LocalSendDeviceBlobView.m */;
+		};
+		12B4525B2DED61D266DE3F11 /* DiscoveryViewController.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 5E171D305D819A230CDE92D7 /* DiscoveryViewController.m */;
+		};
+		13D80FF19E69CACB141928BB /* AppDelegate.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 2419491BD1AC31F6ABE21761 /* AppDelegate.m */;
+		};
+		17AC3D32FEBC8087678F4AB9 /* LocalSendRadarLayout.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = A6FD34E01A5FDAB905998394 /* LocalSendRadarLayout.m */;
+		};
+		1C8CF93A0AE9C79937B41094 /* Send file.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 6377DACE2B6681F557FDBD68 /* Send file.png */;
+		};
+		1F0E2CE5E80AB16C5D65F91D /* Received.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 2D907E8CC7D09B57251EE530 /* Received.png */;
+		};
+		25244691B39136E34DE5F30E /* LocalSendCertificateFingerprint.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 855FFAE150B7EC9369EE132A /* LocalSendCertificateFingerprint.m */;
+		};
+		2645AE918EA5815B76E388EF /* Settings active@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 2F569B94387A8C038F3973A9 /* Settings active@2x.png */;
+		};
+		2A82990B62E4BAF53FADEEE1 /* LocalSendTransfer.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = A0897299F4BAE5E6B489AA26 /* LocalSendTransfer.m */;
+		};
+		33A98A5A35E8D2E45C584EBB /* Gold@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = F4C9956E03C58AA8F07F6874 /* Gold@2x.png */;
+		};
+		33C3BF6724FC8FEBFD047BA0 /* LocalSendHTTPResponseParser.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = ED57550CCBC267299B235DBD /* LocalSendHTTPResponseParser.m */;
+		};
+		39DDA7E6D05A389F98026758 /* LocalSendDiscoveryMessage.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 63D4B61A7E4F526266400156 /* LocalSendDiscoveryMessage.m */;
+		};
+		3D1C900AF99345FEECEAD813 /* Radar@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 1CC931C55299F9FF6CEBF10E /* Radar@2x.png */;
+		};
+		4034CF255AD1CF24C220395B /* LocalSendReceivedFileStore.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = BA80BE2661D3413160561410 /* LocalSendReceivedFileStore.m */;
+		};
+		40AB7ACD791CE7FD789BED49 /* CoreGraphics.framework in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = D444E6415893B87D6D8A6865 /* CoreGraphics.framework */;
+		};
+		4158B6EBA623D03B6EB76520 /* Purple.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 30EB8330BEB418D2231799F9 /* Purple.png */;
+		};
+		4175345F1E39BB481375DFBD /* LocalSendHTTPSClient.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = ADA5030E6BA559EA9A1B7780 /* LocalSendHTTPSClient.m */;
+		};
+		42682ACA6511DD7C0A61AE3E /* LocalSendSettingsViewController.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = AD5AF356C72FF45A3E44134D /* LocalSendSettingsViewController.m */;
+		};
+		430B6FA718905A20AD52DAF8 /* LocalSendFormatting.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = CC05776824A2EDAC751CA6EB /* LocalSendFormatting.m */;
+		};
+		4C430B462A28A42BFC58F421 /* Send file@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = C9F2D59A3A7AD6130BBAAF07 /* Send file@2x.png */;
+		};
+		535079D00FDE29C45E27E2EA /* Default-568h@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 4062614AA4D75CB4CA5EAEED /* Default-568h@2x.png */;
+		};
+		AA2500000000000000000001 /* Default-568h.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = AA2500000000000000000002 /* Default-568h.png */;
+		};
+		56E1F7D1369E05AC8DD93D0B /* libssl-3.5.8-ios4.a in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = CFEF16CF970BBC6C540B2769 /* libssl-3.5.8-ios4.a */;
+		};
+		5728001E85522B4052C8C133 /* Blue@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = C386B66B2EAD70189115381B /* Blue@2x.png */;
+		};
+		5B8D11528C7F684EF7B8DCC0 /* Settings active.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 48E7869EF527D721BE63C796 /* Settings active.png */;
+		};
+		5D3C799A97C310404B47B30F /* Green@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 89C45677BFBA6331119D9B9D /* Green@2x.png */;
+		};
+		5F92EBBF0DD02F5FF08858A2 /* libcrypto-3.5.8-ios4.a in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = ACA2D3759503E69D75523F6E /* libcrypto-3.5.8-ios4.a */;
+		};
+		61A09B3ABF3EAAFDEDC5C8D6 /* main.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 17AAC427583738B99A55EDFA /* main.m */;
+		};
+		626BD7D9BA689B7F1184C43D /* LocalSendPhotoGridCell.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 0E2FCE471EF21A0D9AEEA70C /* LocalSendPhotoGridCell.m */;
+		};
+		652F27C498A438F47121ACB6 /* LocalSendSounds.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = D54468827E501E12A435B867 /* LocalSendSounds.m */;
+		};
+		6DC09D34F75AB777CA4E7568 /* LocalSendDeviceListViewController.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 944DB8495716F160555A2EA0 /* LocalSendDeviceListViewController.m */;
+		};
+		6E9BD6EDB02B6ED0B94DB3AF /* LICENSE-OpenSSL.txt in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 78586AFCF706FBB64926F7D3 /* LICENSE-OpenSSL.txt */;
+		};
+		75BCE24629E2B76768D41EE0 /* Green.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 06D632F95EDE02C5639F9066 /* Green.png */;
+		};
+		8015F2D2C81C9E8508B7CAB1 /* LocalSendPhotoPickerViewController.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = E1AA6426AB4AC9FC322921CB /* LocalSendPhotoPickerViewController.m */;
+		};
+		811284E867C8B3072CA1EA03 /* LocalSendCertificateBuilder.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 920B54CBD6D95A14D13071FB /* LocalSendCertificateBuilder.m */;
+		};
+		9148D356898EA75677B1BEA2 /* Localsend.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = B8D588DD85940705C3CD3E89 /* Localsend.png */;
+		};
+		91AB48619BDCC5529DA1774F /* Received@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 640B058186365FAE420D9105 /* Received@2x.png */;
+		};
+		91DDEEB561DFA84B8DC094FD /* LocalSendTLS.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 0E95F3E895EEA691FB5393E0 /* LocalSendTLS.m */;
+		};
+		954686937E2529AAF00AD17C /* Radar.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 43C9B54DE0C66549060A9A45 /* Radar.png */;
+		};
+		956E2646CA48D2C6E03A6454 /* LocalSendReceivedFilesViewController.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = E6A2F6E42CBC9AE147382877 /* LocalSendReceivedFilesViewController.m */;
+		};
+		990861FF395BB0CF4294F818 /* OutgoingTransferComplete.caf in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = D4F6DE577DC260BE3120603C /* OutgoingTransferComplete.caf */;
+		};
+		9913541E6A384EC014B95828 /* LocalSendIdentityStore.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 5DD089C174CA2EC2E51489D8 /* LocalSendIdentityStore.m */;
+		};
+		A19A4ACB632B93D7C2B4EE0E /* LocalSendKeyTestViewController.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 3E71D48CBE1815A93805FDBE /* LocalSendKeyTestViewController.m */;
+		};
+		AAE1E870B17D1337355DDBAD /* Purple@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 7BBEBC999F0B78074DFA9D1B /* Purple@2x.png */;
+		};
+		ABF32B9FFDEDA31ED3AE609C /* Default@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 427726CD9FE236FD3921593A /* Default@2x.png */;
+		};
+		AE2E3C20328FD78D7CC38919 /* Default.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = CB72554B22A8F21DC814955C /* Default.png */;
+		};
+		B05E37075E8E74F75EB28BD8 /* LocalSendDiscoveryProbe.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = C3689B10D860CECD0FF8D31E /* LocalSendDiscoveryProbe.m */;
+		};
+		B0FA4AE95A50E19EB941B4AB /* Received active@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = AEC558B50613776EA9302437 /* Received active@2x.png */;
+		};
+		B10000000000000000009999 /* QuickLook.framework in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = B20000000000000000009999 /* QuickLook.framework */;
+		};
+		B267953C5CB78B37282C1734 /* Blue.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 9227AF91921CA99EB752DBE9 /* Blue.png */;
+		};
+		B28D8661F06EFB01E609AE0B /* Localsend@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 9316566897331517B1FCD6BC /* Localsend@2x.png */;
+		};
+		B471DCA56634EA2F48F71C26 /* LocalSendKeyDiagnostics.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 963C9923D9B86E3EE948BED3 /* LocalSendKeyDiagnostics.m */;
+		};
+		BEFE391FE56E74CDB484DA7C /* Gold.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = A483A964937645F5491C011D /* Gold.png */;
+		};
+		C10000000000000000000002 /* AssetsLibrary.framework in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = C20000000000000000000003 /* AssetsLibrary.framework */;
+		};
+		C39885A47D16962351FD9CA6 /* Send file active.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 6DB17C64B5DADBE0C5EAE7BC /* Send file active.png */;
+		};
+		C6C0619085CFB8BA9E5623AC /* Received active.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 3534D34EB156F68D78772BE1 /* Received active.png */;
+		};
+		D10000000000000000000004 /* AudioToolbox.framework in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = D20000000000000000000005 /* AudioToolbox.framework */;
+		};
+		DCDE427499D3BC21FB373042 /* LocalSendDiscovery.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = E19A145F80D8D4DECA5654B7 /* LocalSendDiscovery.m */;
+		};
+		E2264E7F0E49D8CF371915F9 /* LocalSendReceiver.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = A004F34220A7425ACD3C7E85 /* LocalSendReceiver.m */;
+		};
+		EC1B2988E32AAA1B3233F027 /* LocalSendIncomingConnection.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 1B8EF271A20152F91E27ED97 /* LocalSendIncomingConnection.m */;
+		};
+		FC320536BD00EDA46452B22C /* LocalSendRadarBackgroundView.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 8589A0665A4D3E64E031F25D /* LocalSendRadarBackgroundView.m */;
+		};
+		FCFD239B8D2BFA2F4D47A80C /* LocalSendReceiveServer.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 33163537C68244EDBC716430 /* LocalSendReceiveServer.m */;
+		};
+		EF1D34BA722DFF4AED09FB85 /* LocalSendAnimatedRadarView.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 5A5D25B1A8122AE11CB1545B /* LocalSendAnimatedRadarView.m */;
+		};
+		8C4B674D4BE4BCE290E1E8B1 /* Blip gold left.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 60C9B04C22901CFD742885BA /* Blip gold left.png */;
+		};
+		5E6DADB18819DF7FD4AD9981 /* Blip gold left@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 7E080FA6C2B934E8D5483EBB /* Blip gold left@2x.png */;
+		};
+		D5B6F54DF094CDA09E8DC23E /* Blip gold right.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 2C2964ACF51ABA307EEF9870 /* Blip gold right.png */;
+		};
+		C4D3EA3993E8E2C33FD14A6F /* Blip gold right@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = E54FDF3E78FAB2CF287D0535 /* Blip gold right@2x.png */;
+		};
+		5E6CCC0A9BF68C9D16FDD6C4 /* Blip white.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = A77F14E57AD128C570C3BE20 /* Blip white.png */;
+		};
+		761ABCDE713AB26647402FBE /* Blip white@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = AF95B61174A4C7C8C010806C /* Blip white@2x.png */;
+		};
+		741B1AD8F67B77A43217AA54 /* Glint center.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = A239509A72C17C9A96B25625 /* Glint center.png */;
+		};
+		0D0156BCAAEF2A28DBAF5CCB /* Glint center@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = EC5397E970CBDFEB39AF5750 /* Glint center@2x.png */;
+		};
+		F53000000000000000000001 /* Satellite.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = F53000000000000000000003 /* Satellite.png */;
+		};
+		F53000000000000000000002 /* Satellite@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = F53000000000000000000004 /* Satellite@2x.png */;
+		};
+		F52000000000000000000001 /* WiFiOff.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = F52000000000000000000003 /* WiFiOff.png */;
+		};
+		F52000000000000000000002 /* WiFiOff@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = F52000000000000000000004 /* WiFiOff@2x.png */;
+		};
+		F51000000000000000000001 /* LoveIsInTheTech.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = F51000000000000000000003 /* LoveIsInTheTech.png */;
+		};
+		F51000000000000000000002 /* LoveIsInTheTech@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = F51000000000000000000004 /* LoveIsInTheTech@2x.png */;
+		};
+		28A230744C8D1C5839CA91BA /* Radar base.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 65715D0A895D236957ABF882 /* Radar base.png */;
+		};
+		6D4751DEFFCC23A844C2FF11 /* Radar base@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 7C72555C50F3BE56C14F14AA /* Radar base@2x.png */;
+		};
+		D785F423873CA1C8B582E80F /* Radar sweep.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 72F9295F37C73BF440FF0D89 /* Radar sweep.png */;
+		};
+		783B71B22653B03887C78BAC /* Radar sweep@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = FABE27B5516F729F051982D9 /* Radar sweep@2x.png */;
+		};
+		D4C492CCF62B0AD15292E8B6 /* Shadow horizon.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = 1521521ADBC731F6BEFEB700 /* Shadow horizon.png */;
+		};
+		A32894DCA41A0F5EED543126 /* Shadow horizon@2x.png in Resources */ = {
+			isa = PBXBuildFile;
+			fileRef = A1DA8F552D911DDAB709EEA6 /* Shadow horizon@2x.png */;
+		};
+		9E1EACF56C34E55B7EB43963 /* QuartzCore.framework in Frameworks */ = {
+			isa = PBXBuildFile;
+			fileRef = E0D8E006B31DEC15E0B33F1B /* QuartzCore.framework */;
+		};
+		F40000000000000000000001 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000012 /* JSONKit.m */; };
+		F40000000000000000000002 /* LocalSendJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000016 /* LocalSendJSON.m */; };
+		F40000000000000000000003 /* LICENSE-JSONKit.txt in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000013 /* LICENSE-JSONKit.txt */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		04284B91F177010D03C9AAD1 /* README.md */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = README.md;
+			sourceTree = "<group>";
+		};
+		06D632F95EDE02C5639F9066 /* Green.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = Green.png;
+			sourceTree = "<group>";
+		};
+		0D702A48AD98D7F7CC848FDA /* test_client_parser.py */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.python;
+			path = test_client_parser.py;
+			sourceTree = "<group>";
+		};
+		0E2FCE471EF21A0D9AEEA70C /* LocalSendPhotoGridCell.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendPhotoGridCell.m;
+			sourceTree = "<group>";
+		};
+		0E39A747D578999A47E047B0 /* LocalSendRadarLayout.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendRadarLayout.h;
+			sourceTree = "<group>";
+		};
+		0E95F3E895EEA691FB5393E0 /* LocalSendTLS.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendTLS.m;
+			sourceTree = "<group>";
+		};
+		0FB935E3697D819FC18D372E /* LocalSendFormatting.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendFormatting.h;
+			sourceTree = "<group>";
+		};
+		157AD02CDB42438288702A72 /* AppDelegate.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = AppDelegate.h;
+			sourceTree = "<group>";
+		};
+		17AAC427583738B99A55EDFA /* main.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = main.m;
+			sourceTree = "<group>";
+		};
+		1AC9E5833A22A4F764B13C21 /* run_transport_tests.sh */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.sh;
+			path = run_transport_tests.sh;
+			sourceTree = "<group>";
+		};
+		1B8EF271A20152F91E27ED97 /* LocalSendIncomingConnection.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendIncomingConnection.m;
+			sourceTree = "<group>";
+		};
+		1BB7819E5DF01FA39F6626E2 /* sending_tests.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = sending_tests.m;
+			sourceTree = "<group>";
+		};
+		1CC931C55299F9FF6CEBF10E /* Radar@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Radar@2x.png";
+			sourceTree = "<group>";
+		};
+		200000000000000000000004 /* UIKit.framework */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = UIKit.framework;
+			path = System/Library/Frameworks/UIKit.framework;
+			sourceTree = SDKROOT;
+		};
+		200000000000000000000005 /* Foundation.framework */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Foundation.framework;
+			path = System/Library/Frameworks/Foundation.framework;
+			sourceTree = SDKROOT;
+		};
+		200000000000000000000006 /* DipolShare.app */ = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			path = DipolShare.app;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		200000000000000000000016 /* Security.framework */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Security.framework;
+			path = System/Library/Frameworks/Security.framework;
+			sourceTree = SDKROOT;
+		};
+		2419491BD1AC31F6ABE21761 /* AppDelegate.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = AppDelegate.m;
+			sourceTree = "<group>";
+		};
+		26F54EBD9F5CC32D0C69DCE6 /* LocalSendTransfer.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendTransfer.h;
+			sourceTree = "<group>";
+		};
+		2CAE7819FCCA07AA99927ADF /* LocalSendCertificateFingerprint.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendCertificateFingerprint.h;
+			sourceTree = "<group>";
+		};
+		2D907E8CC7D09B57251EE530 /* Received.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = Received.png;
+			sourceTree = "<group>";
+		};
+		2E64ABA36977907C6E753673 /* LocalSendDeviceListViewController.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendDeviceListViewController.h;
+			sourceTree = "<group>";
+		};
+		2F569B94387A8C038F3973A9 /* Settings active@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Settings active@2x.png";
+			sourceTree = "<group>";
+		};
+		30EB8330BEB418D2231799F9 /* Purple.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = Purple.png;
+			sourceTree = "<group>";
+		};
+		33163537C68244EDBC716430 /* LocalSendReceiveServer.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendReceiveServer.m;
+			sourceTree = "<group>";
+		};
+		3534D34EB156F68D78772BE1 /* Received active.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Received active.png";
+			sourceTree = "<group>";
+		};
+		372D05DF85316BEA64C168EF /* run_tests.sh */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.sh;
+			path = run_tests.sh;
+			sourceTree = "<group>";
+		};
+		39F9F343359667CBB524BFD0 /* LocalSendTLS.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendTLS.h;
+			sourceTree = "<group>";
+		};
+		3B1688320B2B95DEB2F7F32A /* LocalSendKeyDiagnostics.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendKeyDiagnostics.h;
+			sourceTree = "<group>";
+		};
+		3B59F73EA83C9A3FE131F95E /* LocalSendIncomingConnection.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendIncomingConnection.h;
+			sourceTree = "<group>";
+		};
+		3E71D48CBE1815A93805FDBE /* LocalSendKeyTestViewController.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendKeyTestViewController.m;
+			sourceTree = "<group>";
+		};
+		3EECCC95D0DDDC8CBD9ED934 /* LocalSendHTTPSClient.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendHTTPSClient.h;
+			sourceTree = "<group>";
+		};
+		3F0C73413A7B832D87F18C15 /* radar_layout_tests.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = radar_layout_tests.m;
+			sourceTree = "<group>";
+		};
+		4062614AA4D75CB4CA5EAEED /* Default-568h@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Default-568h@2x.png";
+			sourceTree = "<group>";
+		};
+		AA2500000000000000000002 /* Default-568h.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Default-568h.png";
+			sourceTree = "<group>";
+		};
+		427726CD9FE236FD3921593A /* Default@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Default@2x.png";
+			sourceTree = "<group>";
+		};
+		42C59AF8A4BAE559BC5A5D5D /* README.md */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = README.md;
+			sourceTree = "<group>";
+		};
+		43C9B54DE0C66549060A9A45 /* Radar.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = Radar.png;
+			sourceTree = "<group>";
+		};
+		44D2406E0AD33B660C6F8EF4 /* transport_harness.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = transport_harness.m;
+			sourceTree = "<group>";
+		};
+		48E7869EF527D721BE63C796 /* Settings active.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Settings active.png";
+			sourceTree = "<group>";
+		};
+		4B1724336A2F3FAB889C74F9 /* OpenSSLHeaders-3.5.8.tar.gz */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.gzip;
+			path = "OpenSSLHeaders-3.5.8.tar.gz";
+			sourceTree = "<group>";
+		};
+		4B9E80B7754F1A99B8E07151 /* IncomingTransfer.caf */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			path = IncomingTransfer.caf;
+			sourceTree = "<group>";
+		};
+		4FD84A399B9CDB21234BD38B /* run_tests.py */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.python;
+			path = run_tests.py;
+			sourceTree = "<group>";
+		};
+		5A7ACCC92D0302BAE5A46CF0 /* receiver_tests.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = receiver_tests.m;
+			sourceTree = "<group>";
+		};
+		5DD089C174CA2EC2E51489D8 /* LocalSendIdentityStore.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendIdentityStore.m;
+			sourceTree = "<group>";
+		};
+		5E171D305D819A230CDE92D7 /* DiscoveryViewController.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = DiscoveryViewController.m;
+			sourceTree = "<group>";
+		};
+		5F4F930DDA4D62553B5350A1 /* LocalSendDiscoveryMessage.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendDiscoveryMessage.h;
+			sourceTree = "<group>";
+		};
+		610674EF0C7718A3038564E5 /* run_tests.sh */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.sh;
+			path = run_tests.sh;
+			sourceTree = "<group>";
+		};
+		6377DACE2B6681F557FDBD68 /* Send file.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Send file.png";
+			sourceTree = "<group>";
+		};
+		63D4B61A7E4F526266400156 /* LocalSendDiscoveryMessage.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendDiscoveryMessage.m;
+			sourceTree = "<group>";
+		};
+		640B058186365FAE420D9105 /* Received@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Received@2x.png";
+			sourceTree = "<group>";
+		};
+		655EC151FA990A84437B2C80 /* LocalSendDiscovery.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendDiscovery.h;
+			sourceTree = "<group>";
+		};
+		677D75C957157F4F438491B1 /* test_transport.py */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.python;
+			path = test_transport.py;
+			sourceTree = "<group>";
+		};
+		6DB17C64B5DADBE0C5EAE7BC /* Send file active.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Send file active.png";
+			sourceTree = "<group>";
+		};
+		72A3570BAE1256598482E54F /* LocalSendRadarBackgroundView.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendRadarBackgroundView.h;
+			sourceTree = "<group>";
+		};
+		7821C502210F323D185D9F7B /* response_parser_tests.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = response_parser_tests.m;
+			sourceTree = "<group>";
+		};
+		78586AFCF706FBB64926F7D3 /* LICENSE-OpenSSL.txt */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = "LICENSE-OpenSSL.txt";
+			sourceTree = "<group>";
+		};
+		79403830D23C904E510F835F /* security_legacy_declaration.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = security_legacy_declaration.h;
+			sourceTree = "<group>";
+		};
+		7BBEBC999F0B78074DFA9D1B /* Purple@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Purple@2x.png";
+			sourceTree = "<group>";
+		};
+		81B779A6379294CCB06FE478 /* LocalSendIdentityStore.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendIdentityStore.h;
+			sourceTree = "<group>";
+		};
+		840A5F6F92B343152153B9CF /* OpenSSLHiddenSymbols.txt */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = OpenSSLHiddenSymbols.txt;
+			sourceTree = "<group>";
+		};
+		855FFAE150B7EC9369EE132A /* LocalSendCertificateFingerprint.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendCertificateFingerprint.m;
+			sourceTree = "<group>";
+		};
+		8589A0665A4D3E64E031F25D /* LocalSendRadarBackgroundView.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendRadarBackgroundView.m;
+			sourceTree = "<group>";
+		};
+		87793C5A0B7A7020F5B3CE2D /* LocalSendHTTPResponseParser.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendHTTPResponseParser.h;
+			sourceTree = "<group>";
+		};
+		88190FC0CFEB76D641CDF8A5 /* OpenSSL-manifest.json */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = "OpenSSL-manifest.json";
+			sourceTree = "<group>";
+		};
+		8954474FAFF3A30A1AF51D25 /* LocalSendDeviceBlobView.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendDeviceBlobView.h;
+			sourceTree = "<group>";
+		};
+		8972F839442DA4AA848E3942 /* build-openssl.sh */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.sh;
+			path = "build-openssl.sh";
+			sourceTree = "<group>";
+		};
+		89C45677BFBA6331119D9B9D /* Green@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Green@2x.png";
+			sourceTree = "<group>";
+		};
+		8C64DF42DF39D299674B7FD2 /* LocalSendSettingsViewController.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendSettingsViewController.h;
+			sourceTree = "<group>";
+		};
+		8C8AD6403703A24BE8955B6A /* .clang-format */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = ".clang-format";
+			sourceTree = "<group>";
+		};
+		8D1FF413CE2B3DAE7DE844ED /* LocalSendPhotoPickerViewController.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendPhotoPickerViewController.h;
+			sourceTree = "<group>";
+		};
+		920B54CBD6D95A14D13071FB /* LocalSendCertificateBuilder.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendCertificateBuilder.m;
+			sourceTree = "<group>";
+		};
+		9227AF91921CA99EB752DBE9 /* Blue.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = Blue.png;
+			sourceTree = "<group>";
+		};
+		9316566897331517B1FCD6BC /* Localsend@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Localsend@2x.png";
+			sourceTree = "<group>";
+		};
+		944DB8495716F160555A2EA0 /* LocalSendDeviceListViewController.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendDeviceListViewController.m;
+			sourceTree = "<group>";
+		};
+		963C9923D9B86E3EE948BED3 /* LocalSendKeyDiagnostics.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendKeyDiagnostics.m;
+			sourceTree = "<group>";
+		};
+		99D43C376503C62192BC1C83 /* LocalSendDeviceBlobView.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendDeviceBlobView.m;
+			sourceTree = "<group>";
+		};
+		9BDF5E496844678D69974F4F /* LocalSendCertificateBuilder.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendCertificateBuilder.h;
+			sourceTree = "<group>";
+		};
+		A004F34220A7425ACD3C7E85 /* LocalSendReceiver.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendReceiver.m;
+			sourceTree = "<group>";
+		};
+		A0897299F4BAE5E6B489AA26 /* LocalSendTransfer.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendTransfer.m;
+			sourceTree = "<group>";
+		};
+		A483A964937645F5491C011D /* Gold.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = Gold.png;
+			sourceTree = "<group>";
+		};
+		A54C92BA72BFEB230D83814F /* Info.plist */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			path = Info.plist;
+			sourceTree = "<group>";
+		};
+		A5E84435029706BE5600DD0C /* DiscoveryViewController.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = DiscoveryViewController.h;
+			sourceTree = "<group>";
+		};
+		A63C64D26A6A62FEF5CA5094 /* run_client_tests.sh */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.sh;
+			path = run_client_tests.sh;
+			sourceTree = "<group>";
+		};
+		A6FD34E01A5FDAB905998394 /* LocalSendRadarLayout.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendRadarLayout.m;
+			sourceTree = "<group>";
+		};
+		AA7417A9E41E57FC082A7068 /* Send file active@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Send file active@2x.png";
+			sourceTree = "<group>";
+		};
+		ACA2D3759503E69D75523F6E /* libcrypto-3.5.8-ios4.a */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			path = "libcrypto-3.5.8-ios4.a";
+			sourceTree = "<group>";
+		};
+		AD5AF356C72FF45A3E44134D /* LocalSendSettingsViewController.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendSettingsViewController.m;
+			sourceTree = "<group>";
+		};
+		ADA5030E6BA559EA9A1B7780 /* LocalSendHTTPSClient.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendHTTPSClient.m;
+			sourceTree = "<group>";
+		};
+		AEC558B50613776EA9302437 /* Received active@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Received active@2x.png";
+			sourceTree = "<group>";
+		};
+		B20000000000000000009999 /* QuickLook.framework */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = QuickLook.framework;
+			path = System/Library/Frameworks/QuickLook.framework;
+			sourceTree = SDKROOT;
+		};
+		B3B4690F570B7F97F7FB6A1E /* test_client_transport.py */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.python;
+			path = test_client_transport.py;
+			sourceTree = "<group>";
+		};
+		B8D588DD85940705C3CD3E89 /* Localsend.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = Localsend.png;
+			sourceTree = "<group>";
+		};
+		BA80BE2661D3413160561410 /* LocalSendReceivedFileStore.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendReceivedFileStore.m;
+			sourceTree = "<group>";
+		};
+		BF49280F32D90D94B9C2B9A8 /* LocalSendPhotoGridCell.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendPhotoGridCell.h;
+			sourceTree = "<group>";
+		};
+		C20000000000000000000003 /* AssetsLibrary.framework */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = AssetsLibrary.framework;
+			path = System/Library/Frameworks/AssetsLibrary.framework;
+			sourceTree = SDKROOT;
+		};
+		C3689B10D860CECD0FF8D31E /* LocalSendDiscoveryProbe.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendDiscoveryProbe.m;
+			sourceTree = "<group>";
+		};
+		C386B66B2EAD70189115381B /* Blue@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Blue@2x.png";
+			sourceTree = "<group>";
+		};
+		C9F2D59A3A7AD6130BBAAF07 /* Send file@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Send file@2x.png";
+			sourceTree = "<group>";
+		};
+		CB72554B22A8F21DC814955C /* Default.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = Default.png;
+			sourceTree = "<group>";
+		};
+		CC05776824A2EDAC751CA6EB /* LocalSendFormatting.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendFormatting.m;
+			sourceTree = "<group>";
+		};
+		CC3537964ABF90E12E56277E /* LocalSendReceivedFileStore.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendReceivedFileStore.h;
+			sourceTree = "<group>";
+		};
+		CFEF16CF970BBC6C540B2769 /* libssl-3.5.8-ios4.a */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			path = "libssl-3.5.8-ios4.a";
+			sourceTree = "<group>";
+		};
+		D1808B050D06182281FDA5B8 /* LocalSendReceivedFilesViewController.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendReceivedFilesViewController.h;
+			sourceTree = "<group>";
+		};
+		D20000000000000000000005 /* AudioToolbox.framework */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = AudioToolbox.framework;
+			path = System/Library/Frameworks/AudioToolbox.framework;
+			sourceTree = SDKROOT;
+		};
+		D2469E39D72729321E2DD064 /* LocalSendReceiveServer.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendReceiveServer.h;
+			sourceTree = "<group>";
+		};
+		D444E6415893B87D6D8A6865 /* CoreGraphics.framework */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = CoreGraphics.framework;
+			path = System/Library/Frameworks/CoreGraphics.framework;
+			sourceTree = SDKROOT;
+		};
+		D4870EB46AB1BBE6948DB6ED /* LocalSendReceiver.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendReceiver.h;
+			sourceTree = "<group>";
+		};
+		D4F6DE577DC260BE3120603C /* OutgoingTransferComplete.caf */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			path = OutgoingTransferComplete.caf;
+			sourceTree = "<group>";
+		};
+		D54468827E501E12A435B867 /* LocalSendSounds.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendSounds.m;
+			sourceTree = "<group>";
+		};
+		DFAA9A79675E5B61B48843E5 /* .gitignore */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = .gitignore;
+			sourceTree = "<group>";
+		};
+		E19A145F80D8D4DECA5654B7 /* LocalSendDiscovery.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendDiscovery.m;
+			sourceTree = "<group>";
+		};
+		E1AA6426AB4AC9FC322921CB /* LocalSendPhotoPickerViewController.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendPhotoPickerViewController.m;
+			sourceTree = "<group>";
+		};
+		E1D78A18CD2944C64C2C1D2F /* asu_pid.entitlements */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.entitlements;
+			path = asu_pid.entitlements;
+			sourceTree = "<group>";
+		};
+		E6A2F6E42CBC9AE147382877 /* LocalSendReceivedFilesViewController.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendReceivedFilesViewController.m;
+			sourceTree = "<group>";
+		};
+		E91C2CF85903169F2ADF2C73 /* client_harness.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = client_harness.m;
+			sourceTree = "<group>";
+		};
+		EBDCE518A7822FD912A3328D /* LocalSendDiscoveryProbe.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendDiscoveryProbe.h;
+			sourceTree = "<group>";
+		};
+		ED57550CCBC267299B235DBD /* LocalSendHTTPResponseParser.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendHTTPResponseParser.m;
+			sourceTree = "<group>";
+		};
+		F00D8A4032BBC35FBCFD6675 /* LocalSendKeyTestViewController.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendKeyTestViewController.h;
+			sourceTree = "<group>";
+		};
+		F2B05D5731D031F73ABE7BA4 /* AssetsLibrary.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = AssetsLibrary.h;
+			sourceTree = "<group>";
+		};
+		F4C9956E03C58AA8F07F6874 /* Gold@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Gold@2x.png";
+			sourceTree = "<group>";
+		};
+		F8C43574B4ABC54A98663107 /* OpenSSL.md */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = OpenSSL.md;
+			sourceTree = "<group>";
+		};
+		FD77394551E3632AE6FC267B /* LocalSendSounds.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendSounds.h;
+			sourceTree = "<group>";
+		};
+		00F45BF9A80943BDB9435E6E /* LocalSendAnimatedRadarView.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = LocalSendAnimatedRadarView.h;
+			sourceTree = "<group>";
+		};
+		5A5D25B1A8122AE11CB1545B /* LocalSendAnimatedRadarView.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = LocalSendAnimatedRadarView.m;
+			sourceTree = "<group>";
+		};
+		60C9B04C22901CFD742885BA /* Blip gold left.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Blip gold left.png";
+			sourceTree = "<group>";
+		};
+		7E080FA6C2B934E8D5483EBB /* Blip gold left@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Blip gold left@2x.png";
+			sourceTree = "<group>";
+		};
+		2C2964ACF51ABA307EEF9870 /* Blip gold right.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Blip gold right.png";
+			sourceTree = "<group>";
+		};
+		E54FDF3E78FAB2CF287D0535 /* Blip gold right@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Blip gold right@2x.png";
+			sourceTree = "<group>";
+		};
+		A77F14E57AD128C570C3BE20 /* Blip white.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Blip white.png";
+			sourceTree = "<group>";
+		};
+		AF95B61174A4C7C8C010806C /* Blip white@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Blip white@2x.png";
+			sourceTree = "<group>";
+		};
+		A239509A72C17C9A96B25625 /* Glint center.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Glint center.png";
+			sourceTree = "<group>";
+		};
+		EC5397E970CBDFEB39AF5750 /* Glint center@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Glint center@2x.png";
+			sourceTree = "<group>";
+		};
+		F53000000000000000000003 /* Satellite.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = Satellite.png;
+			sourceTree = "<group>";
+		};
+		F53000000000000000000004 /* Satellite@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Satellite@2x.png";
+			sourceTree = "<group>";
+		};
+		F52000000000000000000003 /* WiFiOff.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = WiFiOff.png;
+			sourceTree = "<group>";
+		};
+		F52000000000000000000004 /* WiFiOff@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "WiFiOff@2x.png";
+			sourceTree = "<group>";
+		};
+		F51000000000000000000003 /* LoveIsInTheTech.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = LoveIsInTheTech.png;
+			sourceTree = "<group>";
+		};
+		F51000000000000000000004 /* LoveIsInTheTech@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "LoveIsInTheTech@2x.png";
+			sourceTree = "<group>";
+		};
+		65715D0A895D236957ABF882 /* Radar base.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Radar base.png";
+			sourceTree = "<group>";
+		};
+		7C72555C50F3BE56C14F14AA /* Radar base@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Radar base@2x.png";
+			sourceTree = "<group>";
+		};
+		72F9295F37C73BF440FF0D89 /* Radar sweep.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Radar sweep.png";
+			sourceTree = "<group>";
+		};
+		FABE27B5516F729F051982D9 /* Radar sweep@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Radar sweep@2x.png";
+			sourceTree = "<group>";
+		};
+		1521521ADBC731F6BEFEB700 /* Shadow horizon.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Shadow horizon.png";
+			sourceTree = "<group>";
+		};
+		A1DA8F552D911DDAB709EEA6 /* Shadow horizon@2x.png */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.png;
+			path = "Shadow horizon@2x.png";
+			sourceTree = "<group>";
+		};
+		E0D8E006B31DEC15E0B33F1B /* QuartzCore.framework */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = QuartzCore.framework;
+			path = System/Library/Frameworks/QuartzCore.framework;
+			sourceTree = SDKROOT;
+		};
+		F40000000000000000000011 /* JSONKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		F40000000000000000000012 /* JSONKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		F40000000000000000000013 /* LICENSE-JSONKit.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "LICENSE-JSONKit.txt"; sourceTree = "<group>"; };
+		F40000000000000000000014 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		F40000000000000000000015 /* LocalSendJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalSendJSON.h; sourceTree = "<group>"; };
+		F40000000000000000000016 /* LocalSendJSON.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalSendJSON.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		300000000000000000000001 /* FrameworksBuildPhase */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				100000000000000000000003 /* UIKit.framework in Frameworks */,
+				100000000000000000000004 /* Foundation.framework in Frameworks */,
+				B10000000000000000009999 /* QuickLook.framework in Frameworks */,
+				C10000000000000000000002 /* AssetsLibrary.framework in Frameworks */,
+				D10000000000000000000004 /* AudioToolbox.framework in Frameworks */,
+				100000000000000000000009 /* Security.framework in Frameworks */,
+				40AB7ACD791CE7FD789BED49 /* CoreGraphics.framework in Frameworks */,
+				5F92EBBF0DD02F5FF08858A2 /* libcrypto-3.5.8-ios4.a in Frameworks */,
+				56E1F7D1369E05AC8DD93D0B /* libssl-3.5.8-ios4.a in Frameworks */,
+				9E1EACF56C34E55B7EB43963 /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		013E41EE28B793AAEB263AEA /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				9BDF5E496844678D69974F4F /* LocalSendCertificateBuilder.h */,
+				920B54CBD6D95A14D13071FB /* LocalSendCertificateBuilder.m */,
+				2CAE7819FCCA07AA99927ADF /* LocalSendCertificateFingerprint.h */,
+				855FFAE150B7EC9369EE132A /* LocalSendCertificateFingerprint.m */,
+				81B779A6379294CCB06FE478 /* LocalSendIdentityStore.h */,
+				5DD089C174CA2EC2E51489D8 /* LocalSendIdentityStore.m */,
+				39F9F343359667CBB524BFD0 /* LocalSendTLS.h */,
+				0E95F3E895EEA691FB5393E0 /* LocalSendTLS.m */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		015D21FD9778A5C25912C715 /* Sending */ = {
+			isa = PBXGroup;
+			children = (
+				69E0A372689507E9209A3A8C /* Stubs */,
+				4FD84A399B9CDB21234BD38B /* run_tests.py */,
+				1BB7819E5DF01FA39F6626E2 /* sending_tests.m */,
+			);
+			path = Sending;
+			sourceTree = "<group>";
+		};
+		1731EC051581E099F4E464E8 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				157AD02CDB42438288702A72 /* AppDelegate.h */,
+				2419491BD1AC31F6ABE21761 /* AppDelegate.m */,
+				17AAC427583738B99A55EDFA /* main.m */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		1D672CB00E82A6143FBF4701 /* Receiving */ = {
+			isa = PBXGroup;
+			children = (
+				5A7ACCC92D0302BAE5A46CF0 /* receiver_tests.m */,
+				372D05DF85316BEA64C168EF /* run_tests.sh */,
+			);
+			path = Receiving;
+			sourceTree = "<group>";
+		};
+		28DB262163375D4AC7321E83 /* Receiving */ = {
+			isa = PBXGroup;
+			children = (
+				CC3537964ABF90E12E56277E /* LocalSendReceivedFileStore.h */,
+				BA80BE2661D3413160561410 /* LocalSendReceivedFileStore.m */,
+				D4870EB46AB1BBE6948DB6ED /* LocalSendReceiver.h */,
+				A004F34220A7425ACD3C7E85 /* LocalSendReceiver.m */,
+			);
+			path = Receiving;
+			sourceTree = "<group>";
+		};
+		2D7C468C9806E49F68FE17ED /* Sending */ = {
+			isa = PBXGroup;
+			children = (
+				26F54EBD9F5CC32D0C69DCE6 /* LocalSendTransfer.h */,
+				A0897299F4BAE5E6B489AA26 /* LocalSendTransfer.m */,
+			);
+			path = Sending;
+			sourceTree = "<group>";
+		};
+		341E6928838892729241ECD7 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				A54C92BA72BFEB230D83814F /* Info.plist */,
+				E1D78A18CD2944C64C2C1D2F /* asu_pid.entitlements */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		369366657F0CC118760331FE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7FFAAEE585764A8A0DA841F1 /* Images */,
+				BA9966706B5E2F5BD4668177 /* Sounds */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		400000000000000000000001 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				647F22983932505F8226C46F /* Sources */,
+				369366657F0CC118760331FE /* Resources */,
+				341E6928838892729241ECD7 /* Configuration */,
+				646899D46593647A8441FF1F /* Vendor */,
+				4FB64D6C050BDAFBE4DCD1FA /* Scripts */,
+				6DC4FAD667A85B8567F612FB /* Tests */,
+				656882609C9C0413E24F3EB8 /* Documentation */,
+				42C59AF8A4BAE559BC5A5D5D /* README.md */,
+				8C8AD6403703A24BE8955B6A /* .clang-format */,
+				DFAA9A79675E5B61B48843E5 /* .gitignore */,
+				400000000000000000000003 /* Frameworks */,
+				400000000000000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		400000000000000000000003 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000004 /* UIKit.framework */,
+				200000000000000000000005 /* Foundation.framework */,
+				B20000000000000000009999 /* QuickLook.framework */,
+				C20000000000000000000003 /* AssetsLibrary.framework */,
+				D20000000000000000000005 /* AudioToolbox.framework */,
+				200000000000000000000016 /* Security.framework */,
+				D444E6415893B87D6D8A6865 /* CoreGraphics.framework */,
+				E0D8E006B31DEC15E0B33F1B /* QuartzCore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		400000000000000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000006 /* DipolShare.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4B8A2CDA4636A6964318F02A /* Diagnostics */ = {
+			isa = PBXGroup;
+			children = (
+				3B1688320B2B95DEB2F7F32A /* LocalSendKeyDiagnostics.h */,
+				963C9923D9B86E3EE948BED3 /* LocalSendKeyDiagnostics.m */,
+				F00D8A4032BBC35FBCFD6675 /* LocalSendKeyTestViewController.h */,
+				3E71D48CBE1815A93805FDBE /* LocalSendKeyTestViewController.m */,
+			);
+			path = Diagnostics;
+			sourceTree = "<group>";
+		};
+		4FB64D6C050BDAFBE4DCD1FA /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				8972F839442DA4AA848E3942 /* build-openssl.sh */,
+			);
+			path = Scripts;
+			sourceTree = "<group>";
+		};
+		539E94E58FC9BF22FBEEC74D /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				E91C2CF85903169F2ADF2C73 /* client_harness.m */,
+				7821C502210F323D185D9F7B /* response_parser_tests.m */,
+				A63C64D26A6A62FEF5CA5094 /* run_client_tests.sh */,
+				1AC9E5833A22A4F764B13C21 /* run_transport_tests.sh */,
+				79403830D23C904E510F835F /* security_legacy_declaration.h */,
+				0D702A48AD98D7F7CC848FDA /* test_client_parser.py */,
+				B3B4690F570B7F97F7FB6A1E /* test_client_transport.py */,
+				677D75C957157F4F438491B1 /* test_transport.py */,
+				44D2406E0AD33B660C6F8EF4 /* transport_harness.m */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		5554C10C2D7DF53996EEC7ED /* Discovery */ = {
+			isa = PBXGroup;
+			children = (
+				655EC151FA990A84437B2C80 /* LocalSendDiscovery.h */,
+				E19A145F80D8D4DECA5654B7 /* LocalSendDiscovery.m */,
+				5F4F930DDA4D62553B5350A1 /* LocalSendDiscoveryMessage.h */,
+				63D4B61A7E4F526266400156 /* LocalSendDiscoveryMessage.m */,
+				EBDCE518A7822FD912A3328D /* LocalSendDiscoveryProbe.h */,
+				C3689B10D860CECD0FF8D31E /* LocalSendDiscoveryProbe.m */,
+			);
+			path = Discovery;
+			sourceTree = "<group>";
+		};
+		5F97C38691FB12E10198B671 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				0FB935E3697D819FC18D372E /* LocalSendFormatting.h */,
+				CC05776824A2EDAC751CA6EB /* LocalSendFormatting.m */,
+				F40000000000000000000015 /* LocalSendJSON.h */,
+				F40000000000000000000016 /* LocalSendJSON.m */,
+				FD77394551E3632AE6FC267B /* LocalSendSounds.h */,
+				D54468827E501E12A435B867 /* LocalSendSounds.m */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		5FC684353A3DB456CF835B12 /* OpenSSL */ = {
+			isa = PBXGroup;
+			children = (
+				78586AFCF706FBB64926F7D3 /* LICENSE-OpenSSL.txt */,
+				88190FC0CFEB76D641CDF8A5 /* OpenSSL-manifest.json */,
+				4B1724336A2F3FAB889C74F9 /* OpenSSLHeaders-3.5.8.tar.gz */,
+				840A5F6F92B343152153B9CF /* OpenSSLHiddenSymbols.txt */,
+				ACA2D3759503E69D75523F6E /* libcrypto-3.5.8-ios4.a */,
+				CFEF16CF970BBC6C540B2769 /* libssl-3.5.8-ios4.a */,
+			);
+			path = OpenSSL;
+			sourceTree = "<group>";
+		};
+		646899D46593647A8441FF1F /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				5FC684353A3DB456CF835B12 /* OpenSSL */,
+				F40000000000000000000021 /* JSONKit */,
+			);
+			path = Vendor;
+			sourceTree = "<group>";
+		};
+		647F22983932505F8226C46F /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1731EC051581E099F4E464E8 /* Application */,
+				4B8A2CDA4636A6964318F02A /* Diagnostics */,
+				5554C10C2D7DF53996EEC7ED /* Discovery */,
+				D3A33CB3D5D49D8220BA0EAB /* Networking */,
+				28DB262163375D4AC7321E83 /* Receiving */,
+				9224AF8CC49A4FB16F19786B /* Screens */,
+				013E41EE28B793AAEB263AEA /* Security */,
+				2D7C468C9806E49F68FE17ED /* Sending */,
+				5F97C38691FB12E10198B671 /* Shared */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		656882609C9C0413E24F3EB8 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				F8C43574B4ABC54A98663107 /* OpenSSL.md */,
+			);
+			path = Documentation;
+			sourceTree = "<group>";
+		};
+		69E0A372689507E9209A3A8C /* Stubs */ = {
+			isa = PBXGroup;
+			children = (
+				DA58672574DD54DFDDE78E86 /* AssetsLibrary */,
+			);
+			path = Stubs;
+			sourceTree = "<group>";
+		};
+		6DC4FAD667A85B8567F612FB /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				539E94E58FC9BF22FBEEC74D /* Networking */,
+				1D672CB00E82A6143FBF4701 /* Receiving */,
+				015D21FD9778A5C25912C715 /* Sending */,
+				04284B91F177010D03C9AAD1 /* README.md */,
+				C2752FEA7B188524279EC8B5 /* Screens */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		7FFAAEE585764A8A0DA841F1 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				AA2500000000000000000002 /* Default-568h.png */,
+				4062614AA4D75CB4CA5EAEED /* Default-568h@2x.png */,
+				CB72554B22A8F21DC814955C /* Default.png */,
+				427726CD9FE236FD3921593A /* Default@2x.png */,
+				B8D588DD85940705C3CD3E89 /* Localsend.png */,
+				9316566897331517B1FCD6BC /* Localsend@2x.png */,
+				43C9B54DE0C66549060A9A45 /* Radar.png */,
+				1CC931C55299F9FF6CEBF10E /* Radar@2x.png */,
+				A483A964937645F5491C011D /* Gold.png */,
+				F4C9956E03C58AA8F07F6874 /* Gold@2x.png */,
+				30EB8330BEB418D2231799F9 /* Purple.png */,
+				7BBEBC999F0B78074DFA9D1B /* Purple@2x.png */,
+				06D632F95EDE02C5639F9066 /* Green.png */,
+				89C45677BFBA6331119D9B9D /* Green@2x.png */,
+				9227AF91921CA99EB752DBE9 /* Blue.png */,
+				C386B66B2EAD70189115381B /* Blue@2x.png */,
+				48E7869EF527D721BE63C796 /* Settings active.png */,
+				2F569B94387A8C038F3973A9 /* Settings active@2x.png */,
+				3534D34EB156F68D78772BE1 /* Received active.png */,
+				AEC558B50613776EA9302437 /* Received active@2x.png */,
+				2D907E8CC7D09B57251EE530 /* Received.png */,
+				640B058186365FAE420D9105 /* Received@2x.png */,
+				6377DACE2B6681F557FDBD68 /* Send file.png */,
+				C9F2D59A3A7AD6130BBAAF07 /* Send file@2x.png */,
+				6DB17C64B5DADBE0C5EAE7BC /* Send file active.png */,
+				AA7417A9E41E57FC082A7068 /* Send file active@2x.png */,
+				60C9B04C22901CFD742885BA /* Blip gold left.png */,
+				7E080FA6C2B934E8D5483EBB /* Blip gold left@2x.png */,
+				2C2964ACF51ABA307EEF9870 /* Blip gold right.png */,
+				E54FDF3E78FAB2CF287D0535 /* Blip gold right@2x.png */,
+				A77F14E57AD128C570C3BE20 /* Blip white.png */,
+				AF95B61174A4C7C8C010806C /* Blip white@2x.png */,
+				A239509A72C17C9A96B25625 /* Glint center.png */,
+				EC5397E970CBDFEB39AF5750 /* Glint center@2x.png */,
+				F53000000000000000000003 /* Satellite.png */,
+				F53000000000000000000004 /* Satellite@2x.png */,
+				F52000000000000000000003 /* WiFiOff.png */,
+				F52000000000000000000004 /* WiFiOff@2x.png */,
+				F51000000000000000000003 /* LoveIsInTheTech.png */,
+				F51000000000000000000004 /* LoveIsInTheTech@2x.png */,
+				65715D0A895D236957ABF882 /* Radar base.png */,
+				7C72555C50F3BE56C14F14AA /* Radar base@2x.png */,
+				72F9295F37C73BF440FF0D89 /* Radar sweep.png */,
+				FABE27B5516F729F051982D9 /* Radar sweep@2x.png */,
+				1521521ADBC731F6BEFEB700 /* Shadow horizon.png */,
+				A1DA8F552D911DDAB709EEA6 /* Shadow horizon@2x.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		9224AF8CC49A4FB16F19786B /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				A5E84435029706BE5600DD0C /* DiscoveryViewController.h */,
+				5E171D305D819A230CDE92D7 /* DiscoveryViewController.m */,
+				BF49280F32D90D94B9C2B9A8 /* LocalSendPhotoGridCell.h */,
+				0E2FCE471EF21A0D9AEEA70C /* LocalSendPhotoGridCell.m */,
+				8D1FF413CE2B3DAE7DE844ED /* LocalSendPhotoPickerViewController.h */,
+				E1AA6426AB4AC9FC322921CB /* LocalSendPhotoPickerViewController.m */,
+				D1808B050D06182281FDA5B8 /* LocalSendReceivedFilesViewController.h */,
+				E6A2F6E42CBC9AE147382877 /* LocalSendReceivedFilesViewController.m */,
+				0E39A747D578999A47E047B0 /* LocalSendRadarLayout.h */,
+				A6FD34E01A5FDAB905998394 /* LocalSendRadarLayout.m */,
+				72A3570BAE1256598482E54F /* LocalSendRadarBackgroundView.h */,
+				8589A0665A4D3E64E031F25D /* LocalSendRadarBackgroundView.m */,
+				8954474FAFF3A30A1AF51D25 /* LocalSendDeviceBlobView.h */,
+				99D43C376503C62192BC1C83 /* LocalSendDeviceBlobView.m */,
+				2E64ABA36977907C6E753673 /* LocalSendDeviceListViewController.h */,
+				944DB8495716F160555A2EA0 /* LocalSendDeviceListViewController.m */,
+				8C64DF42DF39D299674B7FD2 /* LocalSendSettingsViewController.h */,
+				AD5AF356C72FF45A3E44134D /* LocalSendSettingsViewController.m */,
+				00F45BF9A80943BDB9435E6E /* LocalSendAnimatedRadarView.h */,
+				5A5D25B1A8122AE11CB1545B /* LocalSendAnimatedRadarView.m */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		BA9966706B5E2F5BD4668177 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				4B9E80B7754F1A99B8E07151 /* IncomingTransfer.caf */,
+				D4F6DE577DC260BE3120603C /* OutgoingTransferComplete.caf */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		C2752FEA7B188524279EC8B5 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				3F0C73413A7B832D87F18C15 /* radar_layout_tests.m */,
+				610674EF0C7718A3038564E5 /* run_tests.sh */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		D3A33CB3D5D49D8220BA0EAB /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				87793C5A0B7A7020F5B3CE2D /* LocalSendHTTPResponseParser.h */,
+				ED57550CCBC267299B235DBD /* LocalSendHTTPResponseParser.m */,
+				3EECCC95D0DDDC8CBD9ED934 /* LocalSendHTTPSClient.h */,
+				ADA5030E6BA559EA9A1B7780 /* LocalSendHTTPSClient.m */,
+				3B59F73EA83C9A3FE131F95E /* LocalSendIncomingConnection.h */,
+				1B8EF271A20152F91E27ED97 /* LocalSendIncomingConnection.m */,
+				D2469E39D72729321E2DD064 /* LocalSendReceiveServer.h */,
+				33163537C68244EDBC716430 /* LocalSendReceiveServer.m */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		DA58672574DD54DFDDE78E86 /* AssetsLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				F2B05D5731D031F73ABE7BA4 /* AssetsLibrary.h */,
+			);
+			path = AssetsLibrary;
+			sourceTree = "<group>";
+		};
+		F40000000000000000000021 /* JSONKit */ = {isa = PBXGroup; children = (F40000000000000000000011 /* JSONKit.h */, F40000000000000000000012 /* JSONKit.m */, F40000000000000000000013 /* LICENSE-JSONKit.txt */, F40000000000000000000014 /* README.md */,); path = JSONKit; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		500000000000000000000001 /* localsend */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 900000000000000000000002 /* XCConfigurationList */;
+			buildPhases = (
+				F30000000000000000000001 /* ShellScriptBuildPhase */,
+				700000000000000000000001 /* SourcesBuildPhase */,
+				300000000000000000000001 /* FrameworksBuildPhase */,
+				700000000000000000000002 /* ResourcesBuildPhase */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = localsend;
+			productName = DipolShare;
+			productReference = 200000000000000000000006 /* DipolShare.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		600000000000000000000001 /* Project */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 900000000000000000000001 /* XCConfigurationList */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 400000000000000000000001 /* Group */;
+			productRefGroup = 400000000000000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				500000000000000000000001 /* localsend */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		700000000000000000000002 /* ResourcesBuildPhase */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA2500000000000000000001 /* Default-568h.png in Resources */,
+				535079D00FDE29C45E27E2EA /* Default-568h@2x.png in Resources */,
+				AE2E3C20328FD78D7CC38919 /* Default.png in Resources */,
+				ABF32B9FFDEDA31ED3AE609C /* Default@2x.png in Resources */,
+				9148D356898EA75677B1BEA2 /* Localsend.png in Resources */,
+				B28D8661F06EFB01E609AE0B /* Localsend@2x.png in Resources */,
+				11B1055A17A62318C64C1AA5 /* IncomingTransfer.caf in Resources */,
+				990861FF395BB0CF4294F818 /* OutgoingTransferComplete.caf in Resources */,
+				6E9BD6EDB02B6ED0B94DB3AF /* LICENSE-OpenSSL.txt in Resources */,
+				F40000000000000000000003 /* LICENSE-JSONKit.txt in Resources */,
+				954686937E2529AAF00AD17C /* Radar.png in Resources */,
+				3D1C900AF99345FEECEAD813 /* Radar@2x.png in Resources */,
+				BEFE391FE56E74CDB484DA7C /* Gold.png in Resources */,
+				33A98A5A35E8D2E45C584EBB /* Gold@2x.png in Resources */,
+				4158B6EBA623D03B6EB76520 /* Purple.png in Resources */,
+				AAE1E870B17D1337355DDBAD /* Purple@2x.png in Resources */,
+				75BCE24629E2B76768D41EE0 /* Green.png in Resources */,
+				5D3C799A97C310404B47B30F /* Green@2x.png in Resources */,
+				B267953C5CB78B37282C1734 /* Blue.png in Resources */,
+				5728001E85522B4052C8C133 /* Blue@2x.png in Resources */,
+				5B8D11528C7F684EF7B8DCC0 /* Settings active.png in Resources */,
+				2645AE918EA5815B76E388EF /* Settings active@2x.png in Resources */,
+				C6C0619085CFB8BA9E5623AC /* Received active.png in Resources */,
+				B0FA4AE95A50E19EB941B4AB /* Received active@2x.png in Resources */,
+				1F0E2CE5E80AB16C5D65F91D /* Received.png in Resources */,
+				91AB48619BDCC5529DA1774F /* Received@2x.png in Resources */,
+				1C8CF93A0AE9C79937B41094 /* Send file.png in Resources */,
+				4C430B462A28A42BFC58F421 /* Send file@2x.png in Resources */,
+				C39885A47D16962351FD9CA6 /* Send file active.png in Resources */,
+				0EA44541A636364FA0E66F49 /* Send file active@2x.png in Resources */,
+				8C4B674D4BE4BCE290E1E8B1 /* Blip gold left.png in Resources */,
+				5E6DADB18819DF7FD4AD9981 /* Blip gold left@2x.png in Resources */,
+				D5B6F54DF094CDA09E8DC23E /* Blip gold right.png in Resources */,
+				C4D3EA3993E8E2C33FD14A6F /* Blip gold right@2x.png in Resources */,
+				5E6CCC0A9BF68C9D16FDD6C4 /* Blip white.png in Resources */,
+				761ABCDE713AB26647402FBE /* Blip white@2x.png in Resources */,
+				741B1AD8F67B77A43217AA54 /* Glint center.png in Resources */,
+				0D0156BCAAEF2A28DBAF5CCB /* Glint center@2x.png in Resources */,
+				F53000000000000000000001 /* Satellite.png in Resources */,
+				F53000000000000000000002 /* Satellite@2x.png in Resources */,
+				F52000000000000000000001 /* WiFiOff.png in Resources */,
+				F52000000000000000000002 /* WiFiOff@2x.png in Resources */,
+				F51000000000000000000001 /* LoveIsInTheTech.png in Resources */,
+				F51000000000000000000002 /* LoveIsInTheTech@2x.png in Resources */,
+				28A230744C8D1C5839CA91BA /* Radar base.png in Resources */,
+				6D4751DEFFCC23A844C2FF11 /* Radar base@2x.png in Resources */,
+				D785F423873CA1C8B582E80F /* Radar sweep.png in Resources */,
+				783B71B22653B03887C78BAC /* Radar sweep@2x.png in Resources */,
+				D4C492CCF62B0AD15292E8B6 /* Shadow horizon.png in Resources */,
+				A32894DCA41A0F5EED543126 /* Shadow horizon@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F30000000000000000000001 /* ShellScriptBuildPhase */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Vendor/OpenSSL/OpenSSLHeaders-3.5.8.tar.gz",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/OpenSSLHeaders/include/openssl/ssl.h",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\nmkdir -p \"$DERIVED_FILE_DIR/OpenSSLHeaders\"\n/usr/bin/tar -xzf \"$SRCROOT/Vendor/OpenSSL/OpenSSLHeaders-3.5.8.tar.gz\" -C \"$DERIVED_FILE_DIR/OpenSSLHeaders\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		700000000000000000000001 /* SourcesBuildPhase */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				13D80FF19E69CACB141928BB /* AppDelegate.m in Sources */,
+				61A09B3ABF3EAAFDEDC5C8D6 /* main.m in Sources */,
+				B471DCA56634EA2F48F71C26 /* LocalSendKeyDiagnostics.m in Sources */,
+				A19A4ACB632B93D7C2B4EE0E /* LocalSendKeyTestViewController.m in Sources */,
+				DCDE427499D3BC21FB373042 /* LocalSendDiscovery.m in Sources */,
+				39DDA7E6D05A389F98026758 /* LocalSendDiscoveryMessage.m in Sources */,
+				B05E37075E8E74F75EB28BD8 /* LocalSendDiscoveryProbe.m in Sources */,
+				33C3BF6724FC8FEBFD047BA0 /* LocalSendHTTPResponseParser.m in Sources */,
+				4175345F1E39BB481375DFBD /* LocalSendHTTPSClient.m in Sources */,
+				EC1B2988E32AAA1B3233F027 /* LocalSendIncomingConnection.m in Sources */,
+				FCFD239B8D2BFA2F4D47A80C /* LocalSendReceiveServer.m in Sources */,
+				4034CF255AD1CF24C220395B /* LocalSendReceivedFileStore.m in Sources */,
+				E2264E7F0E49D8CF371915F9 /* LocalSendReceiver.m in Sources */,
+				12B4525B2DED61D266DE3F11 /* DiscoveryViewController.m in Sources */,
+				626BD7D9BA689B7F1184C43D /* LocalSendPhotoGridCell.m in Sources */,
+				8015F2D2C81C9E8508B7CAB1 /* LocalSendPhotoPickerViewController.m in Sources */,
+				956E2646CA48D2C6E03A6454 /* LocalSendReceivedFilesViewController.m in Sources */,
+				811284E867C8B3072CA1EA03 /* LocalSendCertificateBuilder.m in Sources */,
+				25244691B39136E34DE5F30E /* LocalSendCertificateFingerprint.m in Sources */,
+				9913541E6A384EC014B95828 /* LocalSendIdentityStore.m in Sources */,
+				91DDEEB561DFA84B8DC094FD /* LocalSendTLS.m in Sources */,
+				2A82990B62E4BAF53FADEEE1 /* LocalSendTransfer.m in Sources */,
+				430B6FA718905A20AD52DAF8 /* LocalSendFormatting.m in Sources */,
+				F40000000000000000000002 /* LocalSendJSON.m in Sources */,
+				F40000000000000000000001 /* JSONKit.m in Sources */,
+				652F27C498A438F47121ACB6 /* LocalSendSounds.m in Sources */,
+				17AC3D32FEBC8087678F4AB9 /* LocalSendRadarLayout.m in Sources */,
+				FC320536BD00EDA46452B22C /* LocalSendRadarBackgroundView.m in Sources */,
+				122878C59B9D30CB4EEAA73B /* LocalSendDeviceBlobView.m in Sources */,
+				6DC09D34F75AB777CA4E7568 /* LocalSendDeviceListViewController.m in Sources */,
+				42682ACA6511DD7C0A61AE3E /* LocalSendSettingsViewController.m in Sources */,
+				EF1D34BA722DFF4AED09FB85 /* LocalSendAnimatedRadarView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		800000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				ARCHS = "armv6 armv7";
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_ENTITLEMENTS = Configuration/asu_pid.entitlements;
+				CODE_SIGN_IDENTITY = "";
+				ENTITLEMENTS_REQUIRED = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv6 armv7";
+			};
+			name = Debug;
+		};
+		800000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				ARCHS = "armv6 armv7";
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_ENTITLEMENTS = Configuration/asu_pid.entitlements;
+				CODE_SIGN_IDENTITY = "";
+				ENTITLEMENTS_REQUIRED = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv6 armv7";
+			};
+			name = Release;
+		};
+		800000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_ENTITLEMENTS = Configuration/asu_pid.entitlements;
+				CODE_SIGN_IDENTITY = "";
+				ENTITLEMENTS_REQUIRED = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DERIVED_FILE_DIR)/OpenSSLHeaders/include",
+					"$(SRCROOT)/Sources/Application",
+					"$(SRCROOT)/Sources/Discovery",
+					"$(SRCROOT)/Sources/Sending",
+					"$(SRCROOT)/Sources/Receiving",
+					"$(SRCROOT)/Sources/Networking",
+					"$(SRCROOT)/Sources/Security",
+					"$(SRCROOT)/Sources/Screens",
+					"$(SRCROOT)/Sources/Diagnostics",
+					"$(SRCROOT)/Sources/Shared",
+					"$(SRCROOT)/Vendor/JSONKit",
+				);
+				INFOPLIST_FILE = Configuration/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/Vendor/OpenSSL",
+				);
+				OTHER_CFLAGS = "-fblocks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl,-unexported_symbols_list,$(SRCROOT)/Vendor/OpenSSL/OpenSSLHiddenSymbols.txt",
+				);
+				PRODUCT_NAME = DipolShare;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		800000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_ENTITLEMENTS = Configuration/asu_pid.entitlements;
+				CODE_SIGN_IDENTITY = "";
+				ENTITLEMENTS_REQUIRED = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DERIVED_FILE_DIR)/OpenSSLHeaders/include",
+					"$(SRCROOT)/Sources/Application",
+					"$(SRCROOT)/Sources/Discovery",
+					"$(SRCROOT)/Sources/Sending",
+					"$(SRCROOT)/Sources/Receiving",
+					"$(SRCROOT)/Sources/Networking",
+					"$(SRCROOT)/Sources/Security",
+					"$(SRCROOT)/Sources/Screens",
+					"$(SRCROOT)/Sources/Diagnostics",
+					"$(SRCROOT)/Sources/Shared",
+					"$(SRCROOT)/Vendor/JSONKit",
+				);
+				INFOPLIST_FILE = Configuration/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/Vendor/OpenSSL",
+				);
+				OTHER_CFLAGS = "-fblocks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl,-unexported_symbols_list,$(SRCROOT)/Vendor/OpenSSL/OpenSSLHiddenSymbols.txt",
+				);
+				PRODUCT_NAME = DipolShare;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		900000000000000000000001 /* XCConfigurationList */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				800000000000000000000001 /* Debug */,
+				800000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		900000000000000000000002 /* XCConfigurationList */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				800000000000000000000003 /* Debug */,
+				800000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 600000000000000000000001 /* Project */;
+}

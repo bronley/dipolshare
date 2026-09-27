@@ -1,0 +1,23 @@
+# macOS and local Xcode state
+.DS_Store
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+
+# Generated builds and test results
+build/
+DerivedData/
+*.app/
+*.dSYM/
+*.xcarchive/
+*.xcresult/
+*.ipa
+
+# Temporary files
+__pycache__/
+*.pyc
+*.log
+*.bak
+*.orig
+*~
