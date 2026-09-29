@@ -229,7 +229,7 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
         [_fileActionsSheet addButtonWithTitle:@"Copy Text"];
     }
     _fileActionsSheet.cancelButtonIndex = [_fileActionsSheet addButtonWithTitle:@"Cancel"];
-    [_fileActionsSheet showInView:self.navigationController.view];
+    [_fileActionsSheet showFromTabBar:self.tabBarController.tabBar];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
