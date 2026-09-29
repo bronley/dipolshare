@@ -12,7 +12,6 @@ DipolShare brings LocalSend-compatible sharing to classic iOS devices. You can s
 
 - Send and receive files and clipboard text
 - Discover nearby LocalSend devices
-- Send and receive clipboard text
 - Browse received files in the app
 
 ## Compatibility
@@ -30,6 +29,26 @@ Both devices must be on the same local network.
 ## Security
 
 DipolShare encrypts transfers with TLS 1.2 and keeps its private key in the iOS Keychain.
+
+## Requirements
+
+The app requires as a jailbroken iOS with AppSync installed.
+
+TLSFix is not required.
+
+## The app was tested on:
+
+### these devices:
+
+- iPhone 3GS/4S/5
+- iPod touch 2g/4
+- iPad 1st generation
+
+### with these versions
+
+- iOS 4.2.1
+- iOS 5
+- iOS 6
 
 ## Third-party software
 
