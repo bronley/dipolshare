@@ -15,7 +15,6 @@ DerivedData/
 *.xcresult/
 *.ipa
 
-# Extracted copy of the tracked OpenSSL header archive
 /Vendor/OpenSSL/include/
 
 # Temporary files

@@ -20,8 +20,6 @@ DipolShare_FRAMEWORKS = \
     AudioToolbox \
     QuartzCore
 
-# Xcode copies individual resources to the app root. Keep the same layout for
-# imageNamed: and URLForResource:withExtension: lookups.
 DipolShare_RESOURCE_DIRS = Resources/Images Resources/Sounds
 DipolShare_RESOURCE_FILES = Configuration/Info.plist
 DipolShare_CODESIGN_FLAGS = -S$(THEOS_PROJECT_DIR)/Configuration/theos.entitlements
