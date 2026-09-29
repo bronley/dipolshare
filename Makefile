@@ -1,5 +1,5 @@
 TARGET = iphone:clang:5.0:4.2
-ARCHS = armv7
+ARCHS = armv6 armv7
 
 PACKAGE_FORMAT = ipa
 
