@@ -671,6 +671,10 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
         _statusLabel.text = @"First setup. Please wait.";
         return;
     }
+    if ([[LocalSendDiscovery sharedDiscovery] identitySetupError] != nil) {
+        _statusLabel.text = @"Device key failed. See Settings.";
+        return;
+    }
     _statusLabel.text = @"Searching for devices....";
 }
 

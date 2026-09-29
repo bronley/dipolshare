@@ -179,6 +179,10 @@ static const NSInteger LocalSendCreditCaptionTag = 1003;
     if (section != 1) {
         return nil;
     }
+    NSString *setupError = [[LocalSendDiscovery sharedDiscovery] identitySetupError];
+    if (setupError != nil) {
+        return setupError;
+    }
     LocalSendCertificateDateStatus status = [[LocalSendDiscovery sharedDiscovery] certificateDateStatus];
     if (status == LocalSendCertificateDateStatusClockIncorrect) {
         return @"Correct this device's date and time before regenerating the key.";
@@ -200,17 +204,22 @@ static const NSInteger LocalSendCreditCaptionTag = 1003;
     } else if (indexPath.section == 1) {
         if (indexPath.row == 0) {
             LocalSendCertificateDateStatus status = [[LocalSendDiscovery sharedDiscovery] certificateDateStatus];
+            NSString *setupError = [[LocalSendDiscovery sharedDiscovery] identitySetupError];
             cell.textLabel.text = @"Certificate";
-            switch (status) {
-                case LocalSendCertificateDateStatusValid: cell.detailTextLabel.text = @"Valid"; break;
-                case LocalSendCertificateDateStatusExpired: cell.detailTextLabel.text = @"Expired"; break;
-                case LocalSendCertificateDateStatusNotYetValid: cell.detailTextLabel.text = @"Not yet valid"; break;
-                case LocalSendCertificateDateStatusClockIncorrect: cell.detailTextLabel.text = @"Check clock"; break;
-                case LocalSendCertificateDateStatusInvalid: cell.detailTextLabel.text = @"Invalid"; break;
-                default: cell.detailTextLabel.text = @"Checking…"; break;
+            if (setupError != nil) {
+                cell.detailTextLabel.text = @"Setup failed";
+            } else {
+                switch (status) {
+                    case LocalSendCertificateDateStatusValid: cell.detailTextLabel.text = @"Valid"; break;
+                    case LocalSendCertificateDateStatusExpired: cell.detailTextLabel.text = @"Expired"; break;
+                    case LocalSendCertificateDateStatusNotYetValid: cell.detailTextLabel.text = @"Not yet valid"; break;
+                    case LocalSendCertificateDateStatusClockIncorrect: cell.detailTextLabel.text = @"Check clock"; break;
+                    case LocalSendCertificateDateStatusInvalid: cell.detailTextLabel.text = @"Invalid"; break;
+                    default: cell.detailTextLabel.text = @"Checking…"; break;
+                }
             }
-            if (status != LocalSendCertificateDateStatusValid &&
-                status != LocalSendCertificateDateStatusUnavailable) {
+            if (setupError != nil || (status != LocalSendCertificateDateStatusValid &&
+                status != LocalSendCertificateDateStatusUnavailable)) {
                 cell.detailTextLabel.textColor = [UIColor redColor];
             }
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
