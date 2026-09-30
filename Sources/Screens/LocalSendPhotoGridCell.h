@@ -11,6 +11,7 @@ extern const NSUInteger LocalSendPhotosPerRow;
 @interface LocalSendPhotoGridCell : UITableViewCell {
     NSMutableArray *_photoButtons;
     NSMutableArray *_selectionBadges;
+    NSMutableArray *_videoBadges;
     NSUInteger _photoIndexes[4];
     id<LocalSendPhotoGridCellDelegate> _delegate;
 }
@@ -18,6 +19,8 @@ extern const NSUInteger LocalSendPhotosPerRow;
 - (void)setPhotoAtColumn:(NSUInteger)columnIndex
                    image:(UIImage *)image
               photoIndex:(NSUInteger)photoIndex
-         selectionNumber:(NSUInteger)selectionNumber;
+         selectionNumber:(NSUInteger)selectionNumber
+                 isVideo:(BOOL)isVideo;
+- (void)setSelectionNumber:(NSUInteger)selectionNumber atColumn:(NSUInteger)columnIndex;
 - (void)hidePhotoAtColumn:(NSUInteger)columnIndex;
 @end

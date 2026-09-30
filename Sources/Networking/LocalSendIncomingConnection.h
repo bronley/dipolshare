@@ -1,5 +1,6 @@
 #import "LocalSendReceiveServer.h"
 #import "LocalSendTLS.h"
+#import "LocalSendConnectionActivity.h"
 
 typedef struct {
     int socketDescriptor;
@@ -10,6 +11,7 @@ typedef struct {
   @public
     LocalSendIncomingSocket socket;
     LocalSendTLS *tls;
+    LocalSendConnectionActivity *activity;
     NSString *address;
     NSString *peerFingerprint;
     NSMutableData *pendingData;

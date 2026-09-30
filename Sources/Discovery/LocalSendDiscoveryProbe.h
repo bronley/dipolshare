@@ -17,6 +17,7 @@
     NSURLConnection *_connection;
     NSMutableData *_data;
     NSInteger _status;
+    NSString *_failureMessage;
 }
 - (id)initWithDelegate:(id<LocalSendDiscoveryProbeDelegate>)delegate
               endpoint:(NSDictionary *)endpoint
@@ -24,6 +25,8 @@
 - (NSDictionary *)endpoint;
 - (NSUInteger)generation;
 - (NSTimeInterval)startedAt;
+- (NSString *)failureMessage;
+- (BOOL)hasRunningWorker;
 - (void)startWithIdentity:(SecIdentityRef)identity info:(NSDictionary *)info;
 - (void)invalidate;
 @end

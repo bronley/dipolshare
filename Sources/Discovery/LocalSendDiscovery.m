@@ -5,6 +5,7 @@
 #import "LocalSendDiscoveryMessage.h"
 #import "LocalSendReceiver.h"
 #import "LocalSendReceiveServer.h"
+#import "LocalSendConnectionActivity.h"
 #import <UIKit/UIKit.h>
 #import <arpa/inet.h>
 #import <errno.h>
@@ -23,11 +24,13 @@ NSString *const LocalSendDiscoveryIdentityDidRegenerateNotification =
     @"LocalSendDiscoveryIdentityDidRegenerateNotification";
 static const unsigned short kLocalSendPort = 53317;
 static const char *kLocalSendGroup = "224.0.0.167";
-// Same cumulative burst timing as upstream's 100/500/2000 ms delays.
-static const NSTimeInterval kAnnouncementTimes[] = {0.1, 0.6, 2.6};
-static const NSUInteger LocalSendConcurrentProbeLimit = 4;
-static const NSUInteger LocalSendConcurrentSubnetConnectionLimit = 24;
-static const NSTimeInterval LocalSendProbeTimeout = 5.0;
+static const NSTimeInterval LocalSendAnnouncementInterval = 5.0;
+static const NSTimeInterval LocalSendRefreshCoalescingInterval = 0.5;
+static const NSUInteger LocalSendConcurrentProbeLimit = 2;
+static const NSUInteger LocalSendConcurrentSubnetConnectionLimit = 8;
+static const NSTimeInterval LocalSendProbeTimeout = 15.0;
+static const NSTimeInterval LocalSendFailedProbeRetryDelay = 60.0;
+static const NSTimeInterval LocalSendRepeatProbeInterval = 20.0;
 static const NSTimeInterval LocalSendSubnetConnectionTimeout = 0.6;
 static const NSTimeInterval LocalSendMulticastDiscoveryWindow = 3.0;
 static NSString *const LocalSendCustomDeviceNameKey = @"LocalSendCustomDeviceName";
@@ -74,6 +77,10 @@ static NSArray *LocalSendAvailableNetworkInterfaces(void) {
 - (void)acceptSocket:(int)socketDescriptor address:(NSData *)address;
 - (void)tick:(NSTimer *)timer;
 - (void)beginScan;
+- (void)cancelScan;
+- (void)retireProbe:(LocalSendDiscoveryProbe *)probe;
+- (void)reapRetiredProbes;
+- (void)announceIfDue;
 - (void)announce;
 - (void)updateDeviceName;
 - (void)loadIdentityInBackground;
@@ -170,7 +177,10 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         _pendingSubnetAddresses = [[NSMutableArray alloc] init];
         _pendingDiscoveryProbes = [[NSMutableArray alloc] init];
         _activeProbes = [[NSMutableArray alloc] init];
+        _retiringProbes = [[NSMutableArray alloc] init];
         _recentlyProbedEndpoints = [[NSMutableDictionary alloc] init];
+        _failedEndpointRetryAfter = [[NSMutableDictionary alloc] init];
+        _recentProbeFailures = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -302,6 +312,8 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
 }
 
 - (void)startIncomingListener {
+    [_listenerError release];
+    _listenerError = nil;
     CFSocketContext context = {0, self, NULL, NULL, NULL};
     _listener = CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_TCP,
                                kCFSocketAcceptCallBack, LocalSendAcceptIncomingSocket, &context);
@@ -314,13 +326,20 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         address.sin_family = AF_INET;
         address.sin_port = htons(kLocalSendPort);
         NSData *bindAddress = [NSData dataWithBytes:&address length:sizeof(address)];
-        if (CFSocketSetAddress(_listener, (CFDataRef)bindAddress) != kCFSocketSuccess) {
+        CFSocketError bindResult = CFSocketSetAddress(_listener, (CFDataRef)bindAddress);
+        if (bindResult != kCFSocketSuccess) {
+            _listenerError = [[NSString stringWithFormat:@"TCP port %u bind failed (%ld).",
+                                                        kLocalSendPort, (long)bindResult] copy];
+            NSLog(@"LocalSend discovery: %@", _listenerError);
             CFSocketInvalidate(_listener);
             CFRelease(_listener);
             _listener = NULL;
         } else {
             LocalSendScheduleSocketOnMainRunLoop(_listener);
         }
+    } else {
+        _listenerError = [@"Could not create the TCP listener." copy];
+        NSLog(@"LocalSend discovery: %@", _listenerError);
     }
 }
 
@@ -350,6 +369,9 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
 }
 
 - (void)startMulticastDiscovery {
+    [_multicastError release];
+    _multicastError = nil;
+    _multicastJoinCount = 0;
     CFSocketContext context = {0, self, NULL, NULL, NULL};
     int reuse = 1;
     _datagramSocket = socket(AF_INET, SOCK_DGRAM, 0);
@@ -362,9 +384,16 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         address.sin_family = AF_INET;
         address.sin_port = htons(kLocalSendPort);
         if (bind(_datagramSocket, (struct sockaddr *)&address, sizeof(address)) < 0) {
+            _multicastError = [[NSString stringWithFormat:@"UDP port %u bind failed: %s.",
+                                                         kLocalSendPort, strerror(errno)] copy];
+            NSLog(@"LocalSend discovery: %@", _multicastError);
             close(_datagramSocket);
             _datagramSocket = -1;
         }
+    } else {
+        _multicastError = [[NSString stringWithFormat:@"Could not create UDP socket: %s.",
+                                                     strerror(errno)] copy];
+        NSLog(@"LocalSend discovery: %@", _multicastError);
     }
     if (_datagramSocket >= 0) {
         for (NSDictionary *interface in _interfaces) {
@@ -374,8 +403,14 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
             membership.imr_interface.s_addr = inet_addr([[interface objectForKey:@"address"] UTF8String]);
             if (setsockopt(_datagramSocket, IPPROTO_IP, IP_ADD_MEMBERSHIP, &membership, sizeof(membership)) <
                 0) {
+                int socketError = errno;
                 NSLog(@"LocalSend multicast join failed on %@: %s", [interface objectForKey:@"address"],
-                      strerror(errno));
+                      strerror(socketError));
+                [_multicastError release];
+                _multicastError = [[NSString stringWithFormat:@"Multicast join on %@ failed: %s.",
+                                      [interface objectForKey:@"address"], strerror(socketError)] copy];
+            } else {
+                _multicastJoinCount++;
             }
         }
         unsigned char ttl = 1;
@@ -386,18 +421,26 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
                                      LocalSendHandleDiscoveryDatagram, &context);
         if (_udpSourceSocket != NULL) {
             LocalSendScheduleSocketOnMainRunLoop(_udpSourceSocket);
+        } else {
+            [_multicastError release];
+            _multicastError = [@"Could not monitor the UDP socket." copy];
+            NSLog(@"LocalSend discovery: %@", _multicastError);
+            close(_datagramSocket);
+            _datagramSocket = -1;
         }
     }
 }
 
 - (void)startDiscoveryTimer {
-    _pollTimer = [[NSTimer timerWithTimeInterval:0.1
+    _pollTimer = [[NSTimer timerWithTimeInterval:0.25
                                           target:self
                                         selector:@selector(tick:)
                                         userInfo:nil
                                          repeats:YES] retain];
     [[NSRunLoop mainRunLoop] addTimer:_pollTimer forMode:NSRunLoopCommonModes];
     _lastInterfaceCheck = [NSDate timeIntervalSinceReferenceDate];
+    _lastTickAt = _lastInterfaceCheck;
+    _maximumTickGap = 0;
 }
 
 - (BOOL)hasLocalNetworkInterface {
@@ -427,6 +470,20 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         return;
     }
     _interfaces = [LocalSendAvailableNetworkInterfaces() copy];
+    _announcementsSent = 0;
+    _datagramsSeen = 0;
+    _datagramsReceived = 0;
+    _incomingConnections = 0;
+    _subnetConnectionsAttempted = 0;
+    _subnetConnectionsAccepted = 0;
+    _probeAttempts = 0;
+    _probeSuccesses = 0;
+    _probeFailures = 0;
+    [_lastProbeError release];
+    _lastProbeError = nil;
+    [_lastHTTPSProbeError release];
+    _lastHTTPSProbeError = nil;
+    [_recentProbeFailures removeAllObjects];
     [self startIncomingListener];
     [self configureLocalDeviceWithFingerprint:fingerprint];
     [self startMulticastDiscovery];
@@ -435,7 +492,8 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
 }
 - (void)stop {
     _running = NO;
-    _generation++;
+    _refreshPending = NO;
+    [self cancelScan];
     [_pollTimer invalidate];
     [_pollTimer release];
     _pollTimer = nil;
@@ -456,38 +514,70 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
     [_receiveServer invalidate];
     [_receiveServer release];
     _receiveServer = nil;
-    for (NSNumber *socketDescriptor in _subnetScanSockets) {
-        close([socketDescriptor intValue]);
-    }
-    [_subnetScanSockets removeAllObjects];
-    for (LocalSendDiscoveryProbe *probe in _activeProbes) {
-        [probe invalidate];
-    }
-    [_activeProbes removeAllObjects];
-    [_pendingDiscoveryProbes removeAllObjects];
-    [_pendingSubnetAddresses removeAllObjects];
+    [_failedEndpointRetryAfter removeAllObjects];
     [_interfaces release];
     _interfaces = nil;
 }
 - (void)refresh {
     // Refresh discovery without interrupting incoming file streams.
     if (_running) {
-        [self beginScan];
+        if (!_refreshPending) {
+            [self cancelScan];
+            _refreshPending = YES;
+            _refreshAt = [NSDate timeIntervalSinceReferenceDate] + LocalSendRefreshCoalescingInterval;
+        }
     } else {
         [_identitySetupError release];
         _identitySetupError = nil;
         [self start];
     }
 }
+- (void)retireProbe:(LocalSendDiscoveryProbe *)probe {
+    [probe invalidate];
+    if ([probe hasRunningWorker]) [_retiringProbes addObject:probe];
+    [_activeProbes removeObjectIdenticalTo:probe];
+}
+- (void)reapRetiredProbes {
+    for (LocalSendDiscoveryProbe *probe in [[_retiringProbes copy] autorelease]) {
+        if (![probe hasRunningWorker]) [_retiringProbes removeObjectIdenticalTo:probe];
+    }
+}
+- (void)cancelScan {
+    _generation++;
+    for (LocalSendDiscoveryProbe *probe in [[_activeProbes copy] autorelease]) {
+        [self retireProbe:probe];
+    }
+    [self reapRetiredProbes];
+    [_pendingDiscoveryProbes removeAllObjects];
+    for (NSNumber *socketDescriptor in _subnetScanSockets) {
+        close([socketDescriptor intValue]);
+    }
+    [_subnetScanSockets removeAllObjects];
+    [_pendingSubnetAddresses removeAllObjects];
+    _announcementIndex = 3;
+}
 - (void)beginScan {
+    [self cancelScan];
+    _refreshPending = NO;
+    _subnetConnectionsAttempted = 0;
+    _subnetConnectionsAccepted = 0;
     _scanStart = [NSDate timeIntervalSinceReferenceDate];
     _announcementIndex = 0;
     _scanStarted = NO;
     _foundThisScan = NO;
     [_recentlyProbedEndpoints removeAllObjects];
+    [_failedEndpointRetryAfter removeAllObjects];
+    [self announceIfDue];
     // Recheck previously seen addresses immediately, without blanking the list.
     for (NSDictionary *device in [_devicesByFingerprint allValues]) {
         [self enqueueProbe:device];
+    }
+}
+- (void)announceIfDue {
+    if (_announcementIndex < 3 && [NSDate timeIntervalSinceReferenceDate] >= _nextAnnouncementAt) {
+        _nextAnnouncementAt = [NSDate timeIntervalSinceReferenceDate] + LocalSendAnnouncementInterval;
+        [self announce];
+        _announcementIndex++;
     }
 }
 - (void)announce {
@@ -507,8 +597,19 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         struct in_addr address;
         address.s_addr = inet_addr([[interface objectForKey:@"address"] UTF8String]);
         if (setsockopt(_datagramSocket, IPPROTO_IP, IP_MULTICAST_IF, &address, sizeof(address)) == 0) {
-            sendto(_datagramSocket, [data bytes], [data length], 0, (struct sockaddr *)&target,
-                   sizeof(target));
+            if (sendto(_datagramSocket, [data bytes], [data length], 0, (struct sockaddr *)&target,
+                       sizeof(target)) >= 0) {
+                _announcementsSent++;
+            } else {
+                [_multicastError release];
+                _multicastError = [[NSString stringWithFormat:@"Announcement send failed: %s.", strerror(errno)] copy];
+                NSLog(@"LocalSend discovery: %@", _multicastError);
+            }
+        } else {
+            [_multicastError release];
+            _multicastError = [[NSString stringWithFormat:@"Multicast interface %@ failed: %s.",
+                                 [interface objectForKey:@"address"], strerror(errno)] copy];
+            NSLog(@"LocalSend discovery: %@", _multicastError);
         }
     }
 }
@@ -535,6 +636,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
             }
             break;
         }
+        _datagramsSeen++;
         id message = [LocalSendJSON JSONObjectWithData:[NSData dataWithBytes:buffer length:size]
                                                      options:0
                                                        error:NULL];
@@ -546,6 +648,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
             [[message objectForKey:@"fingerprint"] isEqual:[_localInfo objectForKey:@"fingerprint"]]) {
             continue;
         }
+        _datagramsReceived++;
         // UDP is a candidate. Confirm it with /register (and pin advertised TLS certificates).
         NSMutableDictionary *endpoint = [[message mutableCopy] autorelease];
         [endpoint setObject:address forKey:@"address"];
@@ -599,6 +702,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         return;
     }
     const struct sockaddr_in *peer = [address bytes];
+    _incomingConnections++;
     NSString *ipAddress = [NSString stringWithUTF8String:inet_ntoa(peer->sin_addr)];
     [_receiveServer acceptSocket:socketDescriptor address:ipAddress];
 }
@@ -607,13 +711,27 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         return;
     }
     NSString *address = [endpoint objectForKey:@"address"];
+    NSNumber *port = [endpoint objectForKey:@"port"];
+    NSString *protocol = [endpoint objectForKey:@"protocol"];
+    struct in_addr parsedAddress;
+    if (![address isKindOfClass:[NSString class]] ||
+        inet_pton(AF_INET, [address UTF8String], &parsedAddress) != 1 ||
+        ![port isKindOfClass:[NSNumber class]] || [port intValue] < 1 || [port intValue] > 65535 ||
+        (![protocol isEqual:@"https"] && ![protocol isEqual:@"http"])) {
+        NSLog(@"LocalSend discovery ignored an invalid probe endpoint: %@", endpoint);
+        return;
+    }
     if ([self isLocalAddress:address]) {
         return;
     }
     NSString *key = [NSString stringWithFormat:@"%@:%@/%@", address, [endpoint objectForKey:@"port"],
                                                [endpoint objectForKey:@"protocol"]];
+    NSDate *retryAfter = [_failedEndpointRetryAfter objectForKey:key];
+    if (retryAfter != nil && [retryAfter timeIntervalSinceNow] > 0) {
+        return;
+    }
     NSDate *lastProbe = [_recentlyProbedEndpoints objectForKey:key];
-    if (lastProbe != nil && -[lastProbe timeIntervalSinceNow] < 0.5) {
+    if (lastProbe != nil && -[lastProbe timeIntervalSinceNow] < LocalSendRepeatProbeInterval) {
         return;
     }
     for (LocalSendDiscoveryProbe *probe in _activeProbes) {
@@ -636,7 +754,9 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
     [self startPendingDiscoveryProbes];
 }
 - (void)startPendingDiscoveryProbes {
-    while (_running && [_activeProbes count] < LocalSendConcurrentProbeLimit &&
+    [self reapRetiredProbes];
+    while (_running && !_refreshPending &&
+           [_activeProbes count] + [_retiringProbes count] < LocalSendConcurrentProbeLimit &&
            [_pendingDiscoveryProbes count] > 0) {
         NSDictionary *endpoint = [[[_pendingDiscoveryProbes objectAtIndex:0] retain] autorelease];
         [_pendingDiscoveryProbes removeObjectAtIndex:0];
@@ -644,6 +764,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
             [[[LocalSendDiscoveryProbe alloc] initWithDelegate:self endpoint:endpoint
                                                     generation:_generation] autorelease];
         [_activeProbes addObject:probe];
+        _probeAttempts++;
         [probe startWithIdentity:_identity info:_localInfo];
     }
 }
@@ -652,8 +773,39 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         return;
     }
     NSDictionary *endpoint = [[[probe endpoint] retain] autorelease];
-    [probe invalidate];
-    [_activeProbes removeObjectIdenticalTo:probe];
+    NSString *endpointKey = [NSString stringWithFormat:@"%@:%@/%@",
+                            [endpoint objectForKey:@"address"], [endpoint objectForKey:@"port"],
+                            [endpoint objectForKey:@"protocol"]];
+    if (message != nil) {
+        _probeSuccesses++;
+        [_failedEndpointRetryAfter removeObjectForKey:endpointKey];
+    } else {
+        _probeFailures++;
+        if ([_failedEndpointRetryAfter count] >= 512) {
+            [_failedEndpointRetryAfter removeAllObjects];
+        }
+        [_failedEndpointRetryAfter setObject:[NSDate dateWithTimeIntervalSinceNow:LocalSendFailedProbeRetryDelay]
+                                     forKey:endpointKey];
+        [_lastProbeError release];
+        _lastProbeError = [[probe failureMessage] copy];
+        if (_lastProbeError == nil) {
+            _lastProbeError = [@"Registration timed out." copy];
+        }
+        NSString *failure = [NSString stringWithFormat:@"%@://%@:%@ — %@",
+                            [endpoint objectForKey:@"protocol"] ?: @"unknown",
+                            [endpoint objectForKey:@"address"] ?: @"unknown",
+                            [endpoint objectForKey:@"port"] ?: @"unknown", _lastProbeError];
+        if ([[endpoint objectForKey:@"protocol"] isEqual:@"https"]) {
+            [_lastHTTPSProbeError release];
+            _lastHTTPSProbeError = [failure copy];
+        }
+        [_recentProbeFailures addObject:failure];
+        if ([_recentProbeFailures count] > 6) {
+            [_recentProbeFailures removeObjectAtIndex:0];
+        }
+        NSLog(@"LocalSend discovery probe failed: %@", failure);
+    }
+    [self retireProbe:probe];
     if (message != nil) {
         [self recordMessage:message address:[endpoint objectForKey:@"address"]];
     } else if ([[endpoint objectForKey:@"fallback"] boolValue] &&
@@ -702,7 +854,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
 - (void)checkActiveSubnetConnections {
     for (NSNumber *number in [[[_subnetScanSockets allKeys] copy] autorelease]) {
         int socketDescriptor = [number intValue];
-        NSDictionary *entry = [_subnetScanSockets objectForKey:number];
+        NSDictionary *entry = [[_subnetScanSockets objectForKey:number] retain];
         fd_set writes;
         FD_ZERO(&writes);
         FD_SET(socketDescriptor, &writes);
@@ -719,6 +871,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
             close(socketDescriptor);
             [_subnetScanSockets removeObjectForKey:number];
             if (connected) {
+                _subnetConnectionsAccepted++;
                 [self
                     enqueueProbe:[NSDictionary
                                      dictionaryWithObjectsAndKeys:[entry objectForKey:@"address"], @"address",
@@ -728,6 +881,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
                                                                   nil]];
             }
         }
+        [entry release];
     }
 }
 
@@ -752,6 +906,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         address.sin_port = htons(kLocalSendPort);
         address.sin_addr.s_addr = inet_addr([host UTF8String]);
         int result = connect(socketDescriptor, (struct sockaddr *)&address, sizeof(address));
+        _subnetConnectionsAttempted++;
         if (result < 0 && errno != EINPROGRESS) {
             close(socketDescriptor);
             continue;
@@ -764,11 +919,16 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
 }
 - (void)advanceSubnetScan {
     [self checkActiveSubnetConnections];
-    [self startPendingSubnetConnections];
+    if ([_activeProbes count] == 0 && [_retiringProbes count] == 0 &&
+        [_pendingDiscoveryProbes count] == 0) {
+        [self startPendingSubnetConnections];
+    }
 }
 
 - (void)tick:(NSTimer *)timer {
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+    _maximumTickGap = MAX(_maximumTickGap, now - _lastTickAt);
+    _lastTickAt = now;
     if (now - _lastInterfaceCheck >= 2.0) {
         _lastInterfaceCheck = now;
         [[LocalSendReceiver sharedReceiver] checkTimeouts];
@@ -783,11 +943,17 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
             return;
         }
     }
-    if (_announcementIndex < 3 && now - _scanStart >= kAnnouncementTimes[_announcementIndex]) {
-        [self announce];
-        _announcementIndex++;
+    [self reapRetiredProbes];
+    if (_refreshPending) {
+        if (now < _refreshAt) return;
+        [self beginScan];
     }
-    if (!_scanStarted && !_foundThisScan && now - _scanStart >= LocalSendMulticastDiscoveryWindow) {
+    [self announceIfDue];
+    [self startPendingDiscoveryProbes];
+    if (!_scanStarted && !_foundThisScan && [_activeProbes count] == 0 &&
+        [_retiringProbes count] == 0 &&
+        [_pendingDiscoveryProbes count] == 0 &&
+        now - _scanStart >= LocalSendMulticastDiscoveryWindow) {
         [self startSubnetScan];
     }
     for (LocalSendDiscoveryProbe *probe in [[_activeProbes copy] autorelease]) {
@@ -809,6 +975,32 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
                                                                     ascending:YES] autorelease],
                                                               nil]];
 }
+- (NSString *)discoveryDiagnostics {
+    NSMutableArray *addresses = [NSMutableArray array];
+    for (NSDictionary *interface in _interfaces) {
+        [addresses addObject:[interface objectForKey:@"address"]];
+    }
+    return [NSString stringWithFormat:
+        @"Device: %@ / iOS %@\nIPv4 interfaces: %@\nTCP: %@\nUDP: %@\nMulticast joins: %lu/%lu\nAnnouncements sent: %lu\nUDP packets: %lu seen, %lu valid peers\nIncoming TCP: %lu\nSubnet scan: %@, %lu attempted, %lu open\nProbes: %lu started, %lu succeeded, %lu failed\nDiscovery probes: %lu active, %lu cancelling, %lu queued\nMain timer maximum gap: %.1fs%@%@%@\n%@",
+        [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion],
+        [addresses count] > 0 ? [addresses componentsJoinedByString:@", "] : @"none",
+        _listener != NULL ? @"listening" : (_listenerError ?: @"not listening"),
+        _datagramSocket >= 0 ? @"listening" : (_multicastError ?: @"not listening"),
+        (unsigned long)_multicastJoinCount, (unsigned long)[_interfaces count],
+        (unsigned long)_announcementsSent, (unsigned long)_datagramsSeen, (unsigned long)_datagramsReceived,
+        (unsigned long)_incomingConnections, _scanStarted ? @"started" : @"pending",
+        (unsigned long)_subnetConnectionsAttempted, (unsigned long)_subnetConnectionsAccepted,
+        (unsigned long)_probeAttempts,
+        (unsigned long)_probeSuccesses, (unsigned long)_probeFailures,
+        (unsigned long)[_activeProbes count], (unsigned long)[_retiringProbes count],
+        (unsigned long)[_pendingDiscoveryProbes count],
+        _maximumTickGap,
+        _multicastError != nil && _datagramSocket >= 0 ? [@"\nUDP issue: " stringByAppendingString:_multicastError] : @"",
+        _lastHTTPSProbeError != nil ? [@"\nLast HTTPS failure: " stringByAppendingString:_lastHTTPSProbeError] : @"",
+        [_recentProbeFailures count] > 0 ?
+            [@"\nRecent probe failures:\n" stringByAppendingString:[_recentProbeFailures componentsJoinedByString:@"\n"]] : @"",
+        [LocalSendConnectionActivity diagnostics]];
+}
 - (void)dealloc {
     [self stop];
     if (_identity != NULL) {
@@ -823,7 +1015,14 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
     [_pendingSubnetAddresses release];
     [_pendingDiscoveryProbes release];
     [_activeProbes release];
+    [_retiringProbes release];
     [_recentlyProbedEndpoints release];
+    [_failedEndpointRetryAfter release];
+    [_listenerError release];
+    [_multicastError release];
+    [_lastProbeError release];
+    [_lastHTTPSProbeError release];
+    [_recentProbeFailures release];
     [super dealloc];
 }
 @end

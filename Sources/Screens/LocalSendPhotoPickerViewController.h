@@ -14,6 +14,8 @@
 @interface LocalSendPhotoPickerViewController : UITableViewController <LocalSendPhotoGridCellDelegate> {
     ALAssetsLibrary *_library;
     NSMutableArray *_assets;
+    NSOperationQueue *_photoLoadQueue;
+    NSMutableArray *_loadingEntries;
     NSMutableSet *_loadedAssetURLs;
     NSMutableArray *_selectedAssets;
     UIBarButtonItem *_sendButton;
@@ -21,7 +23,7 @@
     id<LocalSendPhotoPickerDelegate> _delegate;
     BOOL _isLoadingPhotos;
     BOOL _hasStartedLoading;
-    volatile BOOL _isClosed;
+    BOOL _isClosed;
 }
 - (id)initWithDelegate:(id<LocalSendPhotoPickerDelegate>)delegate;
 @end

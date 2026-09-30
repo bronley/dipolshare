@@ -2,6 +2,7 @@
 #import <Security/Security.h>
 
 @class LocalSendHTTPSClient;
+@class LocalSendConnectionActivity;
 
 @protocol LocalSendHTTPSClientDelegate <NSObject>
 - (void)httpsClient:(LocalSendHTTPSClient *)transport
@@ -9,8 +10,8 @@
                      body:(NSData *)body;
 - (void)httpsClient:(LocalSendHTTPSClient *)transport didFailWithMessage:(NSString *)message;
 - (void)httpsClient:(LocalSendHTTPSClient *)transport
-    didSendBodyBytes:(NSUInteger)sent
-          totalBytes:(NSUInteger)total;
+    didSendBodyBytes:(unsigned long long)sent
+          totalBytes:(unsigned long long)total;
 @end
 
 @interface LocalSendHTTPSClient : NSObject {
@@ -21,9 +22,15 @@
     id<LocalSendHTTPSClientDelegate> _delegate;
     BOOL _cancelled;
     BOOL _running;
+    int _socketDescriptor;
     BOOL _discoveryOnly;
     NSTimeInterval _discoveryDeadline;
     NSString *_peerFingerprint;
+    LocalSendConnectionActivity *_activity;
+    unsigned long long _progressSent;
+    unsigned long long _progressTotal;
+    BOOL _progressDeliveryPending;
+    NSTimeInterval _lastProgressScheduledAt;
 }
 
 - (id)initWithHost:(NSString *)host
@@ -36,6 +43,8 @@
 // Discovery alone may learn an unknown certificate. Transfer requests remain pinned.
 - (void)postDiscoveryBody:(NSData *)body;
 - (NSString *)peerFingerprint;
+- (NSString *)diagnosticStatus;
+- (BOOL)isRunning;
 - (void)invalidate;
 
 @end

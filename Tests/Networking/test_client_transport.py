@@ -114,7 +114,37 @@ case('ambiguous lengths rejected', response=b'HTTP/1.1 200 OK\r\nContent-Length:
 case('oversized API body rejected from declared length', response=b'HTTP/1.1 200 OK\r\nContent-Length: 1048577\r\n\r\n', success=False)
 file = root / 'large-photo.bin'; file.write_bytes(bytes(range(256)) * 8192)
 case('2 MiB photo file streams intact over app TLS', file=file)
-def raw_peer_case(name, plaintext):
+
+def interrupted_upload_case():
+    global checks
+    name = 'interrupted streamed upload preserves its error after chunk cleanup'
+    listener = socket.socket()
+    listener.bind(('127.0.0.1', 0)); listener.listen(1); listener.settimeout(8)
+    port = listener.getsockname()[1]
+    def serve():
+        try:
+            raw, _ = listener.accept(); raw.settimeout(8)
+            with context.wrap_socket(raw, server_side=True) as tls:
+                tls.recv(16384)
+                os.close(tls.detach())
+        finally:
+            listener.close()
+    thread = threading.Thread(target=serve, daemon=True); thread.start()
+    file = root / 'interrupted-video.bin'
+    with file.open('wb') as output:
+        output.truncate(32 * 1024 * 1024)
+    result = subprocess.run([str(args.harness), str(root/'client.p12'), str(port), server_fp,
+        'transfer', str(file)], text=True, capture_output=True, timeout=9)
+    thread.join(2)
+    assert not thread.is_alive() and result.returncode == 0, (name, result.stderr)
+    assert 'Sanitizer' not in result.stderr, (name, result.stderr)
+    report = json.loads(result.stdout)
+    assert not report['completed'] and 'TLS write failed' in report['error'], (name, report)
+    checks += 1
+    print('PASS', name, flush=True)
+
+interrupted_upload_case()
+def raw_peer_case(name, plaintext, cancel=False, cancel_sign=False):
     global checks
     listener = socket.socket()
     listener.bind(('127.0.0.1', 0)); listener.listen(1); listener.settimeout(8)
@@ -134,14 +164,15 @@ def raw_peer_case(name, plaintext):
                         if not part: break
                         observed.append(part)
                 else:
-                    release_server.wait(8)
+                    release_server.wait(18)
         finally:
             listener.close()
     port = listener.getsockname()[1]
     thread = threading.Thread(target=serve, daemon=True); thread.start()
     start = time.monotonic()
     try:
-        result = subprocess.run([str(args.harness), str(root/'client.p12'), str(port), '-', 'discovery'], text=True, capture_output=True, timeout=7)
+        mode = 'cancel-sign' if cancel_sign else ('cancel' if cancel else 'discovery')
+        result = subprocess.run([str(args.harness), str(root/'client.p12'), str(port), '-', mode], text=True, capture_output=True, timeout=17)
     finally:
         release_server.set()
     thread.join(2)
@@ -149,15 +180,29 @@ def raw_peer_case(name, plaintext):
     assert result.returncode == 0, (name, result.stderr)
     assert 'Sanitizer' not in result.stderr, (name, result.stderr)
     report = json.loads(result.stdout)
+    if cancel or cancel_sign:
+        assert report['wasRunning'] and not report['running'], (name, report)
+        assert not report['callbackAfterCancel'], (name, report)
+        assert report['cancelSeconds'] < 1, (name, report)
+        if cancel_sign:
+            assert report['runningDuringSign'] and report['signingCalls'] == 1, (name, report)
+            assert not any(observed), (name, 'cancelled setup continued into TLS handshake')
+        checks += 1
+        print('PASS', name, flush=True)
+        return
     assert not report['completed'] and report['error'], (name, report)
     assert observed and observed[0][0] == 22, (name, 'did not send TLS ClientHello')
     assert b'POST ' not in b''.join(observed) and b'private-discovery-data' not in b''.join(observed), (name, 'plaintext application data leaked')
     elapsed = time.monotonic() - start
-    assert elapsed < 5.5, (name, elapsed)
-    if not plaintext: assert elapsed >= 3.5, (name, 'discovery deadline too early', elapsed)
+    assert elapsed < (5.5 if plaintext else 15.5), (name, elapsed)
+    if not plaintext:
+        assert elapsed >= 11.5, (name, 'discovery deadline too early', elapsed)
+        assert 'Waiting for TLS read' in report['diagnostic'], (name, report)
     checks += 1
     print('PASS', name, flush=True)
 
 raw_peer_case('plaintext-only peer fails without HTTP fallback', True)
-raw_peer_case('stalled discovery TLS handshake obeys four-second deadline', False)
+raw_peer_case('stalled discovery TLS handshake obeys twelve-second deadline and reports its stage', False)
+raw_peer_case('cancelled discovery worker exits promptly without delegate callbacks', False, cancel=True)
+raw_peer_case('cancellation during synchronous Keychain signing keeps worker live until it returns', False, cancel_sign=True)
 print(f'{checks}/{checks} real TLS client tests passed')

@@ -1,4 +1,5 @@
 #import "LocalSendTLS.h"
+#import "LocalSendConnectionActivity.h"
 #import <CommonCrypto/CommonDigest.h>
 #define OPENSSL_SUPPRESS_DEPRECATED
 #include <openssl/ssl.h>
@@ -14,18 +15,21 @@
 typedef struct {
     SecKeyRef privateKey; /* Retained by the owning LocalSendTLS. */
     OSStatus signingStatus;
+    LocalSendConnectionActivity *activity;
 } LocalSendKeychainSigningContext;
 
 static RSA_METHOD *LocalSendKeychainRSAMethod;
 static int LocalSendKeychainContextIndex = -1;
 static BOOL LocalSendTLSLibraryReady;
+static NSString *const LocalSendTLSInitializationErrorKey = @"LocalSendTLS.initializationError";
 static pthread_once_t LocalSendTLSInitializationOnce = PTHREAD_ONCE_INIT;
 
 static int LocalSendSignWithKeychainPrivateKey(int digestLength, const unsigned char *digestBytes,
                                                unsigned char *signatureBytes, RSA *rsa, int padding) {
     LocalSendKeychainSigningContext *signingContext = RSA_get_ex_data(rsa, LocalSendKeychainContextIndex);
     if (signingContext == NULL || signingContext->privateKey == NULL || digestLength <= 0 ||
-        digestBytes == NULL || signatureBytes == NULL || padding != RSA_PKCS1_PADDING) {
+        digestBytes == NULL || signatureBytes == NULL || padding != RSA_PKCS1_PADDING ||
+        [signingContext->activity isCancelled]) {
         return -1;
     }
     size_t signatureCapacity = SecKeyGetBlockSize(signingContext->privateKey);
@@ -33,12 +37,16 @@ static int LocalSendSignWithKeychainPrivateKey(int digestLength, const unsigned 
     if (signatureCapacity == 0 || signatureCapacity > INT_MAX || signatureCapacity != (size_t)RSA_size(rsa)) {
         return -1;
     }
+    NSString *previousStage = [signingContext->activity stage];
+    [signingContext->activity setStage:@"Keychain RSA signing"];
     signingContext->signingStatus = SecKeyRawSign(signingContext->privateKey, kSecPaddingPKCS1, digestBytes,
                                                   (size_t)digestLength, signatureBytes, &signatureLength);
+    if ([signingContext->activity isCancelled]) return -1;
     if (signingContext->signingStatus != errSecSuccess || signatureLength != signatureCapacity) {
         ERR_raise(ERR_LIB_USER, 1);
         return -1;
     }
+    if (previousStage != nil) [signingContext->activity setStage:previousStage];
     return (int)signatureLength;
 }
 
@@ -114,7 +122,8 @@ failed:
     return NULL;
 }
 
-static BOOL LocalSendPrivateKeyMatchesCertificate(RSA *signingRSA, RSA *publicRSA) {
+static BOOL LocalSendPrivateKeyMatchesCertificate(RSA *signingRSA, RSA *publicRSA,
+                                                  LocalSendConnectionActivity *activity) {
     /* Matching public parameters alone does not prove that the opaque Keychain
      * reference can sign for this certificate. Verify a real native signature. */
     static const char challenge[] = "LocalSend OpenSSL Keychain identity check";
@@ -125,14 +134,17 @@ static BOOL LocalSendPrivateKeyMatchesCertificate(RSA *signingRSA, RSA *publicRS
     if (signature == NULL) {
         return NO;
     }
-    BOOL keyMatches =
-        RSA_sign(NID_sha256, digest, sizeof(digest), signature, &signatureLength, signingRSA) == 1 &&
-        RSA_verify(NID_sha256, digest, sizeof(digest), signature, signatureLength, publicRSA) == 1;
+    BOOL keyMatches = RSA_sign(NID_sha256, digest, sizeof(digest), signature, &signatureLength, signingRSA) == 1;
+    if (keyMatches) {
+        [activity setStage:@"Verifying identity signature"];
+        keyMatches = RSA_verify(NID_sha256, digest, sizeof(digest), signature, signatureLength, publicRSA) == 1;
+    }
     OPENSSL_clear_free(signature, (size_t)RSA_size(signingRSA));
     return keyMatches;
 }
 
-static EVP_PKEY *LocalSendCreateKeychainSigningKey(X509 *x509, SecKeyRef privateKey, void **keyContext) {
+static EVP_PKEY *LocalSendCreateKeychainSigningKey(X509 *x509, SecKeyRef privateKey, void **keyContext,
+                                                 LocalSendConnectionActivity *activity) {
     EVP_PKEY *publicKey = NULL, *signingKey = NULL;
     RSA *publicRSA = NULL, *signingRSA = NULL;
     BIGNUM *modulusCopy = NULL, *exponentCopy = NULL;
@@ -159,11 +171,12 @@ static EVP_PKEY *LocalSendCreateKeychainSigningKey(X509 *x509, SecKeyRef private
         goto failed;
     }
     ((LocalSendKeychainSigningContext *)*keyContext)->privateKey = privateKey;
+    ((LocalSendKeychainSigningContext *)*keyContext)->activity = activity;
     if (RSA_set_method(signingRSA, LocalSendKeychainRSAMethod) != 1 ||
         RSA_set_ex_data(signingRSA, LocalSendKeychainContextIndex, *keyContext) != 1) {
         goto failed;
     }
-    if (!LocalSendPrivateKeyMatchesCertificate(signingRSA, publicRSA)) {
+    if (!LocalSendPrivateKeyMatchesCertificate(signingRSA, publicRSA, activity)) {
         goto failed;
     }
     signingKey = EVP_PKEY_new();
@@ -223,47 +236,66 @@ static BOOL LocalSendConfigureTLSContext(SSL_CTX *tlsContext, BOOL server) {
     return [NSString stringWithUTF8String:OpenSSL_version(OPENSSL_VERSION)];
 }
 
++ (NSString *)lastInitializationError {
+    return [[[NSThread currentThread] threadDictionary] objectForKey:LocalSendTLSInitializationErrorKey];
+}
+
 - (id)initWithIdentity:(SecIdentityRef)identity socket:(int)socketDescriptor server:(BOOL)server {
+    return [self initWithIdentity:identity socket:socketDescriptor server:server activity:nil];
+}
+
+- (id)initWithIdentity:(SecIdentityRef)identity socket:(int)socketDescriptor server:(BOOL)server
+              activity:(LocalSendConnectionActivity *)activity {
     self = [super init];
     if (self == nil) {
         return nil;
     }
     _isServer = server;
     _wantsRead = server;
+    _activity = [activity retain];
+    [[[NSThread currentThread] threadDictionary] removeObjectForKey:LocalSendTLSInitializationErrorKey];
     X509 *certificate = NULL;
     EVP_PKEY *signingKey = NULL;
     BIO *socketBIO = NULL;
+    [_activity setStage:@"Initializing OpenSSL"];
     pthread_once(&LocalSendTLSInitializationOnce, LocalSendInitializeTLSLibrary);
     int flags = socketDescriptor >= 0 ? fcntl(socketDescriptor, F_GETFL, 0) : -1;
-    if (!LocalSendTLSLibraryReady || identity == NULL || flags < 0 || !(flags & O_NONBLOCK)) {
+    if (!LocalSendTLSLibraryReady || identity == NULL || flags < 0 || !(flags & O_NONBLOCK) ||
+        [_activity isCancelled]) {
         goto failed;
     }
     ERR_clear_error();
 
     unsigned char randomCheck[16];
+    [_activity setStage:@"Seeding TLS random generator"];
     if (RAND_bytes(randomCheck, sizeof(randomCheck)) != 1) {
         goto failed;
     }
     OPENSSL_cleanse(randomCheck, sizeof(randomCheck));
 
+    [_activity setStage:@"Reading Keychain identity"];
     certificate = LocalSendCopyIdentityCertificate(identity, &_privateKey);
-    if (certificate == NULL) {
+    if (certificate == NULL || [_activity isCancelled]) {
         goto failed;
     }
-    signingKey = LocalSendCreateKeychainSigningKey(certificate, _privateKey, &_keyContext);
-    if (signingKey == NULL) {
+    [_activity setStage:@"Building Keychain RSA bridge"];
+    signingKey = LocalSendCreateKeychainSigningKey(certificate, _privateKey, &_keyContext, _activity);
+    if (signingKey == NULL || [_activity isCancelled]) {
         goto failed;
     }
 
+    [_activity setStage:@"Creating OpenSSL context"];
     SSL_CTX *tlsContext = SSL_CTX_new(server ? TLS_server_method() : TLS_client_method());
     _tlsContext = tlsContext;
     if (!LocalSendConfigureTLSContext(tlsContext, server)) {
         goto failed;
     }
+    [_activity setStage:@"Installing TLS identity"];
     if (SSL_CTX_use_certificate(tlsContext, certificate) != 1 ||
         SSL_CTX_use_PrivateKey(tlsContext, signingKey) != 1 || SSL_CTX_check_private_key(tlsContext) != 1) {
         goto failed;
     }
+    [_activity setStage:@"Creating TLS session"];
     _tlsSession = SSL_new(tlsContext);
     if (_tlsSession == NULL) {
         goto failed;
@@ -280,6 +312,8 @@ static BOOL LocalSendConfigureTLSContext(SSL_CTX *tlsContext, BOOL server) {
 
 failed:
     [self setFailureMessage:@"TLS setup failed"];
+    [[[NSThread currentThread] threadDictionary] setObject:_errorMessage
+                                                    forKey:LocalSendTLSInitializationErrorKey];
     NSLog(@"LocalSend %@", _errorMessage);
     BIO_free(socketBIO);
     EVP_PKEY_free(signingKey);
@@ -329,6 +363,7 @@ failed:
     if (_handshakeComplete) {
         return LocalSendTLSOperationCompleted;
     }
+    [_activity setStage:_isServer ? @"TLS handshake (accept)" : @"TLS handshake (connect)"];
     ERR_clear_error();
     int result = _isServer ? SSL_accept(_tlsSession) : SSL_connect(_tlsSession);
     if (result <= 0) {
@@ -337,6 +372,7 @@ failed:
     if (SSL_version(_tlsSession) != TLS1_2_VERSION) {
         return LocalSendTLSOperationFailed;
     }
+    [_activity setStage:@"Verifying peer certificate"];
     X509 *leaf = SSL_get1_peer_certificate(_tlsSession);
     if (leaf == NULL) {
         [self setFailureMessage:@"Peer certificate is missing"];
@@ -441,6 +477,7 @@ failed:
     [self close];
     [_peerFingerprint release];
     [_errorMessage release];
+    [_activity release];
     [super dealloc];
 }
 @end
