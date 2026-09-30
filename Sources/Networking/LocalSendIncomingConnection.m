@@ -376,6 +376,7 @@ static BOOL LocalSendReadHTTPRequestBody(LocalSendIncomingConnection *connection
 }
 - (void)dealloc {
     [tls release];
+    [activity release];
     [address release];
     [peerFingerprint release];
     [pendingData release];
@@ -544,8 +545,10 @@ static BOOL LocalSendReadHTTPRequestBody(LocalSendIncomingConnection *connection
     if (identity == NULL) {
         return NO;
     }
-    tls = [[LocalSendTLS alloc] initWithIdentity:identity socket:socket.socketDescriptor server:YES];
+    tls = [[LocalSendTLS alloc] initWithIdentity:identity socket:socket.socketDescriptor server:YES
+                                       activity:activity];
     if (tls == nil) {
+        [activity finishWithError:[LocalSendTLS lastInitializationError] ?: @"TLS context setup failed"];
         return NO;
     }
     NSTimeInterval deadline = [NSDate timeIntervalSinceReferenceDate] + 15.0;
@@ -553,13 +556,16 @@ static BOOL LocalSendReadHTTPRequestBody(LocalSendIncomingConnection *connection
         LocalSendTLSOperationResult status = [tls handshake];
         socket.wantsRead = [tls wantsRead];
         if (status == LocalSendTLSOperationWouldBlock) {
+            [activity setStage:socket.wantsRead ? @"Waiting for TLS read" : @"Waiting for TLS write"];
             if (![self waitUntil:deadline]) {
+                [activity finishWithError:@"Incoming TLS handshake timed out or was cancelled"];
                 return NO;
             }
             continue;
         }
         if (status != LocalSendTLSOperationCompleted) {
             NSLog(@"LocalSend receive TLS handshake failed: %@", [tls errorMessage]);
+            [activity finishWithError:[tls errorMessage] ?: @"Peer closed the TLS handshake"];
             return NO;
         }
         // The wrapper requires a client certificate and verifies CertificateVerify.
@@ -596,6 +602,7 @@ static BOOL LocalSendReadHTTPRequestBody(LocalSendIncomingConnection *connection
 }
 
 - (BOOL)prepareForRequestWithIdentity:(SecIdentityRef)identity {
+    [activity setStage:@"Waiting for first request byte"];
     // Peek without consuming TLS bytes. HTTP metadata and TLS share the discovery port.
     unsigned char firstByte = 0;
     NSTimeInterval deadline = [NSDate timeIntervalSinceReferenceDate] + 15.0;

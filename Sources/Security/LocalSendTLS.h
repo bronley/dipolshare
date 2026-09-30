@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
+@class LocalSendConnectionActivity;
 
 typedef enum {
     LocalSendTLSOperationFailed = -1,
@@ -22,9 +23,13 @@ typedef enum {
     BOOL _isServer;
     BOOL _wantsRead;
     BOOL _handshakeComplete;
+    LocalSendConnectionActivity *_activity;
 }
 + (NSString *)libraryVersion;
++ (NSString *)lastInitializationError;
 - (id)initWithIdentity:(SecIdentityRef)identity socket:(int)socketDescriptor server:(BOOL)server;
+- (id)initWithIdentity:(SecIdentityRef)identity socket:(int)socketDescriptor server:(BOOL)server
+              activity:(LocalSendConnectionActivity *)activity;
 - (LocalSendTLSOperationResult)handshake;
 - (LocalSendTLSOperationResult)read:(void *)buffer length:(size_t)length processed:(size_t *)processed;
 - (LocalSendTLSOperationResult)write:(const void *)buffer length:(size_t)length processed:(size_t *)processed;

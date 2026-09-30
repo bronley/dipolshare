@@ -4,6 +4,7 @@
 
 static const CGFloat LocalSendRadarFaceVerticalOffset = -4.0f;
 
+#if __ARM_ARCH != 6
 static void LocalSendAddBriefBlip(CALayer *layer, CGFloat maximum, CFTimeInterval duration,
                                   CFTimeInterval delay) {
     layer.opacity = 0.035f;
@@ -23,6 +24,7 @@ static void LocalSendAddBriefBlip(CALayer *layer, CGFloat maximum, CFTimeInterva
     blink.repeatCount = HUGE_VALF;
     [layer addAnimation:blink forKey:@"briefBlip"];
 }
+#endif
 
 static void LocalSendAddRotation(CALayer *layer, CFTimeInterval duration, CGFloat direction,
                                  NSString *name) {
@@ -78,13 +80,15 @@ static void LocalSendAddRotation(CALayer *layer, CFTimeInterval duration, CGFloa
     }
     _animating = YES;
 
-    LocalSendAddRotation(_sweepView.layer, 9.0, 1.0f, @"radarRotation");
+    LocalSendAddRotation(_sweepView.layer, 15.0, 1.0f, @"radarRotation");
+#if __ARM_ARCH != 6
     LocalSendAddRotation(_goldLeftBlipView.layer, 16.0, 1.0f, @"goldOrbit");
     LocalSendAddRotation(_goldRightBlipView.layer, 18.5, -1.0f, @"goldOrbit");
 
     LocalSendAddBriefBlip(_goldRightBlipView.layer, 1.0f, 2.55, 0.25);
     LocalSendAddBriefBlip(_whiteBlipView.layer, 0.92f, 3.05, 0.95);
     LocalSendAddBriefBlip(_goldLeftBlipView.layer, 1.0f, 2.8, 1.65);
+#endif
 }
 
 - (void)stopAnimating {

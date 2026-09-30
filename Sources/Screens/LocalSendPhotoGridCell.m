@@ -15,6 +15,7 @@ const NSUInteger LocalSendPhotosPerRow = 4;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         _photoButtons = [[NSMutableArray alloc] initWithCapacity:LocalSendPhotosPerRow];
         _selectionBadges = [[NSMutableArray alloc] initWithCapacity:LocalSendPhotosPerRow];
+        _videoBadges = [[NSMutableArray alloc] initWithCapacity:LocalSendPhotosPerRow];
         for (NSUInteger columnIndex = 0; columnIndex < LocalSendPhotosPerRow; columnIndex++) {
             UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
             button.frame = CGRectMake(4 + columnIndex * 78, 4, 72, 72);
@@ -34,6 +35,15 @@ const NSUInteger LocalSendPhotosPerRow = 4;
             [self.contentView addSubview:badge];
             [_selectionBadges addObject:badge];
             [badge release];
+            UILabel *videoBadge = [[UILabel alloc] initWithFrame:CGRectMake(7 + columnIndex * 78, 53, 45, 20)];
+            videoBadge.text = @"VIDEO";
+            videoBadge.font = [UIFont boldSystemFontOfSize:10];
+            videoBadge.textAlignment = UITextAlignmentCenter;
+            videoBadge.textColor = [UIColor whiteColor];
+            videoBadge.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+            [self.contentView addSubview:videoBadge];
+            [_videoBadges addObject:videoBadge];
+            [videoBadge release];
             [self hidePhotoAtColumn:columnIndex];
         }
     }
@@ -43,13 +53,19 @@ const NSUInteger LocalSendPhotosPerRow = 4;
 - (void)setPhotoAtColumn:(NSUInteger)columnIndex
                    image:(UIImage *)image
               photoIndex:(NSUInteger)photoIndex
-         selectionNumber:(NSUInteger)selectionNumber {
+         selectionNumber:(NSUInteger)selectionNumber
+                 isVideo:(BOOL)isVideo {
     UIButton *button = [_photoButtons objectAtIndex:columnIndex];
-    UILabel *badge = [_selectionBadges objectAtIndex:columnIndex];
     _photoIndexes[columnIndex] = photoIndex;
     button.hidden = NO;
-    button.accessibilityLabel = [NSString stringWithFormat:@"Photo %lu", (unsigned long)(photoIndex + 1)];
+    button.accessibilityLabel = [NSString stringWithFormat:@"%@ %lu", isVideo ? @"Video" : @"Photo", (unsigned long)(photoIndex + 1)];
     [button setBackgroundImage:image forState:UIControlStateNormal];
+    [self setSelectionNumber:selectionNumber atColumn:columnIndex];
+    ((UILabel *)[_videoBadges objectAtIndex:columnIndex]).hidden = !isVideo;
+}
+
+- (void)setSelectionNumber:(NSUInteger)selectionNumber atColumn:(NSUInteger)columnIndex {
+    UILabel *badge = [_selectionBadges objectAtIndex:columnIndex];
     badge.hidden = selectionNumber == 0;
     badge.text =
         selectionNumber == 0 ? nil : [NSString stringWithFormat:@"%lu", (unsigned long)selectionNumber];
@@ -63,6 +79,7 @@ const NSUInteger LocalSendPhotosPerRow = 4;
     [button setBackgroundImage:nil forState:UIControlStateNormal];
     badge.hidden = YES;
     badge.text = nil;
+    ((UILabel *)[_videoBadges objectAtIndex:columnIndex]).hidden = YES;
 }
 
 - (void)photoButtonPressed:(UIButton *)button {
@@ -76,6 +93,7 @@ const NSUInteger LocalSendPhotosPerRow = 4;
 - (void)dealloc {
     [_photoButtons release];
     [_selectionBadges release];
+    [_videoBadges release];
     [super dealloc];
 }
 @end

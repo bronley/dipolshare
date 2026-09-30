@@ -3,6 +3,12 @@
 #import "LocalSendIdentityStore.h"
 #import "LocalSendDiscovery.h"
 #import "LocalSendSounds.h"
+#import <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+#import <MobileCoreServices/UTType.h>
+#else
+#import <CoreServices/CoreServices.h>
+#endif
 #import <fcntl.h>
 #import <unistd.h>
 #import <errno.h>
@@ -34,7 +40,54 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
     if ([extension isEqualToString:@"bmp"]) {
         return @"image/bmp";
     }
+    if ([extension isEqualToString:@"mov"] || [extension isEqualToString:@"qt"]) {
+        return @"video/quicktime";
+    }
+    if ([extension isEqualToString:@"mp4"] || [extension isEqualToString:@"m4v"]) {
+        return @"video/mp4";
+    }
+    if ([extension isEqualToString:@"3gp"] || [extension isEqualToString:@"3gpp"]) {
+        return @"video/3gpp";
+    }
     return @"application/octet-stream";
+}
+
+static NSString *RepresentationTag(ALAssetRepresentation *representation, CFStringRef tagClass) {
+    NSString *type = [representation UTI];
+    if ([type length] == 0) {
+        return nil;
+    }
+    NSString *tag = [(NSString *)UTTypeCopyPreferredTagWithClass((CFStringRef)type, tagClass) autorelease];
+    if ([tag length] > 0) {
+        return tag;
+    }
+    NSString *extension = nil;
+    if ([type isEqual:@"public.jpeg"]) extension = @"jpg";
+    else if ([type isEqual:@"public.png"]) extension = @"png";
+    else if ([type isEqual:@"com.compuserve.gif"]) extension = @"gif";
+    else if ([type isEqual:@"public.tiff"]) extension = @"tif";
+    else if ([type isEqual:@"com.microsoft.bmp"]) extension = @"bmp";
+    else if ([type isEqual:@"com.apple.quicktime-movie"]) extension = @"mov";
+    else if ([type isEqual:@"public.mpeg-4"]) extension = @"mp4";
+    else if ([type isEqual:@"com.apple.m4v-video"]) extension = @"m4v";
+    else if ([type isEqual:@"public.3gpp"]) extension = @"3gp";
+    if (extension == nil) {
+        return nil;
+    }
+    return CFEqual(tagClass, kUTTagClassFilenameExtension)
+               ? extension : ContentTypeForPhotoName([@"asset" stringByAppendingPathExtension:extension]);
+}
+
+static NSString *FileNameForAsset(ALAsset *asset, ALAssetRepresentation *representation,
+                                  NSString *identifier) {
+    if ([representation respondsToSelector:@selector(filename)]) {
+        return [[representation filename] lastPathComponent];
+    }
+    NSString *extension = RepresentationTag(representation, kUTTagClassFilenameExtension);
+    NSString *prefix = [[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]
+                           ? @"Video" : @"Photo";
+    NSString *name = [NSString stringWithFormat:@"%@-%@", prefix, identifier];
+    return [extension length] > 0 ? [name stringByAppendingPathExtension:extension] : name;
 }
 
 @interface LocalSendTransfer ()
@@ -128,7 +181,7 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
     }
     if ([_clipboardData length] == 0 && [_photoAssets count] == 0) {
         [self failWithMessage:_clipboardText != nil ? @"Transfer failed: there is no clipboard text to send."
-                                                    : @"Transfer failed: there is no photo to send."];
+                                                    : @"Transfer failed: there is no photo or video to send."];
         return;
     }
     if (![self loadIdentity]) {
@@ -149,11 +202,17 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
 
     _isUploadingFiles = NO;
     NSUInteger photoCount = [_outgoingFiles count];
+    NSUInteger videoCount = 0;
+    for (NSDictionary *file in _outgoingFiles) {
+        if ([[file objectForKey:@"fileType"] hasPrefix:@"video/"]) videoCount++;
+    }
     [self
         postStatus:_clipboardText != nil
                        ? @"Requesting permission to send clipboard…"
-                       : [NSString stringWithFormat:@"Requesting permission to send %u photo%@…",
-                                                    (unsigned int)photoCount, photoCount == 1 ? @"" : @"s"]];
+                       : [NSString stringWithFormat:@"Requesting permission to send %u %@…",
+                                                    (unsigned int)photoCount,
+                                                    videoCount == 0 ? (photoCount == 1 ? @"photo" : @"photos") :
+                                                    videoCount == photoCount ? (photoCount == 1 ? @"video" : @"videos") : @"items"]];
     [self beginRequestToPath:@"/api/localsend/v2/prepare-upload"
                         body:requestBody
                     bodyFile:nil
@@ -177,20 +236,23 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
 
 - (NSDictionary *)outgoingFileForPhoto:(ALAsset *)asset {
     ALAssetRepresentation *representation = [asset defaultRepresentation];
-    NSString *fileName = [[representation filename] lastPathComponent];
-    NSUInteger byteCount = [representation size];
-    if (representation == nil || [fileName length] == 0 || byteCount == 0 || [fileName hasPrefix:@"."] ||
+    long long byteCount = [representation size];
+    NSString *fileIdentifier = [NewFileIdentifier() autorelease];
+    NSString *fileName = FileNameForAsset(asset, representation, fileIdentifier);
+    if (representation == nil || [fileName length] == 0 || byteCount <= 0 || [fileName hasPrefix:@"."] ||
         [fileName rangeOfString:@":"].location != NSNotFound ||
         [[fileName dataUsingEncoding:NSUTF8StringEncoding] length] > 240) {
-        [self failWithMessage:@"Transfer failed: a selected photo has invalid name or data."];
+        [self failWithMessage:@"Transfer failed: a selected photo or video has invalid name or data."];
         return nil;
     }
-    NSString *fileIdentifier = NewFileIdentifier();
+    NSString *contentType = RepresentationTag(representation, kUTTagClassMIMEType);
+    if ([contentType length] == 0) {
+        contentType = ContentTypeForPhotoName(fileName);
+    }
     NSDictionary *file = [NSDictionary
         dictionaryWithObjectsAndKeys:fileIdentifier, @"id", fileName, @"fileName",
-                                     [NSNumber numberWithUnsignedInteger:byteCount], @"size",
-                                     ContentTypeForPhotoName(fileName), @"fileType", asset, @"asset", nil];
-    [fileIdentifier release];
+                                     [NSNumber numberWithLongLong:byteCount], @"size",
+                                     contentType, @"fileType", asset, @"asset", nil];
     return file;
 }
 
@@ -205,7 +267,7 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
 - (BOOL)prepareOutgoingFiles {
     NSMutableArray *files = [NSMutableArray array];
     if ([_photoAssets count] > 100) {
-        [self failWithMessage:@"Transfer failed: select at most 100 photos."];
+        [self failWithMessage:@"Transfer failed: select at most 100 photos and videos."];
         return NO;
     }
     for (ALAsset *asset in _photoAssets) {
@@ -295,7 +357,7 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
                                                                                     error:NULL];
         NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:filePath];
         if (attributes == nil || stream == nil) {
-            [self failWithMessage:@"Transfer failed: selected photo is unavailable."];
+            [self failWithMessage:@"Transfer failed: selected photo or video is unavailable."];
             return;
         }
         [request setHTTPBodyStream:stream];
@@ -346,8 +408,8 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
 }
 
 - (void)httpsClient:(LocalSendHTTPSClient *)client
-    didSendBodyBytes:(NSUInteger)sent
-          totalBytes:(NSUInteger)total {
+    didSendBodyBytes:(unsigned long long)sent
+          totalBytes:(unsigned long long)total {
     if (_cancelled || client != _httpsClient || !_isUploadingFiles) {
         return;
     }
@@ -421,7 +483,7 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
         [self
             failWithMessage:[NSString stringWithFormat:
                                           @"Transfer failed: the recipient did not accept the %@ (HTTP %ld).",
-                                          _clipboardText != nil ? @"clipboard" : @"photo", (long)statusCode]];
+                                          _clipboardText != nil ? @"clipboard" : @"media", (long)statusCode]];
         return;
     }
     NSDictionary *response = [LocalSendJSON JSONObjectWithData:data options:0 error:NULL];
@@ -439,7 +501,7 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
     for (NSDictionary *file in _outgoingFiles) {
         NSString *token = [acceptedFiles objectForKey:[file objectForKey:@"id"]];
         if (![token isKindOfClass:[NSString class]] || [token length] == 0) {
-            [self failWithMessage:@"Transfer failed: the recipient did not accept every photo."];
+            [self failWithMessage:@"Transfer failed: the recipient did not accept every file."];
             return;
         }
     }
@@ -453,7 +515,7 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
 - (void)handleUploadStatusCode:(NSInteger)statusCode {
     if (statusCode != 200) {
         [self failWithMessage:[NSString stringWithFormat:@"Transfer failed: %@ %u of %u failed (HTTP %ld).",
-                                                         _clipboardText != nil ? @"Clipboard" : @"Photo",
+                                                         _clipboardText != nil ? @"Clipboard" : @"File",
                                                          (unsigned int)(_currentFileIndex + 1),
                                                          (unsigned int)[_outgoingFiles count],
                                                          (long)statusCode]];
@@ -466,10 +528,15 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
         return;
     }
     NSUInteger sentCount = [_outgoingFiles count];
+    NSUInteger videoCount = 0;
+    for (NSDictionary *file in _outgoingFiles) {
+        if ([[file objectForKey:@"fileType"] hasPrefix:@"video/"]) videoCount++;
+    }
     [self completeWithMessage:_clipboardText != nil
                                   ? @"Clipboard sent."
-                                  : [NSString stringWithFormat:@"Sent %u photo%@.", (unsigned int)sentCount,
-                                                               sentCount == 1 ? @"" : @"s"]];
+                                  : [NSString stringWithFormat:@"Sent %u %@.", (unsigned int)sentCount,
+                                                               videoCount == 0 ? (sentCount == 1 ? @"photo" : @"photos") :
+                                                               videoCount == sentCount ? (sentCount == 1 ? @"video" : @"videos") : @"items"]];
 }
 
 - (NSString *)uploadPathForFile:(NSDictionary *)file {
@@ -485,7 +552,8 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
     }
     NSDictionary *file = [_outgoingFiles objectAtIndex:_currentFileIndex];
     if ([file objectForKey:@"asset"] != nil) {
-        [self postStatus:[NSString stringWithFormat:@"Preparing photo %u of %u…",
+        [self postStatus:[NSString stringWithFormat:@"Preparing %@ %u of %u…",
+                                                    [[file objectForKey:@"fileType"] hasPrefix:@"video/"] ? @"video" : @"photo",
                                                     (unsigned int)(_currentFileIndex + 1),
                                                     (unsigned int)[_outgoingFiles count]]];
         [NSThread detachNewThreadSelector:@selector(preparePhotoFile:) toTarget:self withObject:file];
@@ -517,17 +585,17 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
         }
         NSUInteger bytesRequested =
             (NSUInteger)MIN((unsigned long long)sizeof(buffer), expectedByteCount - bytesCopied);
+        NSAutoreleasePool *chunkPool = [[NSAutoreleasePool alloc] init];
         NSError *error = nil;
         NSUInteger bytesRead = [representation getBytes:buffer
                                              fromOffset:(long long)bytesCopied
                                                  length:bytesRequested
                                                   error:&error];
-        if (bytesRead == 0 || error != nil) {
+        if (bytesRead == 0 || bytesRead > bytesRequested || error != nil) {
             copySucceeded = NO;
-            break;
         }
         NSUInteger bytesWritten = 0;
-        while (bytesWritten < bytesRead) {
+        while (copySucceeded && bytesWritten < bytesRead) {
             ssize_t result = write(fileDescriptor, buffer + bytesWritten, bytesRead - bytesWritten);
             if (result < 0 && errno == EINTR) {
                 continue;
@@ -541,6 +609,7 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
         if (copySucceeded) {
             bytesCopied += bytesRead;
         }
+        [chunkPool drain];
     }
     if (fileDescriptor >= 0 && close(fileDescriptor) != 0) {
         copySucceeded = NO;
@@ -567,7 +636,7 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
     }
     if ([path length] == 0) {
         [self
-            failWithMessage:@"Transfer failed: could not read a selected photo or save its temporary copy."];
+            failWithMessage:@"Transfer failed: could not read a selected photo or video or save its temporary copy."];
         return;
     }
     _temporaryPhotoFilePath = [path copy];
@@ -594,7 +663,8 @@ static NSString *ContentTypeForPhotoName(NSString *fileName) {
     NSUInteger percentage = (NSUInteger)((bytesSent * 100ULL) / totalBytes);
     [self postStatus:_clipboardText != nil
                          ? [NSString stringWithFormat:@"Sending clipboard… %u%%", (unsigned int)percentage]
-                         : [NSString stringWithFormat:@"Sending photo %u of %u… %u%%",
+                         : [NSString stringWithFormat:@"Sending %@ %u of %u… %u%%",
+                                                      [[[_outgoingFiles objectAtIndex:_currentFileIndex] objectForKey:@"fileType"] hasPrefix:@"video/"] ? @"video" : @"photo",
                                                       (unsigned int)(_currentFileIndex + 1),
                                                       (unsigned int)[_outgoingFiles count],
                                                       (unsigned int)percentage]];

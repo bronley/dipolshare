@@ -18,9 +18,11 @@ openssl pkcs12 -export -inkey "$temporary_directory/client.key" -in "$temporary_
     -out "$temporary_directory/client.p12" -passout pass:test-password \
     -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -macalg sha1
 clang -fno-objc-arc -g -fsanitize=address,undefined -Wall -Wextra -Werror \
+    -DSecKeyRawSign=LocalSendTestSecKeyRawSign \
     -Wno-deprecated-declarations -include "$test_directory/security_legacy_declaration.h" \
     -I "$openssl_directory/include" -I "$source_directory/Networking" -I "$source_directory/Security" "$test_directory/client_harness.m" \
-    "$source_directory/Networking/LocalSendHTTPSClient.m" "$source_directory/Networking/LocalSendHTTPResponseParser.m" "$source_directory/Security/LocalSendCertificateFingerprint.m" "$source_directory/Security/LocalSendTLS.m" \
+    "$source_directory/Networking/LocalSendHTTPSClient.m" "$source_directory/Networking/LocalSendHTTPResponseParser.m" "$source_directory/Networking/LocalSendConnectionActivity.m" "$source_directory/Security/LocalSendCertificateFingerprint.m" "$source_directory/Security/LocalSendTLS.m" \
     "$openssl_directory/libssl.a" "$openssl_directory/libcrypto.a" \
     -framework Foundation -framework Security -o "$temporary_directory/client_harness"
+"$temporary_directory/client_harness" - 0 - progress
 python3 "$test_directory/test_client_transport.py" --harness "$temporary_directory/client_harness" --fixtures "$temporary_directory"

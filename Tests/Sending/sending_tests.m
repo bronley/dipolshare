@@ -2,8 +2,37 @@
 #import "LocalSendTransfer.h"
 #import "LocalSendIdentityStore.h"
 #import "LocalSendSounds.h"
+#import "LocalSendDiscovery.h"
 
 static NSUInteger CompletionSoundCount = 0;
+static NSUInteger LiveExportTemporaries = 0;
+static NSUInteger PeakExportTemporaries = 0;
+
+NSString *const ALAssetPropertyType = @"ALAssetPropertyType";
+NSString *const ALAssetTypePhoto = @"ALAssetTypePhoto";
+NSString *const ALAssetTypeVideo = @"ALAssetTypeVideo";
+
+@interface ExportReadTemporary : NSObject
+@end
+
+@implementation ExportReadTemporary
+- (id)init {
+    self = [super init];
+    if (self) {
+        LiveExportTemporaries++;
+        PeakExportTemporaries = MAX(PeakExportTemporaries, LiveExportTemporaries);
+    }
+    return self;
+}
+- (void)dealloc {
+    LiveExportTemporaries--;
+    [super dealloc];
+}
+@end
+
+@implementation LocalSendDiscovery
++ (NSString *)deviceName { return @"Test Device"; }
+@end
 
 @implementation ALAssetsLibrary
 @end
@@ -21,7 +50,17 @@ static NSUInteger CompletionSoundCount = 0;
 - (NSString *)filename {
     return _testFileName;
 }
-- (NSUInteger)size {
+- (NSString *)UTI {
+    return _testUTI;
+}
+- (void)setTestUTI:(NSString *)type {
+    [_testUTI release];
+    _testUTI = [type copy];
+}
+- (void)setTestTracksTemporaries:(BOOL)value {
+    _testTracksTemporaries = value;
+}
+- (long long)size {
     return [_testData length];
 }
 - (NSUInteger)testReadCount {
@@ -32,6 +71,9 @@ static NSUInteger CompletionSoundCount = 0;
                 length:(NSUInteger)length
                  error:(NSError **)error {
     _testReadCount++;
+    if (_testTracksTemporaries) {
+        [[[ExportReadTemporary alloc] init] autorelease];
+    }
     if (_testShouldFail && offset >= 32768) {
         *error = [NSError errorWithDomain:@"PhotoTest" code:1 userInfo:nil];
         return 0;
@@ -43,8 +85,31 @@ static NSUInteger CompletionSoundCount = 0;
 - (void)dealloc {
     [_testData release];
     [_testFileName release];
+    [_testUTI release];
     [super dealloc];
 }
+@end
+
+@interface LegacyAssetRepresentation : ALAssetRepresentation
+@end
+@implementation LegacyAssetRepresentation
+- (BOOL)respondsToSelector:(SEL)selector {
+    return selector == @selector(filename) ? NO : [super respondsToSelector:selector];
+}
+- (NSString *)filename {
+    [NSException raise:NSInvalidArgumentException format:@"filename is unavailable on iOS 4.x"];
+    return nil;
+}
+@end
+
+@interface SizedAssetRepresentation : ALAssetRepresentation {
+    long long _reportedSize;
+}
+- (void)setReportedSize:(long long)size;
+@end
+@implementation SizedAssetRepresentation
+- (void)setReportedSize:(long long)size { _reportedSize = size; }
+- (long long)size { return _reportedSize; }
 @end
 
 @implementation ALAsset
@@ -52,14 +117,23 @@ static NSUInteger CompletionSoundCount = 0;
     self = [super init];
     if (self) {
         _testRepresentation = [representation retain];
+        _testType = [ALAssetTypePhoto copy];
     }
     return self;
 }
 - (ALAssetRepresentation *)defaultRepresentation {
     return _testRepresentation;
 }
+- (id)valueForProperty:(NSString *)property {
+    return [property isEqual:ALAssetPropertyType] ? _testType : nil;
+}
+- (void)setTestType:(NSString *)type {
+    [_testType release];
+    _testType = [type copy];
+}
 - (void)dealloc {
     [_testRepresentation release];
+    [_testType release];
     [super dealloc];
 }
 @end
@@ -342,8 +416,104 @@ static void TestPhotoBatch(void) {
           "a missing per-photo token rejects the entire batch before uploading");
 }
 
-static NSDictionary *ExportPhoto(NSData *data, BOOL shouldFail, BOOL cancel, NSUInteger *readCount) {
+static void TestVideoBatch(void) {
+    NSData *movie = [@"original movie bytes" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *image = [@"original image bytes" dataUsingEncoding:NSUTF8StringEncoding];
+    NSArray *assets = [NSArray arrayWithObjects:PhotoAsset(movie, @"clip.MOV", NO),
+                                                 PhotoAsset(image, @"image.JPG", NO), nil];
+    NSDictionary *device = [NSDictionary dictionaryWithObject:@"https" forKey:@"protocol"];
+    ALAssetsLibrary *library = [[[ALAssetsLibrary alloc] init] autorelease];
+    RecordingTransfer *transfer = [[[RecordingTransfer alloc] initWithDevice:device
+                                                                 photoAssets:assets library:library] autorelease];
+    Observe(transfer);
+    [transfer start];
+    NSDictionary *files = [RequestMetadata(transfer) objectForKey:@"files"];
+    BOOL hasVideo = NO;
+    BOOL hasPhoto = NO;
+    for (NSDictionary *file in [files allValues]) {
+        hasVideo |= [[file objectForKey:@"fileName"] isEqual:@"clip.MOV"] &&
+                    [[file objectForKey:@"fileType"] isEqual:@"video/quicktime"] &&
+                    [[file objectForKey:@"size"] unsignedIntegerValue] == [movie length];
+        hasPhoto |= [[file objectForKey:@"fileName"] isEqual:@"image.JPG"] &&
+                    [[file objectForKey:@"fileType"] isEqual:@"image/jpeg"];
+    }
+    Check([files count] == 2 && hasVideo && hasPhoto, "mixed batch advertises original video and photo metadata");
+    [transfer handleResponseData:AcceptanceForFiles(files) statusCode:200];
+    WaitForRequestCount(transfer, 2);
+    BOOL firstSent = [[[transfer recordedRequests] lastObject][@"body"] isEqual:movie];
+    [transfer handleResponseData:[NSData data] statusCode:200];
+    WaitForRequestCount(transfer, 3);
+    BOOL secondSent = [[[transfer recordedRequests] lastObject][@"body"] isEqual:image];
+    [transfer handleResponseData:[NSData data] statusCode:200];
+    Check(firstSent && secondSent && [[[transfer lastStatus] objectForKey:@"status"] isEqual:@"Sent 2 items."],
+          "mixed batch uploads original bytes in selection order");
+}
+
+static RecordingTransfer *TransferForRepresentation(ALAssetRepresentation *representation,
+                                                     NSString *assetType) {
+    ALAsset *asset = [[[ALAsset alloc] initWithRepresentation:representation] autorelease];
+    [asset setTestType:assetType];
+    RecordingTransfer *transfer = [[[RecordingTransfer alloc]
+        initWithDevice:[NSDictionary dictionaryWithObject:@"https" forKey:@"protocol"]
+            photoAssets:[NSArray arrayWithObject:asset]
+                library:[[[ALAssetsLibrary alloc] init] autorelease]] autorelease];
+    Observe(transfer);
+    return transfer;
+}
+
+static void TestLegacyAssetMetadata(void) {
+    NSArray *types = [NSArray arrayWithObjects:@"public.jpeg", @"public.png", @"com.apple.quicktime-movie",
+                                               @"public.mpeg-4", @"com.example.unknown-media", nil];
+    NSArray *extensions = [NSArray arrayWithObjects:@"jpeg", @"png", @"mov", @"mp4", @"", nil];
+    NSArray *mimeTypes = [NSArray arrayWithObjects:@"image/jpeg", @"image/png", @"video/quicktime",
+                                                  @"video/mp4", @"application/octet-stream", nil];
+    for (NSUInteger index = 0; index < [types count]; index++) {
+        LegacyAssetRepresentation *representation = [[[LegacyAssetRepresentation alloc]
+            initWithData:[@"original data" dataUsingEncoding:NSUTF8StringEncoding]
+                fileName:nil fail:NO] autorelease];
+        [representation setTestUTI:[types objectAtIndex:index]];
+        BOOL isVideo = index == 2 || index == 3;
+        RecordingTransfer *transfer = TransferForRepresentation(representation,
+                                                isVideo ? ALAssetTypeVideo : ALAssetTypePhoto);
+        [transfer start];
+        NSDictionary *metadata = [[[[RequestMetadata(transfer) objectForKey:@"files"] allValues]
+                                   objectAtIndex:0] retain];
+        NSString *name = [metadata objectForKey:@"fileName"];
+        NSString *extension = [name pathExtension];
+        BOOL correctExtension = [extension isEqual:[extensions objectAtIndex:index]] ||
+                                (index == 0 && [extension isEqual:@"jpg"]);
+        if (!correctExtension || ![[metadata objectForKey:@"fileType"] isEqual:[mimeTypes objectAtIndex:index]]) {
+            NSLog(@"Unexpected legacy metadata for %@: %@", [types objectAtIndex:index], metadata);
+        }
+        Check([name hasPrefix:isVideo ? @"Video-" : @"Photo-"] && correctExtension &&
+                  [[metadata objectForKey:@"fileType"] isEqual:[mimeTypes objectAtIndex:index]],
+              "iOS 4 asset metadata uses available UTI without invoking filename");
+        [metadata release];
+    }
+
+    SizedAssetRepresentation *representation = [[[SizedAssetRepresentation alloc]
+        initWithData:[NSData data] fileName:@"large.mov" fail:NO] autorelease];
+    long long largeSize = 5LL * 1024 * 1024 * 1024 + 17;
+    [representation setReportedSize:largeSize];
+    RecordingTransfer *transfer = TransferForRepresentation(representation, ALAssetTypeVideo);
+    [transfer start];
+    NSDictionary *metadata = [[[RequestMetadata(transfer) objectForKey:@"files"] allValues] objectAtIndex:0];
+    Check([[metadata objectForKey:@"fileName"] isEqual:@"large.mov"] &&
+              [[metadata objectForKey:@"size"] longLongValue] == largeSize,
+          "modern filenames are preserved and asset metadata retains 64-bit size");
+
+    [representation setReportedSize:-1];
+    transfer = TransferForRepresentation(representation, ALAssetTypeVideo);
+    [transfer start];
+    Check([[transfer recordedRequests] count] == 0 &&
+              [[[transfer lastStatus] objectForKey:@"isError"] boolValue],
+          "negative asset sizes fail safely before contacting the receiver");
+}
+
+static NSDictionary *ExportPhoto(NSData *data, BOOL shouldFail, BOOL cancel, BOOL trackTemporaries,
+                                 NSUInteger *readCount) {
     ALAsset *asset = PhotoAsset(data, @"photo.jpg", shouldFail);
+    [[asset defaultRepresentation] setTestTracksTemporaries:trackTemporaries];
     RecordingTransfer *transfer = ClipboardTransfer(@"placeholder");
     [transfer setCaptureExportOnly:YES];
     if (cancel) {
@@ -368,17 +538,25 @@ static void TestPhotoExport(void) {
         ((unsigned char *)[payload mutableBytes])[index] = (unsigned char)(index * 37);
     }
     NSUInteger readCount;
-    NSDictionary *result = ExportPhoto(payload, NO, NO, &readCount);
+    NSDictionary *result = ExportPhoto(payload, NO, NO, NO, &readCount);
     NSString *path = [result objectForKey:@"path"];
     Check([path length] > 0 && readCount >= 5 && [[NSData dataWithContentsOfFile:path] isEqual:payload],
           "photo export preserves 160001 original bytes using bounded reads");
     [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
-    result = ExportPhoto(payload, YES, NO, &readCount);
+    result = ExportPhoto(payload, YES, NO, NO, &readCount);
     Check(result != nil && [[result objectForKey:@"path"] length] == 0 && readCount >= 2,
           "photo read error rejects the incomplete file");
-    result = ExportPhoto(payload, NO, YES, &readCount);
+    result = ExportPhoto(payload, NO, YES, NO, &readCount);
     Check(result != nil && [[result objectForKey:@"path"] length] == 0 && readCount == 0,
           "cancelled photo export never reads asset data");
+
+    PeakExportTemporaries = 0;
+    result = ExportPhoto([NSMutableData dataWithLength:4 * 1024 * 1024], NO, NO, YES, &readCount);
+    path = [result objectForKey:@"path"];
+    Check([path length] > 0 && readCount >= 128 && PeakExportTemporaries == 1 &&
+              LiveExportTemporaries == 0,
+          "large asset export releases framework temporaries between chunks");
+    [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 }
 
 static void TestRedirect(void) {
@@ -397,6 +575,8 @@ int main(void) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     TestClipboard();
     TestPhotoBatch();
+    TestVideoBatch();
+    TestLegacyAssetMetadata();
     TestPhotoExport();
     TestRedirect();
     printf("%lu/%lu checks passed\n", (unsigned long)(TestCount - FailureCount), (unsigned long)TestCount);

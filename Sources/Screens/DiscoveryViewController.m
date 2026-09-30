@@ -603,7 +603,7 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
                                                          delegate:self
                                                 cancelButtonTitle:@"Cancel"
                                            destructiveButtonTitle:nil
-                                                otherButtonTitles:@"Send Photos", @"Send Clipboard", nil];
+                                                otherButtonTitles:@"Send Photos & Videos", @"Send Clipboard", nil];
     [actions showFromTabBar:self.tabBarController.tabBar];
     [actions release];
 }
@@ -636,7 +636,7 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
         _pendingInsecureAction = buttonIndex;
         _insecureTransferAlert = [[UIAlertView alloc]
             initWithTitle:@"Send without encryption?"
-                  message:@"This device uses HTTP. Photos or clipboard text sent to it may be visible to others on this network."
+                  message:@"This device uses HTTP. Photos, videos, or clipboard text sent to it may be visible to others on this network."
                  delegate:self
         cancelButtonTitle:@"Cancel"
         otherButtonTitles:@"Send Anyway", nil];
