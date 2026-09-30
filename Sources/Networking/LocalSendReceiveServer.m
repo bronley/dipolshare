@@ -93,6 +93,8 @@ static NSString *const LocalSendCurrentConnectionThreadKey = @"LocalSendReceiveS
 }
 - (void)runConnection:(LocalSendIncomingConnection *)connection {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    connection->activity = [[LocalSendConnectionActivity alloc] initWithLabel:
+        [NSString stringWithFormat:@"IN %@", connection->address]];
     id<LocalSendReceiveServerDelegate> delegate = nil;
     id upload = nil;
     @synchronized(self) {
@@ -108,6 +110,7 @@ static NSString *const LocalSendCurrentConnectionThreadKey = @"LocalSendReceiveS
             goto finished;
         }
         BOOL secure = connection->tls != nil;
+        [connection->activity setStage:@"Reading HTTP request"];
         NSDictionary *request = [connection readRequest];
         if (request == nil) {
             [connection sendResponseWithStatus:connection->errorStatus body:nil];
@@ -195,6 +198,7 @@ static NSString *const LocalSendCurrentConnectionThreadKey = @"LocalSendReceiveS
         NSLog(@"LocalSend receive connection stopped (%@)", [exception name]);
         [connection sendResponseWithStatus:500 body:nil];
     } @finally {
+        [connection->activity finishWithError:nil];
         if (upload != nil) {
             [delegate receiveServer:self abortUpload:upload];
             [upload release];

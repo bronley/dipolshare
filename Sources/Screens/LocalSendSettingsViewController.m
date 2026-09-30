@@ -75,6 +75,51 @@ static const NSInteger LocalSendCreditCaptionTag = 1003;
 
 @end
 
+@interface LocalSendDiscoveryStatusViewController : UIViewController {
+    UITextView *_reportView;
+}
+- (void)updateReport;
+- (void)copyReport;
+@end
+
+@implementation LocalSendDiscoveryStatusViewController
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.title = @"Discovery status";
+    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
+        initWithTitle:@"Copy" style:UIBarButtonItemStylePlain target:self action:@selector(copyReport)] autorelease];
+    CGRect bounds = self.view.bounds;
+    _reportView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, bounds.size.width, bounds.size.height - 44)];
+    _reportView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _reportView.editable = NO;
+    _reportView.font = [UIFont systemFontOfSize:13];
+    [self.view addSubview:_reportView];
+    UIToolbar *toolbar = [[[UIToolbar alloc] initWithFrame:
+        CGRectMake(0, bounds.size.height - 44, bounds.size.width, 44)] autorelease];
+    toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    toolbar.items = [NSArray arrayWithObject:[[[UIBarButtonItem alloc]
+        initWithTitle:@"Update report" style:UIBarButtonItemStylePlain
+        target:self action:@selector(updateReport)] autorelease]];
+    [self.view addSubview:toolbar];
+    [self updateReport];
+}
+- (void)updateReport {
+    _reportView.text = [[LocalSendDiscovery sharedDiscovery] discoveryDiagnostics];
+}
+- (void)copyReport {
+    [UIPasteboard generalPasteboard].string = _reportView.text;
+}
+- (void)viewDidUnload {
+    [_reportView release];
+    _reportView = nil;
+    [super viewDidUnload];
+}
+- (void)dealloc {
+    [_reportView release];
+    [super dealloc];
+}
+@end
+
 @interface LocalSendSettingsViewController ()
 - (void)layoutCreditFooter;
 @end
@@ -162,7 +207,7 @@ static const NSInteger LocalSendCreditCaptionTag = 1003;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return section == 1 ? 2 : 1;
+    return section == 0 || section == 1 ? 2 : 1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -198,8 +243,8 @@ static const NSInteger LocalSendCreditCaptionTag = 1003;
     UITableViewCell *cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1
                                                     reuseIdentifier:nil] autorelease];
     if (indexPath.section == 0) {
-        cell.textLabel.text = @"Name";
-        cell.detailTextLabel.text = [LocalSendDiscovery deviceName];
+        cell.textLabel.text = indexPath.row == 0 ? @"Name" : @"Discovery status";
+        cell.detailTextLabel.text = indexPath.row == 0 ? [LocalSendDiscovery deviceName] : @"View report";
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else if (indexPath.section == 1) {
         if (indexPath.row == 0) {
@@ -239,6 +284,13 @@ static const NSInteger LocalSendCreditCaptionTag = 1003;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
+        if (indexPath.row == 1) {
+            LocalSendDiscoveryStatusViewController *report = [[LocalSendDiscoveryStatusViewController alloc] init];
+            [self.navigationController pushViewController:report animated:YES];
+            [report release];
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            return;
+        }
         LocalSendDeviceNameViewController *editor = [[LocalSendDeviceNameViewController alloc] init];
         [self.navigationController pushViewController:editor animated:YES];
         [editor release];

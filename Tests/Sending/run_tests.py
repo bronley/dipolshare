@@ -17,14 +17,15 @@ json_adapter = source_file("LocalSendJSON.m")
 jsonkit = project / "Vendor/JSONKit/JSONKit.m"
 headers = [source_file(name).parent for name in (
     "LocalSendTransfer.h", "LocalSendHTTPSClient.h",
-    "LocalSendIdentityStore.h", "LocalSendSounds.h", "LocalSendJSON.h")]
+    "LocalSendIdentityStore.h", "LocalSendSounds.h", "LocalSendJSON.h",
+    "LocalSendDiscovery.h")]
 headers.append(jsonkit.parent)
 
 with tempfile.TemporaryDirectory(prefix="localsend-sending-tests-") as build:
     executable = Path(build) / "sending-tests"
     command = ["xcrun", "clang", "-fno-objc-arc", "-Wno-deprecated-declarations",
         "-fsanitize=address,undefined", "-fno-omit-frame-pointer",
-        "-framework", "Foundation", "-framework", "Security",
+        "-framework", "Foundation", "-framework", "Security", "-framework", "CoreServices",
         "-I", str(tests / "Stubs")]
     for directory in sorted(set(headers)):
         command += ["-I", str(directory)]

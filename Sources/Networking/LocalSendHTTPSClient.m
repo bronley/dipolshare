@@ -2,6 +2,7 @@
 #import "LocalSendTLS.h"
 #import "LocalSendHTTPResponseParser.h"
 #import "LocalSendCertificateFingerprint.h"
+#import "LocalSendConnectionActivity.h"
 #import <arpa/inet.h>
 #import <errno.h>
 #import <fcntl.h>
@@ -39,10 +40,10 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
 - (void)runRequest:(NSDictionary *)request;
 - (void)deliverFailure:(NSString *)message;
 - (void)deliverResult:(NSDictionary *)result;
-- (void)deliverProgress:(NSDictionary *)progress;
+- (void)deliverProgress:(id)unused;
 - (void)reportFailure:(NSString *)message;
 - (void)reportResultStatus:(NSInteger)status body:(NSData *)body;
-- (void)reportProgressSent:(NSUInteger)sent total:(NSUInteger)total;
+- (void)reportProgressSent:(unsigned long long)sent total:(unsigned long long)total;
 - (int)connectSocketWithError:(NSString **)errorMessage;
 - (BOOL)waitForTLS:(int)socketDescriptor
                tls:(LocalSendTLS *)tls
@@ -80,6 +81,7 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
             CFRetain(_identity);
         }
         _delegate = delegate;
+        _socketDescriptor = -1;
     }
     return self;
 }
@@ -90,6 +92,12 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
     }
 }
 
+- (NSString *)diagnosticStatus {
+    @synchronized(self) {
+        return [_activity diagnosticStatus] ?: @"Waiting for HTTPS worker";
+    }
+}
+
 - (void)postDiscoveryBody:(NSData *)body {
     @synchronized(self) {
         if (_running || _cancelled) {
@@ -97,7 +105,7 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
         }
     }
     _discoveryOnly = YES;
-    _discoveryDeadline = [NSDate timeIntervalSinceReferenceDate] + 4.0;
+    _discoveryDeadline = [NSDate timeIntervalSinceReferenceDate] + 12.0;
     [self postPath:@"/api/localsend/v2/register" body:body contentType:@"application/json"];
 }
 
@@ -122,6 +130,9 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
             return;
         }
         _running = YES;
+        [_activity release];
+        _activity = [[LocalSendConnectionActivity alloc] initWithLabel:
+            [NSString stringWithFormat:@"OUT %@:%@", _host, _port]];
     }
 
     NSMutableDictionary *request =
@@ -139,6 +150,23 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
     @synchronized(self) {
         _cancelled = YES;
         _delegate = nil;
+        [_activity cancel];
+        if (_socketDescriptor >= 0) {
+            shutdown(_socketDescriptor, SHUT_RDWR);
+        }
+    }
+}
+
+- (BOOL)isRunning {
+    @synchronized(self) {
+        return _running;
+    }
+}
+
+- (void)closeSocket:(int)socketDescriptor {
+    @synchronized(self) {
+        if (_socketDescriptor == socketDescriptor) _socketDescriptor = -1;
+        close(socketDescriptor);
     }
 }
 
@@ -149,6 +177,7 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
 }
 
 - (int)connectSocketWithError:(NSString **)errorMessage {
+    [_activity setStage:@"Resolving address"];
     char portString[16];
     snprintf(portString, sizeof(portString), "%u", [_port unsignedIntValue]);
 
@@ -166,9 +195,11 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
     }
 
     int connectedSocket = -1;
+    [_activity setStage:@"Connecting TCP"];
     int lastSocketError = 0;
     struct addrinfo *address;
     for (address = addresses; address != NULL; address = address->ai_next) {
+        if ([self isCancelled]) break;
         int socketDescriptor = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
         if (socketDescriptor < 0) {
             lastSocketError = errno;
@@ -189,17 +220,25 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
             continue;
         }
 
+        @synchronized(self) {
+            if (_cancelled) {
+                close(socketDescriptor);
+                break;
+            }
+            _socketDescriptor = socketDescriptor;
+        }
         int result = connect(socketDescriptor, address->ai_addr, address->ai_addrlen);
         if (result < 0 && errno == EINPROGRESS) {
-            fd_set writeSet;
-            FD_ZERO(&writeSet);
-            FD_SET(socketDescriptor, &writeSet);
-            struct timeval timeout;
-            timeout.tv_sec = _discoveryOnly ? 1 : (int)kLocalSendConnectTimeout;
-            timeout.tv_usec = 0;
+            NSTimeInterval deadline = [NSDate timeIntervalSinceReferenceDate] +
+                (_discoveryOnly ? 1.0 : kLocalSendConnectTimeout);
             do {
-                result = select(socketDescriptor + 1, NULL, &writeSet, NULL, &timeout);
-            } while (result < 0 && errno == EINTR);
+                NSTimeInterval remaining = deadline - [NSDate timeIntervalSinceReferenceDate];
+                if ([self isCancelled] || remaining <= 0) {
+                    result = 0;
+                    break;
+                }
+                result = LocalSendWaitForSocket(socketDescriptor, NO, MIN(remaining, 0.25));
+            } while (result == 0 || (result < 0 && errno == EINTR));
             if (result > 0) {
                 socklen_t errorLength = sizeof(lastSocketError);
                 if (getsockopt(socketDescriptor, SOL_SOCKET, SO_ERROR, &lastSocketError, &errorLength) == 0 &&
@@ -221,7 +260,7 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
         if (lastSocketError == 0) {
             lastSocketError = errno;
         }
-        close(socketDescriptor);
+        [self closeSocket:socketDescriptor];
     }
     freeaddrinfo(addresses);
 
@@ -236,6 +275,7 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
                tls:(LocalSendTLS *)tls
           deadline:(NSTimeInterval)deadline
              error:(NSString **)errorMessage {
+    [_activity setStage:[tls wantsRead] ? @"Waiting for TLS read" : @"Waiting for TLS write"];
     if (_discoveryOnly) {
         deadline = MIN(deadline, _discoveryDeadline);
     }
@@ -271,9 +311,12 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
     NSTimeInterval deadline = [NSDate timeIntervalSinceReferenceDate] + kLocalSendIOTimeout;
 
     while (offset < total) {
-        if ([self isCancelled] ||
-            (_discoveryOnly && [NSDate timeIntervalSinceReferenceDate] >= _discoveryDeadline)) {
+        if ([self isCancelled]) {
             *errorMessage = @"Transfer cancelled.";
+            return NO;
+        }
+        if (_discoveryOnly && [NSDate timeIntervalSinceReferenceDate] >= _discoveryDeadline) {
+            *errorMessage = @"Discovery timed out while writing the registration request.";
             return NO;
         }
         size_t processed = 0;
@@ -334,17 +377,21 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
             succeeded = NO;
             break;
         }
+        NSAutoreleasePool *chunkPool = [[NSAutoreleasePool alloc] init];
         NSData *piece = [NSData dataWithBytesNoCopy:bytes length:(NSUInteger)count freeWhenDone:NO];
-        if (![self writeData:piece
-                         context:context
-                socketDescriptor:socketDescriptor
-                        progress:NO
-                           error:errorMessage]) {
+        NSString *chunkError = nil;
+        BOOL written = [self writeData:piece context:context socketDescriptor:socketDescriptor
+                              progress:NO error:&chunkError];
+        [chunkError retain];
+        [chunkPool drain];
+        if (!written) {
+            *errorMessage = [chunkError autorelease];
             succeeded = NO;
             break;
         }
+        [chunkError release];
         sent += (unsigned long long)count;
-        [self reportProgressSent:(NSUInteger)sent total:(NSUInteger)length];
+        [self reportProgressSent:sent total:length];
     }
     close(fileDescriptor);
     return succeeded;
@@ -358,9 +405,12 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
     unsigned char buffer[16384];
     NSTimeInterval deadline = [NSDate timeIntervalSinceReferenceDate] + timeout;
     while (YES) {
-        if ([self isCancelled] ||
-            (_discoveryOnly && [NSDate timeIntervalSinceReferenceDate] >= _discoveryDeadline)) {
+        if ([self isCancelled]) {
             *errorMessage = @"Transfer cancelled.";
+            return nil;
+        }
+        if (_discoveryOnly && [NSDate timeIntervalSinceReferenceDate] >= _discoveryDeadline) {
+            *errorMessage = @"Discovery timed out while reading the registration response.";
             return nil;
         }
         size_t processed = 0;
@@ -419,6 +469,10 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
     while (YES) {
         if ([self isCancelled]) {
             *errorMessage = @"Transfer cancelled.";
+            return NO;
+        }
+        if (_discoveryOnly && [NSDate timeIntervalSinceReferenceDate] >= _discoveryDeadline) {
+            *errorMessage = @"Discovery timed out during the TLS handshake.";
             return NO;
         }
         LocalSendTLSOperationResult status = [context handshake];
@@ -516,6 +570,7 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
     int socketDescriptor = -1;
     LocalSendTLS *context = nil;
 
+    if ([self isCancelled]) goto cleanup;
     if (_identity == NULL) {
         errorMessage = @"TLS client identity is unavailable; mutual TLS cannot start.";
         goto cleanup;
@@ -526,17 +581,31 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
         goto cleanup;
     }
 
-    context = [[LocalSendTLS alloc] initWithIdentity:_identity socket:socketDescriptor server:NO];
-    if (context == nil) {
-        errorMessage = @"Could not create the app TLS context.";
+    if ([self isCancelled]) goto cleanup;
+    if (_discoveryOnly && [NSDate timeIntervalSinceReferenceDate] >= _discoveryDeadline) {
+        errorMessage = @"Discovery timed out before TLS setup.";
         goto cleanup;
     }
+    context = [[LocalSendTLS alloc] initWithIdentity:_identity socket:socketDescriptor server:NO
+                                           activity:_activity];
+    if (context == nil) {
+        errorMessage = [LocalSendTLS lastInitializationError] ?: @"Could not create the app TLS context.";
+        goto cleanup;
+    }
+    if ([self isCancelled]) goto cleanup;
+    if (_discoveryOnly && [NSDate timeIntervalSinceReferenceDate] >= _discoveryDeadline) {
+        errorMessage = @"Discovery timed out during local TLS setup.";
+        goto cleanup;
+    }
+    [_activity setStage:@"TLS handshake"];
     if (![self performTLSHandshake:context socketDescriptor:socketDescriptor error:&errorMessage]) {
         goto cleanup;
     }
+    [_activity setStage:@"Checking peer fingerprint"];
     if (![self verifyPeerFingerprint:context error:&errorMessage]) {
         goto cleanup;
     }
+    [_activity setStage:@"Writing HTTP request"];
     if (![self writeRequest:request context:context socketDescriptor:socketDescriptor error:&errorMessage]) {
         goto cleanup;
     }
@@ -544,6 +613,7 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
     NSString *path = [request objectForKey:@"path"];
     NSTimeInterval responseTimeout =
         [path isEqualToString:@"/api/localsend/v2/prepare-upload"] ? 130.0 : kLocalSendIOTimeout;
+    [_activity setStage:@"Reading HTTP response"];
     NSData *response = [self readResponseWithContext:context
                                     socketDescriptor:socketDescriptor
                                              timeout:responseTimeout
@@ -557,6 +627,7 @@ static int LocalSendWaitForSocket(int socketDescriptor, BOOL wantsRead, NSTimeIn
     if (![self parseResponse:response status:&responseStatus body:&responseBody error:&errorMessage]) {
         goto cleanup;
     }
+    [_activity setStage:@"Delivering result to UI"];
     [self reportResultStatus:responseStatus body:responseBody];
 
 cleanup:
@@ -566,8 +637,9 @@ cleanup:
     [context close];
     [context release];
     if (socketDescriptor >= 0) {
-        close(socketDescriptor);
+        [self closeSocket:socketDescriptor];
     }
+    [_activity finishWithError:[self isCancelled] ? nil : errorMessage];
     @synchronized(self) {
         _running = NO;
     }
@@ -585,11 +657,17 @@ cleanup:
     [self performSelectorOnMainThread:@selector(deliverResult:) withObject:result waitUntilDone:NO];
 }
 
-- (void)reportProgressSent:(NSUInteger)sent total:(NSUInteger)total {
-    NSDictionary *progress =
-        [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:sent], @"sent",
-                                                   [NSNumber numberWithUnsignedInteger:total], @"total", nil];
-    [self performSelectorOnMainThread:@selector(deliverProgress:) withObject:progress waitUntilDone:NO];
+- (void)reportProgressSent:(unsigned long long)sent total:(unsigned long long)total {
+    @synchronized(self) {
+        if (_cancelled || _delegate == nil) return;
+        _progressSent = sent;
+        _progressTotal = total;
+        NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+        if (_progressDeliveryPending || (sent < total && now - _lastProgressScheduledAt < 0.1)) return;
+        _lastProgressScheduledAt = now;
+        _progressDeliveryPending = YES;
+    }
+    [self performSelectorOnMainThread:@selector(deliverProgress:) withObject:nil waitUntilDone:NO];
 }
 
 - (void)deliverFailure:(NSString *)message {
@@ -603,6 +681,7 @@ cleanup:
 }
 
 - (void)deliverResult:(NSDictionary *)result {
+    [self deliverProgress:nil];
     id<LocalSendHTTPSClientDelegate> delegate = nil;
     @synchronized(self) {
         delegate = _delegate;
@@ -614,15 +693,18 @@ cleanup:
     }
 }
 
-- (void)deliverProgress:(NSDictionary *)progress {
+- (void)deliverProgress:(id)unused {
     id<LocalSendHTTPSClientDelegate> delegate = nil;
+    unsigned long long sent = 0, total = 0;
     @synchronized(self) {
+        if (!_progressDeliveryPending) return;
+        _progressDeliveryPending = NO;
+        sent = _progressSent;
+        total = _progressTotal;
         delegate = _delegate;
     }
     if (delegate != nil) {
-        [delegate httpsClient:self
-             didSendBodyBytes:[[progress objectForKey:@"sent"] unsignedIntegerValue]
-                   totalBytes:[[progress objectForKey:@"total"] unsignedIntegerValue]];
+        [delegate httpsClient:self didSendBodyBytes:sent totalBytes:total];
     }
 }
 
@@ -632,6 +714,7 @@ cleanup:
     [_port release];
     [_expectedFingerprint release];
     [_peerFingerprint release];
+    [_activity release];
     if (_identity != NULL) {
         CFRelease(_identity);
     }

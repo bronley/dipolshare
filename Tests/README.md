@@ -7,6 +7,7 @@ sh Tests/Shared/run_tests.sh
 sh Tests/Receiving/run_tests.sh
 python3 Tests/Sending/run_tests.py
 sh Tests/Screens/run_tests.sh
+sh Tests/Discovery/run_tests.sh
 python3 Tests/Networking/test_client_parser.py
 sh Tests/Networking/run_transport_tests.sh /path/to/native/openssl-3.5.8
 sh Tests/Networking/run_client_tests.sh /path/to/native/openssl-3.5.8
@@ -16,8 +17,10 @@ The native OpenSSL directory must contain matching headers and `libssl.a`/`libcr
 
 The receiving tests cover approval and refusal, peer/session/token binding, malformed metadata, insufficient space, cancellation, incomplete uploads, staging cleanup, restart persistence, and multi-file batches. Network tests cover real TLS connections, certificate pinning before request bytes are sent, client certificate requirements, streaming bodies, fragmented responses, chunk framing, limits, and disconnects.
 
-Sending tests compile the production transfer class with host substitutes for the iPhone photo library and network/identity services. They exercise clipboard payloads, batch acceptance, ordered uploads, temporary-file cleanup, export failures, cancellation, and redirect refusal. The separate network suites exercise the real HTTPS implementation.
+Sending tests compile the production transfer class with host substitutes for the iPhone photo library and network/identity services. They exercise clipboard payloads, batch acceptance, ordered uploads, temporary-file cleanup, export failures, cancellation, and redirect refusal. Legacy asset fixtures reject the iOS 5-only filename selector and verify fallback image/video metadata, 64-bit sizes, and bounded temporary objects during export. The real HTTPS client suite also covers progress backpressure and interrupted streaming cleanup.
 
 Screen layout tests compile the production radar placement code. They check the requested size range, spacing between blobs and the radar, stable positions during discovery updates, and a usable overflow path on crowded screens.
+
+Discovery tests exercise the production scheduler with workers that stay alive after cancellation: rapid refreshes, stale callbacks, timeout cleanup, bounded concurrency, announcement throttling, and stop/start. The TLS client suite also checks cancellation at a stalled socket and during a gated native Keychain signing call.
 
 These checks complement the Xcode 4.2.1/iPhoneOS 5.0 SDK build, which targets iOS 4.2. They do not emulate UIKit or a physical iOS sandbox; test the installed app on a phone before release.

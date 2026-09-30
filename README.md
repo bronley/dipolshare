@@ -6,7 +6,7 @@
 
 [LocalSend](https://localsend.org/) is an open-source cross-platform app for sharing files between nearby devices over a local network. It works without an account, cloud storage, or an internet connection.
 
-DipolShare brings LocalSend-compatible sharing to classic iOS devices. You can send files and photos, accept incoming transfers, and send or receive clipboard text with modern devices running LocalSend on **iOS, Android, Windows, Linux, and macOS**.
+DipolShare brings LocalSend-compatible sharing to classic iOS devices. You can send photos and videos from the device library, accept incoming files, and send or receive clipboard text with modern devices running LocalSend on **iOS, Android, Windows, Linux, and macOS**.
 
 ## Features
 
