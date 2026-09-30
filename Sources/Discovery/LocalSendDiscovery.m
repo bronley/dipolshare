@@ -207,6 +207,8 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
             postNotificationName:LocalSendDiscoverySetupDidChangeNotification object:self userInfo:nil];
     }
     if (result->identity == NULL || result->fingerprint == nil) {
+        [_identitySetupError release];
+        _identitySetupError = [(result->error != nil ? result->error : @"Could not create the device identity.") copy];
         NSLog(@"LocalSend discovery identity: %@", result->error);
         [[NSNotificationCenter defaultCenter]
             postNotificationName:LocalSendDiscoverySetupDidChangeNotification object:self userInfo:nil];
@@ -215,6 +217,8 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         }
         return;
     }
+    [_identitySetupError release];
+    _identitySetupError = nil;
     if (_identity == NULL) {
         _identity = (SecIdentityRef)CFRetain(result->identity);
     }
@@ -241,6 +245,9 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
 
 - (NSString *)identityFingerprint {
     return _identityFingerprint;
+}
+- (NSString *)identitySetupError {
+    return _identitySetupError;
 }
 
 - (BOOL)regenerateIdentity {
@@ -271,6 +278,8 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
     _identityRegenerating = NO;
     BOOL succeeded = result->identity != NULL && result->fingerprint != nil;
     if (succeeded) {
+        [_identitySetupError release];
+        _identitySetupError = nil;
         BOOL shouldRestart = _running;
         [self stop];
         if (_identity != NULL) {
@@ -396,7 +405,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
 }
 
 - (void)start {
-    if (_running) {
+    if (_running || _identitySetupError != nil) {
         return;
     }
     _running = YES;
@@ -465,6 +474,8 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
     if (_running) {
         [self beginScan];
     } else {
+        [_identitySetupError release];
+        _identitySetupError = nil;
         [self start];
     }
 }
@@ -804,6 +815,7 @@ static void LocalSendScheduleSocketOnMainRunLoop(CFSocketRef socket) {
         CFRelease(_identity);
     }
     [_identityFingerprint release];
+    [_identitySetupError release];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [_localInfo release];
     [_devicesByFingerprint release];

@@ -6,6 +6,7 @@ xcuserdata/
 *.xcscmblueprint
 
 # Generated builds and test results
+.theos/
 build/
 DerivedData/
 *.app/
@@ -13,6 +14,8 @@ DerivedData/
 *.xcarchive/
 *.xcresult/
 *.ipa
+
+/Vendor/OpenSSL/include/
 
 # Temporary files
 __pycache__/

@@ -25,6 +25,7 @@ extern NSString *const LocalSendDiscoveryIdentityDidRegenerateNotification;
     NSDictionary *_localInfo;
     SecIdentityRef _identity;
     NSString *_identityFingerprint;
+    NSString *_identitySetupError;
     BOOL _identityLoading;
     BOOL _identityRegenerating;
     BOOL _firstSetupInProgress;
@@ -49,5 +50,6 @@ extern NSString *const LocalSendDiscoveryIdentityDidRegenerateNotification;
 - (BOOL)regenerateIdentity;
 - (LocalSendCertificateDateStatus)certificateDateStatus;
 - (NSString *)identityFingerprint;
+- (NSString *)identitySetupError;
 - (NSArray *)devices;
 @end
