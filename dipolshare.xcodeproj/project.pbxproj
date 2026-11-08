@@ -26,9 +26,9 @@
 			isa = PBXBuildFile;
 			fileRef = 4B9E80B7754F1A99B8E07151 /* IncomingTransfer.caf */;
 		};
-		122878C59B9D30CB4EEAA73B /* LocalSendDeviceBlobView.m in Sources */ = {
+		122878C59B9D30CB4EEAA73B /* DeviceBlobView.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 99D43C376503C62192BC1C83 /* LocalSendDeviceBlobView.m */;
+			fileRef = 99D43C376503C62192BC1C83 /* DeviceBlobView.m */;
 		};
 		12B4525B2DED61D266DE3F11 /* DiscoveryViewController.m in Sources */ = {
 			isa = PBXBuildFile;
@@ -38,9 +38,9 @@
 			isa = PBXBuildFile;
 			fileRef = 2419491BD1AC31F6ABE21761 /* AppDelegate.m */;
 		};
-		17AC3D32FEBC8087678F4AB9 /* LocalSendRadarLayout.m in Sources */ = {
+		17AC3D32FEBC8087678F4AB9 /* RadarLayout.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = A6FD34E01A5FDAB905998394 /* LocalSendRadarLayout.m */;
+			fileRef = A6FD34E01A5FDAB905998394 /* RadarLayout.m */;
 		};
 		1C8CF93A0AE9C79937B41094 /* Send file.png in Resources */ = {
 			isa = PBXBuildFile;
@@ -50,37 +50,37 @@
 			isa = PBXBuildFile;
 			fileRef = 2D907E8CC7D09B57251EE530 /* Received.png */;
 		};
-		25244691B39136E34DE5F30E /* LocalSendCertificateFingerprint.m in Sources */ = {
+		25244691B39136E34DE5F30E /* CertificateFingerprint.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 855FFAE150B7EC9369EE132A /* LocalSendCertificateFingerprint.m */;
+			fileRef = 855FFAE150B7EC9369EE132A /* CertificateFingerprint.m */;
 		};
 		2645AE918EA5815B76E388EF /* Settings active@2x.png in Resources */ = {
 			isa = PBXBuildFile;
 			fileRef = 2F569B94387A8C038F3973A9 /* Settings active@2x.png */;
 		};
-		2A82990B62E4BAF53FADEEE1 /* LocalSendTransfer.m in Sources */ = {
+		2A82990B62E4BAF53FADEEE1 /* Transfer.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = A0897299F4BAE5E6B489AA26 /* LocalSendTransfer.m */;
+			fileRef = A0897299F4BAE5E6B489AA26 /* Transfer.m */;
 		};
 		33A98A5A35E8D2E45C584EBB /* Gold@2x.png in Resources */ = {
 			isa = PBXBuildFile;
 			fileRef = F4C9956E03C58AA8F07F6874 /* Gold@2x.png */;
 		};
-		33C3BF6724FC8FEBFD047BA0 /* LocalSendHTTPResponseParser.m in Sources */ = {
+		33C3BF6724FC8FEBFD047BA0 /* HTTPResponseParser.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = ED57550CCBC267299B235DBD /* LocalSendHTTPResponseParser.m */;
+			fileRef = ED57550CCBC267299B235DBD /* HTTPResponseParser.m */;
 		};
-		39DDA7E6D05A389F98026758 /* LocalSendDiscoveryMessage.m in Sources */ = {
+		39DDA7E6D05A389F98026758 /* DiscoveryMessage.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 63D4B61A7E4F526266400156 /* LocalSendDiscoveryMessage.m */;
+			fileRef = 63D4B61A7E4F526266400156 /* DiscoveryMessage.m */;
 		};
 		3D1C900AF99345FEECEAD813 /* Radar@2x.png in Resources */ = {
 			isa = PBXBuildFile;
 			fileRef = 1CC931C55299F9FF6CEBF10E /* Radar@2x.png */;
 		};
-		4034CF255AD1CF24C220395B /* LocalSendReceivedFileStore.m in Sources */ = {
+		4034CF255AD1CF24C220395B /* ReceivedFileStore.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = BA80BE2661D3413160561410 /* LocalSendReceivedFileStore.m */;
+			fileRef = BA80BE2661D3413160561410 /* ReceivedFileStore.m */;
 		};
 		40AB7ACD791CE7FD789BED49 /* CoreGraphics.framework in Frameworks */ = {
 			isa = PBXBuildFile;
@@ -90,17 +90,17 @@
 			isa = PBXBuildFile;
 			fileRef = 30EB8330BEB418D2231799F9 /* Purple.png */;
 		};
-		4175345F1E39BB481375DFBD /* LocalSendHTTPSClient.m in Sources */ = {
+		4175345F1E39BB481375DFBD /* HTTPSClient.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = ADA5030E6BA559EA9A1B7780 /* LocalSendHTTPSClient.m */;
+			fileRef = ADA5030E6BA559EA9A1B7780 /* HTTPSClient.m */;
 		};
-		42682ACA6511DD7C0A61AE3E /* LocalSendSettingsViewController.m in Sources */ = {
+		42682ACA6511DD7C0A61AE3E /* SettingsViewController.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = AD5AF356C72FF45A3E44134D /* LocalSendSettingsViewController.m */;
+			fileRef = AD5AF356C72FF45A3E44134D /* SettingsViewController.m */;
 		};
-		430B6FA718905A20AD52DAF8 /* LocalSendFormatting.m in Sources */ = {
+		430B6FA718905A20AD52DAF8 /* Formatting.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = CC05776824A2EDAC751CA6EB /* LocalSendFormatting.m */;
+			fileRef = CC05776824A2EDAC751CA6EB /* Formatting.m */;
 		};
 		4C430B462A28A42BFC58F421 /* Send file@2x.png in Resources */ = {
 			isa = PBXBuildFile;
@@ -138,17 +138,17 @@
 			isa = PBXBuildFile;
 			fileRef = 17AAC427583738B99A55EDFA /* main.m */;
 		};
-		626BD7D9BA689B7F1184C43D /* LocalSendPhotoGridCell.m in Sources */ = {
+		626BD7D9BA689B7F1184C43D /* PhotoGridCell.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 0E2FCE471EF21A0D9AEEA70C /* LocalSendPhotoGridCell.m */;
+			fileRef = 0E2FCE471EF21A0D9AEEA70C /* PhotoGridCell.m */;
 		};
-		652F27C498A438F47121ACB6 /* LocalSendSounds.m in Sources */ = {
+		652F27C498A438F47121ACB6 /* Sounds.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = D54468827E501E12A435B867 /* LocalSendSounds.m */;
+			fileRef = D54468827E501E12A435B867 /* Sounds.m */;
 		};
-		6DC09D34F75AB777CA4E7568 /* LocalSendDeviceListViewController.m in Sources */ = {
+		6DC09D34F75AB777CA4E7568 /* DeviceListViewController.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 944DB8495716F160555A2EA0 /* LocalSendDeviceListViewController.m */;
+			fileRef = 944DB8495716F160555A2EA0 /* DeviceListViewController.m */;
 		};
 		6E9BD6EDB02B6ED0B94DB3AF /* LICENSE-OpenSSL.txt in Resources */ = {
 			isa = PBXBuildFile;
@@ -158,13 +158,13 @@
 			isa = PBXBuildFile;
 			fileRef = 06D632F95EDE02C5639F9066 /* Green.png */;
 		};
-		8015F2D2C81C9E8508B7CAB1 /* LocalSendPhotoPickerViewController.m in Sources */ = {
+		8015F2D2C81C9E8508B7CAB1 /* PhotoPickerViewController.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = E1AA6426AB4AC9FC322921CB /* LocalSendPhotoPickerViewController.m */;
+			fileRef = E1AA6426AB4AC9FC322921CB /* PhotoPickerViewController.m */;
 		};
-		811284E867C8B3072CA1EA03 /* LocalSendCertificateBuilder.m in Sources */ = {
+		811284E867C8B3072CA1EA03 /* CertificateBuilder.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 920B54CBD6D95A14D13071FB /* LocalSendCertificateBuilder.m */;
+			fileRef = 920B54CBD6D95A14D13071FB /* CertificateBuilder.m */;
 		};
 		9148D356898EA75677B1BEA2 /* Localsend.png in Resources */ = {
 			isa = PBXBuildFile;
@@ -174,29 +174,29 @@
 			isa = PBXBuildFile;
 			fileRef = 640B058186365FAE420D9105 /* Received@2x.png */;
 		};
-		91DDEEB561DFA84B8DC094FD /* LocalSendTLS.m in Sources */ = {
+		91DDEEB561DFA84B8DC094FD /* TLS.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 0E95F3E895EEA691FB5393E0 /* LocalSendTLS.m */;
+			fileRef = 0E95F3E895EEA691FB5393E0 /* TLS.m */;
 		};
 		954686937E2529AAF00AD17C /* Radar.png in Resources */ = {
 			isa = PBXBuildFile;
 			fileRef = 43C9B54DE0C66549060A9A45 /* Radar.png */;
 		};
-		956E2646CA48D2C6E03A6454 /* LocalSendReceivedFilesViewController.m in Sources */ = {
+		956E2646CA48D2C6E03A6454 /* ReceivedFilesViewController.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = E6A2F6E42CBC9AE147382877 /* LocalSendReceivedFilesViewController.m */;
+			fileRef = E6A2F6E42CBC9AE147382877 /* ReceivedFilesViewController.m */;
 		};
 		990861FF395BB0CF4294F818 /* OutgoingTransferComplete.caf in Resources */ = {
 			isa = PBXBuildFile;
 			fileRef = D4F6DE577DC260BE3120603C /* OutgoingTransferComplete.caf */;
 		};
-		9913541E6A384EC014B95828 /* LocalSendIdentityStore.m in Sources */ = {
+		9913541E6A384EC014B95828 /* IdentityStore.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 5DD089C174CA2EC2E51489D8 /* LocalSendIdentityStore.m */;
+			fileRef = 5DD089C174CA2EC2E51489D8 /* IdentityStore.m */;
 		};
-		A19A4ACB632B93D7C2B4EE0E /* LocalSendKeyTestViewController.m in Sources */ = {
+		A19A4ACB632B93D7C2B4EE0E /* KeyTestViewController.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 3E71D48CBE1815A93805FDBE /* LocalSendKeyTestViewController.m */;
+			fileRef = 3E71D48CBE1815A93805FDBE /* KeyTestViewController.m */;
 		};
 		AAE1E870B17D1337355DDBAD /* Purple@2x.png in Resources */ = {
 			isa = PBXBuildFile;
@@ -210,9 +210,9 @@
 			isa = PBXBuildFile;
 			fileRef = CB72554B22A8F21DC814955C /* Default.png */;
 		};
-		B05E37075E8E74F75EB28BD8 /* LocalSendDiscoveryProbe.m in Sources */ = {
+		B05E37075E8E74F75EB28BD8 /* DiscoveryProbe.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = C3689B10D860CECD0FF8D31E /* LocalSendDiscoveryProbe.m */;
+			fileRef = C3689B10D860CECD0FF8D31E /* DiscoveryProbe.m */;
 		};
 		B0FA4AE95A50E19EB941B4AB /* Received active@2x.png in Resources */ = {
 			isa = PBXBuildFile;
@@ -230,9 +230,9 @@
 			isa = PBXBuildFile;
 			fileRef = 9316566897331517B1FCD6BC /* Localsend@2x.png */;
 		};
-		B471DCA56634EA2F48F71C26 /* LocalSendKeyDiagnostics.m in Sources */ = {
+		B471DCA56634EA2F48F71C26 /* KeyDiagnostics.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 963C9923D9B86E3EE948BED3 /* LocalSendKeyDiagnostics.m */;
+			fileRef = 963C9923D9B86E3EE948BED3 /* KeyDiagnostics.m */;
 		};
 		BEFE391FE56E74CDB484DA7C /* Gold.png in Resources */ = {
 			isa = PBXBuildFile;
@@ -254,29 +254,29 @@
 			isa = PBXBuildFile;
 			fileRef = D20000000000000000000005 /* AudioToolbox.framework */;
 		};
-		DCDE427499D3BC21FB373042 /* LocalSendDiscovery.m in Sources */ = {
+		DCDE427499D3BC21FB373042 /* Discovery.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = E19A145F80D8D4DECA5654B7 /* LocalSendDiscovery.m */;
+			fileRef = E19A145F80D8D4DECA5654B7 /* Discovery.m */;
 		};
-		E2264E7F0E49D8CF371915F9 /* LocalSendReceiver.m in Sources */ = {
+		E2264E7F0E49D8CF371915F9 /* Receiver.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = A004F34220A7425ACD3C7E85 /* LocalSendReceiver.m */;
+			fileRef = A004F34220A7425ACD3C7E85 /* Receiver.m */;
 		};
-		EC1B2988E32AAA1B3233F027 /* LocalSendIncomingConnection.m in Sources */ = {
+		EC1B2988E32AAA1B3233F027 /* IncomingConnection.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 1B8EF271A20152F91E27ED97 /* LocalSendIncomingConnection.m */;
+			fileRef = 1B8EF271A20152F91E27ED97 /* IncomingConnection.m */;
 		};
-		FC320536BD00EDA46452B22C /* LocalSendRadarBackgroundView.m in Sources */ = {
+		FC320536BD00EDA46452B22C /* RadarBackgroundView.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 8589A0665A4D3E64E031F25D /* LocalSendRadarBackgroundView.m */;
+			fileRef = 8589A0665A4D3E64E031F25D /* RadarBackgroundView.m */;
 		};
-		FCFD239B8D2BFA2F4D47A80C /* LocalSendReceiveServer.m in Sources */ = {
+		FCFD239B8D2BFA2F4D47A80C /* ReceiveServer.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 33163537C68244EDBC716430 /* LocalSendReceiveServer.m */;
+			fileRef = 33163537C68244EDBC716430 /* ReceiveServer.m */;
 		};
-		EF1D34BA722DFF4AED09FB85 /* LocalSendAnimatedRadarView.m in Sources */ = {
+		EF1D34BA722DFF4AED09FB85 /* AnimatedRadarView.m in Sources */ = {
 			isa = PBXBuildFile;
-			fileRef = 5A5D25B1A8122AE11CB1545B /* LocalSendAnimatedRadarView.m */;
+			fileRef = 5A5D25B1A8122AE11CB1545B /* AnimatedRadarView.m */;
 		};
 		8C4B674D4BE4BCE290E1E8B1 /* Blip gold left.png in Resources */ = {
 			isa = PBXBuildFile;
@@ -363,8 +363,91 @@
 			fileRef = E0D8E006B31DEC15E0B33F1B /* QuartzCore.framework */;
 		};
 		F40000000000000000000001 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000012 /* JSONKit.m */; };
-		F40000000000000000000002 /* LocalSendJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000016 /* LocalSendJSON.m */; };
+		F40000000000000000000002 /* JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000016 /* JSON.m */; };
 		F40000000000000000000003 /* LICENSE-JSONKit.txt in Resources */ = {isa = PBXBuildFile; fileRef = F40000000000000000000013 /* LICENSE-JSONKit.txt */; };
+		85CD363BAC7D3BEB779C350C /* ContactBackup.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7E9AB16198B6092F47CDED /* ContactBackup.m */; };
+		180DE6E3272856C936CB1CB7 /* VCardWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 69E0D181A9C438789E8DDE39 /* VCardWriter.m */; };
+		CF284DD38009D14D1063BDF0 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F65AE5E70187C7C21E9702 /* AddressBook.framework */; };
+		43191BBFA0B60E0973E387E8 /* ReceivedEmptyView.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 66E404AA5A60E90B9D00540D /* ReceivedEmptyView.m */;
+		};
+		AAB6CC58DB89A829B8479DEB /* PhotoSaveOverlay.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 89713CC3C5A5D121161F1FF1 /* PhotoSaveOverlay.m */;
+		};
+		02F62FDB521EF5D013B6A335 /* PhotoLibrarySaver.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 88CA5027AAD110A9BB0B296A /* PhotoLibrarySaver.m */;
+		};
+		8FE2C7BAC123884CF1882827 /* ConnectionActivity.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 999BB4AAB8A00B73BDAF3944 /* ConnectionActivity.m */;
+		};
+		08BF1DE944D9FDB8AB6DEB2C /* DeviceNameViewController.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 807B913491AC7B2F751F3B97 /* DeviceNameViewController.m */;
+		};
+		74B1BFD3D97D5124CAA6CBB8 /* DiscoveryStatusViewController.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 29E5F2E5E3B8BD52F30FEB90 /* DiscoveryStatusViewController.m */;
+		};
+		877A9DEB8B49FC51497B6960 /* DiscoveryViewController+Radar.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = BB6B9E82CE54F91C403E4EF6 /* DiscoveryViewController+Radar.m */;
+		};
+		12766DB656085302BA8547A7 /* DiscoveryViewController+Sending.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 39E0463F1E07FF2A3818B018 /* DiscoveryViewController+Sending.m */;
+		};
+		DDAF190C49670EE5CA10763E /* DiscoveryViewController+Contacts.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 581E70AE3AA31B664E283A53 /* DiscoveryViewController+Contacts.m */;
+		};
+		FC4746988660C869F442A761 /* DiscoveryViewController+Receiving.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = E4AA0CFF616A206526F50AE0 /* DiscoveryViewController+Receiving.m */;
+		};
+		5E808F30930C2634BD422AE6 /* Discovery+Identity.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = E3CDC4D97C41766B8D810429 /* Discovery+Identity.m */;
+		};
+		C41A149F78F3751A36DDAB6B /* Discovery+Network.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 8BD737C02735CC005782DD69 /* Discovery+Network.m */;
+		};
+		FA1792C63FE4DD4C16ED615A /* Discovery+Probes.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 505DBA5BD79A219535298420 /* Discovery+Probes.m */;
+		};
+		2F9DC8F9ED50E2678463B007 /* Discovery+Scanning.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = DB1F716B73BED5CDE049EDBD /* Discovery+Scanning.m */;
+		};
+		9443B0CA8E9F95B8A7DDCF7E /* PhotoLibraryLoader.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 4C22E5CC8A62B07C869752E1 /* PhotoLibraryLoader.m */;
+		};
+		2D169348CCFD5E51C414F57B /* PickerAsset.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = E7A5C0BADEE21D416497FD39 /* PickerAsset.m */;
+		};
+		01843E8CF05CD8DEEC9194FF /* Transfer+Files.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = CF7CE740E76104C422128DCD /* Transfer+Files.m */;
+		};
+		1AF9238BD99EC9EA127E27C1 /* Transfer+PhotoExport.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = DEF764CA570951B1F2B26E1A /* Transfer+PhotoExport.m */;
+		};
+		57070C0AF67BE32E59C2235F /* Transfer+Protocol.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = C4D8800BAFD3411920658C6C /* Transfer+Protocol.m */;
+		};
+		83DC82223777D09308934EE7 /* Transfer+Transport.m in Sources */ = {
+			isa = PBXBuildFile;
+			fileRef = 36D5FBC01E1E1DF039ACFB28 /* Transfer+Transport.m */;
+		};
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -386,28 +469,28 @@
 			path = test_client_parser.py;
 			sourceTree = "<group>";
 		};
-		0E2FCE471EF21A0D9AEEA70C /* LocalSendPhotoGridCell.m */ = {
+		0E2FCE471EF21A0D9AEEA70C /* PhotoGridCell.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendPhotoGridCell.m;
+			path = PhotoGridCell.m;
 			sourceTree = "<group>";
 		};
-		0E39A747D578999A47E047B0 /* LocalSendRadarLayout.h */ = {
+		0E39A747D578999A47E047B0 /* RadarLayout.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendRadarLayout.h;
+			path = RadarLayout.h;
 			sourceTree = "<group>";
 		};
-		0E95F3E895EEA691FB5393E0 /* LocalSendTLS.m */ = {
+		0E95F3E895EEA691FB5393E0 /* TLS.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendTLS.m;
+			path = TLS.m;
 			sourceTree = "<group>";
 		};
-		0FB935E3697D819FC18D372E /* LocalSendFormatting.h */ = {
+		0FB935E3697D819FC18D372E /* Formatting.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendFormatting.h;
+			path = Formatting.h;
 			sourceTree = "<group>";
 		};
 		157AD02CDB42438288702A72 /* AppDelegate.h */ = {
@@ -428,10 +511,10 @@
 			path = run_transport_tests.sh;
 			sourceTree = "<group>";
 		};
-		1B8EF271A20152F91E27ED97 /* LocalSendIncomingConnection.m */ = {
+		1B8EF271A20152F91E27ED97 /* IncomingConnection.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendIncomingConnection.m;
+			path = IncomingConnection.m;
 			sourceTree = "<group>";
 		};
 		1BB7819E5DF01FA39F6626E2 /* sending_tests.m */ = {
@@ -480,16 +563,16 @@
 			path = AppDelegate.m;
 			sourceTree = "<group>";
 		};
-		26F54EBD9F5CC32D0C69DCE6 /* LocalSendTransfer.h */ = {
+		26F54EBD9F5CC32D0C69DCE6 /* Transfer.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendTransfer.h;
+			path = Transfer.h;
 			sourceTree = "<group>";
 		};
-		2CAE7819FCCA07AA99927ADF /* LocalSendCertificateFingerprint.h */ = {
+		2CAE7819FCCA07AA99927ADF /* CertificateFingerprint.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendCertificateFingerprint.h;
+			path = CertificateFingerprint.h;
 			sourceTree = "<group>";
 		};
 		2D907E8CC7D09B57251EE530 /* Received.png */ = {
@@ -498,10 +581,10 @@
 			path = Received.png;
 			sourceTree = "<group>";
 		};
-		2E64ABA36977907C6E753673 /* LocalSendDeviceListViewController.h */ = {
+		2E64ABA36977907C6E753673 /* DeviceListViewController.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendDeviceListViewController.h;
+			path = DeviceListViewController.h;
 			sourceTree = "<group>";
 		};
 		2F569B94387A8C038F3973A9 /* Settings active@2x.png */ = {
@@ -516,10 +599,10 @@
 			path = Purple.png;
 			sourceTree = "<group>";
 		};
-		33163537C68244EDBC716430 /* LocalSendReceiveServer.m */ = {
+		33163537C68244EDBC716430 /* ReceiveServer.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendReceiveServer.m;
+			path = ReceiveServer.m;
 			sourceTree = "<group>";
 		};
 		3534D34EB156F68D78772BE1 /* Received active.png */ = {
@@ -534,34 +617,34 @@
 			path = run_tests.sh;
 			sourceTree = "<group>";
 		};
-		39F9F343359667CBB524BFD0 /* LocalSendTLS.h */ = {
+		39F9F343359667CBB524BFD0 /* TLS.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendTLS.h;
+			path = TLS.h;
 			sourceTree = "<group>";
 		};
-		3B1688320B2B95DEB2F7F32A /* LocalSendKeyDiagnostics.h */ = {
+		3B1688320B2B95DEB2F7F32A /* KeyDiagnostics.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendKeyDiagnostics.h;
+			path = KeyDiagnostics.h;
 			sourceTree = "<group>";
 		};
-		3B59F73EA83C9A3FE131F95E /* LocalSendIncomingConnection.h */ = {
+		3B59F73EA83C9A3FE131F95E /* IncomingConnection.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendIncomingConnection.h;
+			path = IncomingConnection.h;
 			sourceTree = "<group>";
 		};
-		3E71D48CBE1815A93805FDBE /* LocalSendKeyTestViewController.m */ = {
+		3E71D48CBE1815A93805FDBE /* KeyTestViewController.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendKeyTestViewController.m;
+			path = KeyTestViewController.m;
 			sourceTree = "<group>";
 		};
-		3EECCC95D0DDDC8CBD9ED934 /* LocalSendHTTPSClient.h */ = {
+		3EECCC95D0DDDC8CBD9ED934 /* HTTPSClient.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendHTTPSClient.h;
+			path = HTTPSClient.h;
 			sourceTree = "<group>";
 		};
 		3F0C73413A7B832D87F18C15 /* radar_layout_tests.m */ = {
@@ -636,10 +719,10 @@
 			path = receiver_tests.m;
 			sourceTree = "<group>";
 		};
-		5DD089C174CA2EC2E51489D8 /* LocalSendIdentityStore.m */ = {
+		5DD089C174CA2EC2E51489D8 /* IdentityStore.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendIdentityStore.m;
+			path = IdentityStore.m;
 			sourceTree = "<group>";
 		};
 		5E171D305D819A230CDE92D7 /* DiscoveryViewController.m */ = {
@@ -648,10 +731,10 @@
 			path = DiscoveryViewController.m;
 			sourceTree = "<group>";
 		};
-		5F4F930DDA4D62553B5350A1 /* LocalSendDiscoveryMessage.h */ = {
+		5F4F930DDA4D62553B5350A1 /* DiscoveryMessage.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendDiscoveryMessage.h;
+			path = DiscoveryMessage.h;
 			sourceTree = "<group>";
 		};
 		610674EF0C7718A3038564E5 /* run_tests.sh */ = {
@@ -666,10 +749,10 @@
 			path = "Send file.png";
 			sourceTree = "<group>";
 		};
-		63D4B61A7E4F526266400156 /* LocalSendDiscoveryMessage.m */ = {
+		63D4B61A7E4F526266400156 /* DiscoveryMessage.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendDiscoveryMessage.m;
+			path = DiscoveryMessage.m;
 			sourceTree = "<group>";
 		};
 		640B058186365FAE420D9105 /* Received@2x.png */ = {
@@ -678,10 +761,10 @@
 			path = "Received@2x.png";
 			sourceTree = "<group>";
 		};
-		655EC151FA990A84437B2C80 /* LocalSendDiscovery.h */ = {
+		655EC151FA990A84437B2C80 /* Discovery.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendDiscovery.h;
+			path = Discovery.h;
 			sourceTree = "<group>";
 		};
 		677D75C957157F4F438491B1 /* test_transport.py */ = {
@@ -696,10 +779,10 @@
 			path = "Send file active.png";
 			sourceTree = "<group>";
 		};
-		72A3570BAE1256598482E54F /* LocalSendRadarBackgroundView.h */ = {
+		72A3570BAE1256598482E54F /* RadarBackgroundView.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendRadarBackgroundView.h;
+			path = RadarBackgroundView.h;
 			sourceTree = "<group>";
 		};
 		7821C502210F323D185D9F7B /* response_parser_tests.m */ = {
@@ -726,10 +809,10 @@
 			path = "Purple@2x.png";
 			sourceTree = "<group>";
 		};
-		81B779A6379294CCB06FE478 /* LocalSendIdentityStore.h */ = {
+		81B779A6379294CCB06FE478 /* IdentityStore.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendIdentityStore.h;
+			path = IdentityStore.h;
 			sourceTree = "<group>";
 		};
 		840A5F6F92B343152153B9CF /* OpenSSLHiddenSymbols.txt */ = {
@@ -738,22 +821,22 @@
 			path = OpenSSLHiddenSymbols.txt;
 			sourceTree = "<group>";
 		};
-		855FFAE150B7EC9369EE132A /* LocalSendCertificateFingerprint.m */ = {
+		855FFAE150B7EC9369EE132A /* CertificateFingerprint.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendCertificateFingerprint.m;
+			path = CertificateFingerprint.m;
 			sourceTree = "<group>";
 		};
-		8589A0665A4D3E64E031F25D /* LocalSendRadarBackgroundView.m */ = {
+		8589A0665A4D3E64E031F25D /* RadarBackgroundView.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendRadarBackgroundView.m;
+			path = RadarBackgroundView.m;
 			sourceTree = "<group>";
 		};
-		87793C5A0B7A7020F5B3CE2D /* LocalSendHTTPResponseParser.h */ = {
+		87793C5A0B7A7020F5B3CE2D /* HTTPResponseParser.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendHTTPResponseParser.h;
+			path = HTTPResponseParser.h;
 			sourceTree = "<group>";
 		};
 		88190FC0CFEB76D641CDF8A5 /* OpenSSL-manifest.json */ = {
@@ -762,10 +845,10 @@
 			path = "OpenSSL-manifest.json";
 			sourceTree = "<group>";
 		};
-		8954474FAFF3A30A1AF51D25 /* LocalSendDeviceBlobView.h */ = {
+		8954474FAFF3A30A1AF51D25 /* DeviceBlobView.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendDeviceBlobView.h;
+			path = DeviceBlobView.h;
 			sourceTree = "<group>";
 		};
 		8972F839442DA4AA848E3942 /* build-openssl.sh */ = {
@@ -780,10 +863,10 @@
 			path = "Green@2x.png";
 			sourceTree = "<group>";
 		};
-		8C64DF42DF39D299674B7FD2 /* LocalSendSettingsViewController.h */ = {
+		8C64DF42DF39D299674B7FD2 /* SettingsViewController.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendSettingsViewController.h;
+			path = SettingsViewController.h;
 			sourceTree = "<group>";
 		};
 		8C8AD6403703A24BE8955B6A /* .clang-format */ = {
@@ -792,16 +875,16 @@
 			path = ".clang-format";
 			sourceTree = "<group>";
 		};
-		8D1FF413CE2B3DAE7DE844ED /* LocalSendPhotoPickerViewController.h */ = {
+		8D1FF413CE2B3DAE7DE844ED /* PhotoPickerViewController.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendPhotoPickerViewController.h;
+			path = PhotoPickerViewController.h;
 			sourceTree = "<group>";
 		};
-		920B54CBD6D95A14D13071FB /* LocalSendCertificateBuilder.m */ = {
+		920B54CBD6D95A14D13071FB /* CertificateBuilder.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendCertificateBuilder.m;
+			path = CertificateBuilder.m;
 			sourceTree = "<group>";
 		};
 		9227AF91921CA99EB752DBE9 /* Blue.png */ = {
@@ -816,40 +899,40 @@
 			path = "Localsend@2x.png";
 			sourceTree = "<group>";
 		};
-		944DB8495716F160555A2EA0 /* LocalSendDeviceListViewController.m */ = {
+		944DB8495716F160555A2EA0 /* DeviceListViewController.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendDeviceListViewController.m;
+			path = DeviceListViewController.m;
 			sourceTree = "<group>";
 		};
-		963C9923D9B86E3EE948BED3 /* LocalSendKeyDiagnostics.m */ = {
+		963C9923D9B86E3EE948BED3 /* KeyDiagnostics.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendKeyDiagnostics.m;
+			path = KeyDiagnostics.m;
 			sourceTree = "<group>";
 		};
-		99D43C376503C62192BC1C83 /* LocalSendDeviceBlobView.m */ = {
+		99D43C376503C62192BC1C83 /* DeviceBlobView.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendDeviceBlobView.m;
+			path = DeviceBlobView.m;
 			sourceTree = "<group>";
 		};
-		9BDF5E496844678D69974F4F /* LocalSendCertificateBuilder.h */ = {
+		9BDF5E496844678D69974F4F /* CertificateBuilder.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendCertificateBuilder.h;
+			path = CertificateBuilder.h;
 			sourceTree = "<group>";
 		};
-		A004F34220A7425ACD3C7E85 /* LocalSendReceiver.m */ = {
+		A004F34220A7425ACD3C7E85 /* Receiver.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendReceiver.m;
+			path = Receiver.m;
 			sourceTree = "<group>";
 		};
-		A0897299F4BAE5E6B489AA26 /* LocalSendTransfer.m */ = {
+		A0897299F4BAE5E6B489AA26 /* Transfer.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendTransfer.m;
+			path = Transfer.m;
 			sourceTree = "<group>";
 		};
 		A483A964937645F5491C011D /* Gold.png */ = {
@@ -876,10 +959,10 @@
 			path = run_client_tests.sh;
 			sourceTree = "<group>";
 		};
-		A6FD34E01A5FDAB905998394 /* LocalSendRadarLayout.m */ = {
+		A6FD34E01A5FDAB905998394 /* RadarLayout.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendRadarLayout.m;
+			path = RadarLayout.m;
 			sourceTree = "<group>";
 		};
 		AA7417A9E41E57FC082A7068 /* Send file active@2x.png */ = {
@@ -894,16 +977,16 @@
 			path = "libcrypto-3.5.8-ios4.a";
 			sourceTree = "<group>";
 		};
-		AD5AF356C72FF45A3E44134D /* LocalSendSettingsViewController.m */ = {
+		AD5AF356C72FF45A3E44134D /* SettingsViewController.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendSettingsViewController.m;
+			path = SettingsViewController.m;
 			sourceTree = "<group>";
 		};
-		ADA5030E6BA559EA9A1B7780 /* LocalSendHTTPSClient.m */ = {
+		ADA5030E6BA559EA9A1B7780 /* HTTPSClient.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendHTTPSClient.m;
+			path = HTTPSClient.m;
 			sourceTree = "<group>";
 		};
 		AEC558B50613776EA9302437 /* Received active@2x.png */ = {
@@ -931,16 +1014,16 @@
 			path = Localsend.png;
 			sourceTree = "<group>";
 		};
-		BA80BE2661D3413160561410 /* LocalSendReceivedFileStore.m */ = {
+		BA80BE2661D3413160561410 /* ReceivedFileStore.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendReceivedFileStore.m;
+			path = ReceivedFileStore.m;
 			sourceTree = "<group>";
 		};
-		BF49280F32D90D94B9C2B9A8 /* LocalSendPhotoGridCell.h */ = {
+		BF49280F32D90D94B9C2B9A8 /* PhotoGridCell.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendPhotoGridCell.h;
+			path = PhotoGridCell.h;
 			sourceTree = "<group>";
 		};
 		C20000000000000000000003 /* AssetsLibrary.framework */ = {
@@ -950,10 +1033,10 @@
 			path = System/Library/Frameworks/AssetsLibrary.framework;
 			sourceTree = SDKROOT;
 		};
-		C3689B10D860CECD0FF8D31E /* LocalSendDiscoveryProbe.m */ = {
+		C3689B10D860CECD0FF8D31E /* DiscoveryProbe.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendDiscoveryProbe.m;
+			path = DiscoveryProbe.m;
 			sourceTree = "<group>";
 		};
 		C386B66B2EAD70189115381B /* Blue@2x.png */ = {
@@ -974,16 +1057,16 @@
 			path = Default.png;
 			sourceTree = "<group>";
 		};
-		CC05776824A2EDAC751CA6EB /* LocalSendFormatting.m */ = {
+		CC05776824A2EDAC751CA6EB /* Formatting.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendFormatting.m;
+			path = Formatting.m;
 			sourceTree = "<group>";
 		};
-		CC3537964ABF90E12E56277E /* LocalSendReceivedFileStore.h */ = {
+		CC3537964ABF90E12E56277E /* ReceivedFileStore.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendReceivedFileStore.h;
+			path = ReceivedFileStore.h;
 			sourceTree = "<group>";
 		};
 		CFEF16CF970BBC6C540B2769 /* libssl-3.5.8-ios4.a */ = {
@@ -992,10 +1075,10 @@
 			path = "libssl-3.5.8-ios4.a";
 			sourceTree = "<group>";
 		};
-		D1808B050D06182281FDA5B8 /* LocalSendReceivedFilesViewController.h */ = {
+		D1808B050D06182281FDA5B8 /* ReceivedFilesViewController.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendReceivedFilesViewController.h;
+			path = ReceivedFilesViewController.h;
 			sourceTree = "<group>";
 		};
 		D20000000000000000000005 /* AudioToolbox.framework */ = {
@@ -1005,10 +1088,10 @@
 			path = System/Library/Frameworks/AudioToolbox.framework;
 			sourceTree = SDKROOT;
 		};
-		D2469E39D72729321E2DD064 /* LocalSendReceiveServer.h */ = {
+		D2469E39D72729321E2DD064 /* ReceiveServer.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendReceiveServer.h;
+			path = ReceiveServer.h;
 			sourceTree = "<group>";
 		};
 		D444E6415893B87D6D8A6865 /* CoreGraphics.framework */ = {
@@ -1018,10 +1101,10 @@
 			path = System/Library/Frameworks/CoreGraphics.framework;
 			sourceTree = SDKROOT;
 		};
-		D4870EB46AB1BBE6948DB6ED /* LocalSendReceiver.h */ = {
+		D4870EB46AB1BBE6948DB6ED /* Receiver.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendReceiver.h;
+			path = Receiver.h;
 			sourceTree = "<group>";
 		};
 		D4F6DE577DC260BE3120603C /* OutgoingTransferComplete.caf */ = {
@@ -1030,10 +1113,10 @@
 			path = OutgoingTransferComplete.caf;
 			sourceTree = "<group>";
 		};
-		D54468827E501E12A435B867 /* LocalSendSounds.m */ = {
+		D54468827E501E12A435B867 /* Sounds.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendSounds.m;
+			path = Sounds.m;
 			sourceTree = "<group>";
 		};
 		DFAA9A79675E5B61B48843E5 /* .gitignore */ = {
@@ -1042,16 +1125,16 @@
 			path = .gitignore;
 			sourceTree = "<group>";
 		};
-		E19A145F80D8D4DECA5654B7 /* LocalSendDiscovery.m */ = {
+		E19A145F80D8D4DECA5654B7 /* Discovery.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendDiscovery.m;
+			path = Discovery.m;
 			sourceTree = "<group>";
 		};
-		E1AA6426AB4AC9FC322921CB /* LocalSendPhotoPickerViewController.m */ = {
+		E1AA6426AB4AC9FC322921CB /* PhotoPickerViewController.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendPhotoPickerViewController.m;
+			path = PhotoPickerViewController.m;
 			sourceTree = "<group>";
 		};
 		E1D78A18CD2944C64C2C1D2F /* asu_pid.entitlements */ = {
@@ -1060,10 +1143,10 @@
 			path = asu_pid.entitlements;
 			sourceTree = "<group>";
 		};
-		E6A2F6E42CBC9AE147382877 /* LocalSendReceivedFilesViewController.m */ = {
+		E6A2F6E42CBC9AE147382877 /* ReceivedFilesViewController.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendReceivedFilesViewController.m;
+			path = ReceivedFilesViewController.m;
 			sourceTree = "<group>";
 		};
 		E91C2CF85903169F2ADF2C73 /* client_harness.m */ = {
@@ -1072,22 +1155,22 @@
 			path = client_harness.m;
 			sourceTree = "<group>";
 		};
-		EBDCE518A7822FD912A3328D /* LocalSendDiscoveryProbe.h */ = {
+		EBDCE518A7822FD912A3328D /* DiscoveryProbe.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendDiscoveryProbe.h;
+			path = DiscoveryProbe.h;
 			sourceTree = "<group>";
 		};
-		ED57550CCBC267299B235DBD /* LocalSendHTTPResponseParser.m */ = {
+		ED57550CCBC267299B235DBD /* HTTPResponseParser.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendHTTPResponseParser.m;
+			path = HTTPResponseParser.m;
 			sourceTree = "<group>";
 		};
-		F00D8A4032BBC35FBCFD6675 /* LocalSendKeyTestViewController.h */ = {
+		F00D8A4032BBC35FBCFD6675 /* KeyTestViewController.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendKeyTestViewController.h;
+			path = KeyTestViewController.h;
 			sourceTree = "<group>";
 		};
 		F2B05D5731D031F73ABE7BA4 /* AssetsLibrary.h */ = {
@@ -1108,22 +1191,22 @@
 			path = OpenSSL.md;
 			sourceTree = "<group>";
 		};
-		FD77394551E3632AE6FC267B /* LocalSendSounds.h */ = {
+		FD77394551E3632AE6FC267B /* Sounds.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendSounds.h;
+			path = Sounds.h;
 			sourceTree = "<group>";
 		};
-		00F45BF9A80943BDB9435E6E /* LocalSendAnimatedRadarView.h */ = {
+		00F45BF9A80943BDB9435E6E /* AnimatedRadarView.h */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			path = LocalSendAnimatedRadarView.h;
+			path = AnimatedRadarView.h;
 			sourceTree = "<group>";
 		};
-		5A5D25B1A8122AE11CB1545B /* LocalSendAnimatedRadarView.m */ = {
+		5A5D25B1A8122AE11CB1545B /* AnimatedRadarView.m */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			path = LocalSendAnimatedRadarView.m;
+			path = AnimatedRadarView.m;
 			sourceTree = "<group>";
 		};
 		60C9B04C22901CFD742885BA /* Blip gold left.png */ = {
@@ -1257,8 +1340,235 @@
 		F40000000000000000000012 /* JSONKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		F40000000000000000000013 /* LICENSE-JSONKit.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "LICENSE-JSONKit.txt"; sourceTree = "<group>"; };
 		F40000000000000000000014 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		F40000000000000000000015 /* LocalSendJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalSendJSON.h; sourceTree = "<group>"; };
-		F40000000000000000000016 /* LocalSendJSON.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalSendJSON.m; sourceTree = "<group>"; };
+		F40000000000000000000015 /* JSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
+		F40000000000000000000016 /* JSON.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JSON.m; sourceTree = "<group>"; };
+		0D15B97091AB8C51E2365524 /* ContactBackup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContactBackup.h; sourceTree = "<group>"; };
+		DA7E9AB16198B6092F47CDED /* ContactBackup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContactBackup.m; sourceTree = "<group>"; };
+		2D3459229227CC9C9D927E36 /* VCardWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCardWriter.h; sourceTree = "<group>"; };
+		69E0D181A9C438789E8DDE39 /* VCardWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VCardWriter.m; sourceTree = "<group>"; };
+		C4F65AE5E70187C7C21E9702 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		92C1D42BB4DAB41E1132A587 /* ReceivedEmptyView.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = ReceivedEmptyView.h;
+			sourceTree = "<group>";
+		};
+		66E404AA5A60E90B9D00540D /* ReceivedEmptyView.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = ReceivedEmptyView.m;
+			sourceTree = "<group>";
+		};
+		696825223A044EAB78157F81 /* PhotoSaveOverlay.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = PhotoSaveOverlay.h;
+			sourceTree = "<group>";
+		};
+		89713CC3C5A5D121161F1FF1 /* PhotoSaveOverlay.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = PhotoSaveOverlay.m;
+			sourceTree = "<group>";
+		};
+		F1F904EF5718019ACB22B795 /* PhotoLibrarySaver.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = PhotoLibrarySaver.h;
+			sourceTree = "<group>";
+		};
+		88CA5027AAD110A9BB0B296A /* PhotoLibrarySaver.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = PhotoLibrarySaver.m;
+			sourceTree = "<group>";
+		};
+		92EC5E83097D5681FA7E5BDA /* photo_library_saver_tests.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = photo_library_saver_tests.m;
+			sourceTree = "<group>";
+		};
+		0ABF7350383CC2E9107C9DDF /* run_photo_saver_tests.sh */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.sh;
+			path = run_photo_saver_tests.sh;
+			sourceTree = "<group>";
+		};
+		F0627A9F6130D670AA8EC0AB /* AssetsLibrary.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = Stubs/AssetsLibrary/AssetsLibrary.h;
+			sourceTree = "<group>";
+		};
+		D8E0E4528EA0817BDA5EC9CA /* ConnectionActivity.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = ConnectionActivity.h;
+			sourceTree = "<group>";
+		};
+		999BB4AAB8A00B73BDAF3944 /* ConnectionActivity.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = ConnectionActivity.m;
+			sourceTree = "<group>";
+		};
+		2FF6E17AB470ED5007D896D7 /* DeviceNameViewController.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = DeviceNameViewController.h;
+			sourceTree = "<group>";
+		};
+		807B913491AC7B2F751F3B97 /* DeviceNameViewController.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = DeviceNameViewController.m;
+			sourceTree = "<group>";
+		};
+		84FA760A3A526FFAC5E31EEE /* DiscoveryStatusViewController.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = DiscoveryStatusViewController.h;
+			sourceTree = "<group>";
+		};
+		29E5F2E5E3B8BD52F30FEB90 /* DiscoveryStatusViewController.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = DiscoveryStatusViewController.m;
+			sourceTree = "<group>";
+		};
+		B1C27C467BB5872132BB5128 /* DiscoveryViewController+Private.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "DiscoveryViewController+Private.h";
+			sourceTree = "<group>";
+		};
+		BB6B9E82CE54F91C403E4EF6 /* DiscoveryViewController+Radar.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "DiscoveryViewController+Radar.m";
+			sourceTree = "<group>";
+		};
+		39E0463F1E07FF2A3818B018 /* DiscoveryViewController+Sending.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "DiscoveryViewController+Sending.m";
+			sourceTree = "<group>";
+		};
+		581E70AE3AA31B664E283A53 /* DiscoveryViewController+Contacts.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "DiscoveryViewController+Contacts.m";
+			sourceTree = "<group>";
+		};
+		E4AA0CFF616A206526F50AE0 /* DiscoveryViewController+Receiving.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "DiscoveryViewController+Receiving.m";
+			sourceTree = "<group>";
+		};
+		E3CDC4D97C41766B8D810429 /* Discovery+Identity.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "Discovery+Identity.m";
+			sourceTree = "<group>";
+		};
+		8BD737C02735CC005782DD69 /* Discovery+Network.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "Discovery+Network.m";
+			sourceTree = "<group>";
+		};
+		60C7B9B20916FBC6A01B5D0B /* Discovery+Private.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "Discovery+Private.h";
+			sourceTree = "<group>";
+		};
+		505DBA5BD79A219535298420 /* Discovery+Probes.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "Discovery+Probes.m";
+			sourceTree = "<group>";
+		};
+		DB1F716B73BED5CDE049EDBD /* Discovery+Scanning.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "Discovery+Scanning.m";
+			sourceTree = "<group>";
+		};
+		FC066365A018D1844CB7BA3D /* PhotoLibraryLoader.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "PhotoLibraryLoader.h";
+			sourceTree = "<group>";
+		};
+		4C22E5CC8A62B07C869752E1 /* PhotoLibraryLoader.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "PhotoLibraryLoader.m";
+			sourceTree = "<group>";
+		};
+		44C402D25BCA31016EE646FC /* PickerAsset.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "PickerAsset.h";
+			sourceTree = "<group>";
+		};
+		E7A5C0BADEE21D416497FD39 /* PickerAsset.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "PickerAsset.m";
+			sourceTree = "<group>";
+		};
+		CF7CE740E76104C422128DCD /* Transfer+Files.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "Transfer+Files.m";
+			sourceTree = "<group>";
+		};
+		DEF764CA570951B1F2B26E1A /* Transfer+PhotoExport.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "Transfer+PhotoExport.m";
+			sourceTree = "<group>";
+		};
+		87CD77317F3704B745AFD905 /* Transfer+Private.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "Transfer+Private.h";
+			sourceTree = "<group>";
+		};
+		C4D8800BAFD3411920658C6C /* Transfer+Protocol.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "Transfer+Protocol.m";
+			sourceTree = "<group>";
+		};
+		36D5FBC01E1E1DF039ACFB28 /* Transfer+Transport.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "Transfer+Transport.m";
+			sourceTree = "<group>";
+		};
+		3437999D1157A33CD45D97CE /* AssetsLibrary.h */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = AssetsLibrary.h;
+			sourceTree = "<group>";
+		};
+		CEDDA46510C333F90627ACCB /* loader_tests.m */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = loader_tests.m;
+			sourceTree = "<group>";
+		};
+		FA336F221E00D2A3FD5DEAB4 /* run_tests.sh */ = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.script.sh;
+			path = run_tests.sh;
+			sourceTree = "<group>";
+		};
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1270,6 +1580,7 @@
 				100000000000000000000004 /* Foundation.framework in Frameworks */,
 				B10000000000000000009999 /* QuickLook.framework in Frameworks */,
 				C10000000000000000000002 /* AssetsLibrary.framework in Frameworks */,
+				CF284DD38009D14D1063BDF0 /* AddressBook.framework in Frameworks */,
 				D10000000000000000000004 /* AudioToolbox.framework in Frameworks */,
 				100000000000000000000009 /* Security.framework in Frameworks */,
 				40AB7ACD791CE7FD789BED49 /* CoreGraphics.framework in Frameworks */,
@@ -1285,14 +1596,14 @@
 		013E41EE28B793AAEB263AEA /* Security */ = {
 			isa = PBXGroup;
 			children = (
-				9BDF5E496844678D69974F4F /* LocalSendCertificateBuilder.h */,
-				920B54CBD6D95A14D13071FB /* LocalSendCertificateBuilder.m */,
-				2CAE7819FCCA07AA99927ADF /* LocalSendCertificateFingerprint.h */,
-				855FFAE150B7EC9369EE132A /* LocalSendCertificateFingerprint.m */,
-				81B779A6379294CCB06FE478 /* LocalSendIdentityStore.h */,
-				5DD089C174CA2EC2E51489D8 /* LocalSendIdentityStore.m */,
-				39F9F343359667CBB524BFD0 /* LocalSendTLS.h */,
-				0E95F3E895EEA691FB5393E0 /* LocalSendTLS.m */,
+				9BDF5E496844678D69974F4F /* CertificateBuilder.h */,
+				920B54CBD6D95A14D13071FB /* CertificateBuilder.m */,
+				2CAE7819FCCA07AA99927ADF /* CertificateFingerprint.h */,
+				855FFAE150B7EC9369EE132A /* CertificateFingerprint.m */,
+				81B779A6379294CCB06FE478 /* IdentityStore.h */,
+				5DD089C174CA2EC2E51489D8 /* IdentityStore.m */,
+				39F9F343359667CBB524BFD0 /* TLS.h */,
+				0E95F3E895EEA691FB5393E0 /* TLS.m */,
 			);
 			path = Security;
 			sourceTree = "<group>";
@@ -1320,6 +1631,9 @@
 		1D672CB00E82A6143FBF4701 /* Receiving */ = {
 			isa = PBXGroup;
 			children = (
+				92EC5E83097D5681FA7E5BDA /* photo_library_saver_tests.m */,
+				0ABF7350383CC2E9107C9DDF /* run_photo_saver_tests.sh */,
+				F0627A9F6130D670AA8EC0AB /* AssetsLibrary.h */,
 				5A7ACCC92D0302BAE5A46CF0 /* receiver_tests.m */,
 				372D05DF85316BEA64C168EF /* run_tests.sh */,
 			);
@@ -1329,10 +1643,12 @@
 		28DB262163375D4AC7321E83 /* Receiving */ = {
 			isa = PBXGroup;
 			children = (
-				CC3537964ABF90E12E56277E /* LocalSendReceivedFileStore.h */,
-				BA80BE2661D3413160561410 /* LocalSendReceivedFileStore.m */,
-				D4870EB46AB1BBE6948DB6ED /* LocalSendReceiver.h */,
-				A004F34220A7425ACD3C7E85 /* LocalSendReceiver.m */,
+				F1F904EF5718019ACB22B795 /* PhotoLibrarySaver.h */,
+				88CA5027AAD110A9BB0B296A /* PhotoLibrarySaver.m */,
+				CC3537964ABF90E12E56277E /* ReceivedFileStore.h */,
+				BA80BE2661D3413160561410 /* ReceivedFileStore.m */,
+				D4870EB46AB1BBE6948DB6ED /* Receiver.h */,
+				A004F34220A7425ACD3C7E85 /* Receiver.m */,
 			);
 			path = Receiving;
 			sourceTree = "<group>";
@@ -1340,8 +1656,14 @@
 		2D7C468C9806E49F68FE17ED /* Sending */ = {
 			isa = PBXGroup;
 			children = (
-				26F54EBD9F5CC32D0C69DCE6 /* LocalSendTransfer.h */,
-				A0897299F4BAE5E6B489AA26 /* LocalSendTransfer.m */,
+				CF7CE740E76104C422128DCD /* Transfer+Files.m */,
+				DEF764CA570951B1F2B26E1A /* Transfer+PhotoExport.m */,
+				87CD77317F3704B745AFD905 /* Transfer+Private.h */,
+				C4D8800BAFD3411920658C6C /* Transfer+Protocol.m */,
+				36D5FBC01E1E1DF039ACFB28 /* Transfer+Transport.m */,
+				BCF5A95235ED4EFBCFB2FCEE /* Contacts */,
+				26F54EBD9F5CC32D0C69DCE6 /* Transfer.h */,
+				A0897299F4BAE5E6B489AA26 /* Transfer.m */,
 			);
 			path = Sending;
 			sourceTree = "<group>";
@@ -1389,6 +1711,7 @@
 				200000000000000000000005 /* Foundation.framework */,
 				B20000000000000000009999 /* QuickLook.framework */,
 				C20000000000000000000003 /* AssetsLibrary.framework */,
+				C4F65AE5E70187C7C21E9702 /* AddressBook.framework */,
 				D20000000000000000000005 /* AudioToolbox.framework */,
 				200000000000000000000016 /* Security.framework */,
 				D444E6415893B87D6D8A6865 /* CoreGraphics.framework */,
@@ -1408,10 +1731,10 @@
 		4B8A2CDA4636A6964318F02A /* Diagnostics */ = {
 			isa = PBXGroup;
 			children = (
-				3B1688320B2B95DEB2F7F32A /* LocalSendKeyDiagnostics.h */,
-				963C9923D9B86E3EE948BED3 /* LocalSendKeyDiagnostics.m */,
-				F00D8A4032BBC35FBCFD6675 /* LocalSendKeyTestViewController.h */,
-				3E71D48CBE1815A93805FDBE /* LocalSendKeyTestViewController.m */,
+				3B1688320B2B95DEB2F7F32A /* KeyDiagnostics.h */,
+				963C9923D9B86E3EE948BED3 /* KeyDiagnostics.m */,
+				F00D8A4032BBC35FBCFD6675 /* KeyTestViewController.h */,
+				3E71D48CBE1815A93805FDBE /* KeyTestViewController.m */,
 			);
 			path = Diagnostics;
 			sourceTree = "<group>";
@@ -1443,12 +1766,17 @@
 		5554C10C2D7DF53996EEC7ED /* Discovery */ = {
 			isa = PBXGroup;
 			children = (
-				655EC151FA990A84437B2C80 /* LocalSendDiscovery.h */,
-				E19A145F80D8D4DECA5654B7 /* LocalSendDiscovery.m */,
-				5F4F930DDA4D62553B5350A1 /* LocalSendDiscoveryMessage.h */,
-				63D4B61A7E4F526266400156 /* LocalSendDiscoveryMessage.m */,
-				EBDCE518A7822FD912A3328D /* LocalSendDiscoveryProbe.h */,
-				C3689B10D860CECD0FF8D31E /* LocalSendDiscoveryProbe.m */,
+				E3CDC4D97C41766B8D810429 /* Discovery+Identity.m */,
+				8BD737C02735CC005782DD69 /* Discovery+Network.m */,
+				60C7B9B20916FBC6A01B5D0B /* Discovery+Private.h */,
+				505DBA5BD79A219535298420 /* Discovery+Probes.m */,
+				DB1F716B73BED5CDE049EDBD /* Discovery+Scanning.m */,
+				655EC151FA990A84437B2C80 /* Discovery.h */,
+				E19A145F80D8D4DECA5654B7 /* Discovery.m */,
+				5F4F930DDA4D62553B5350A1 /* DiscoveryMessage.h */,
+				63D4B61A7E4F526266400156 /* DiscoveryMessage.m */,
+				EBDCE518A7822FD912A3328D /* DiscoveryProbe.h */,
+				C3689B10D860CECD0FF8D31E /* DiscoveryProbe.m */,
 			);
 			path = Discovery;
 			sourceTree = "<group>";
@@ -1456,12 +1784,12 @@
 		5F97C38691FB12E10198B671 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				0FB935E3697D819FC18D372E /* LocalSendFormatting.h */,
-				CC05776824A2EDAC751CA6EB /* LocalSendFormatting.m */,
-				F40000000000000000000015 /* LocalSendJSON.h */,
-				F40000000000000000000016 /* LocalSendJSON.m */,
-				FD77394551E3632AE6FC267B /* LocalSendSounds.h */,
-				D54468827E501E12A435B867 /* LocalSendSounds.m */,
+				0FB935E3697D819FC18D372E /* Formatting.h */,
+				CC05776824A2EDAC751CA6EB /* Formatting.m */,
+				F40000000000000000000015 /* JSON.h */,
+				F40000000000000000000016 /* JSON.m */,
+				FD77394551E3632AE6FC267B /* Sounds.h */,
+				D54468827E501E12A435B867 /* Sounds.m */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -1523,6 +1851,7 @@
 		6DC4FAD667A85B8567F612FB /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				FACFFFFBCFC67E38DB68627B /* PhotoPicker */,
 				539E94E58FC9BF22FBEEC74D /* Networking */,
 				1D672CB00E82A6143FBF4701 /* Receiving */,
 				015D21FD9778A5C25912C715 /* Sending */,
@@ -1588,26 +1917,10 @@
 		9224AF8CC49A4FB16F19786B /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				A5E84435029706BE5600DD0C /* DiscoveryViewController.h */,
-				5E171D305D819A230CDE92D7 /* DiscoveryViewController.m */,
-				BF49280F32D90D94B9C2B9A8 /* LocalSendPhotoGridCell.h */,
-				0E2FCE471EF21A0D9AEEA70C /* LocalSendPhotoGridCell.m */,
-				8D1FF413CE2B3DAE7DE844ED /* LocalSendPhotoPickerViewController.h */,
-				E1AA6426AB4AC9FC322921CB /* LocalSendPhotoPickerViewController.m */,
-				D1808B050D06182281FDA5B8 /* LocalSendReceivedFilesViewController.h */,
-				E6A2F6E42CBC9AE147382877 /* LocalSendReceivedFilesViewController.m */,
-				0E39A747D578999A47E047B0 /* LocalSendRadarLayout.h */,
-				A6FD34E01A5FDAB905998394 /* LocalSendRadarLayout.m */,
-				72A3570BAE1256598482E54F /* LocalSendRadarBackgroundView.h */,
-				8589A0665A4D3E64E031F25D /* LocalSendRadarBackgroundView.m */,
-				8954474FAFF3A30A1AF51D25 /* LocalSendDeviceBlobView.h */,
-				99D43C376503C62192BC1C83 /* LocalSendDeviceBlobView.m */,
-				2E64ABA36977907C6E753673 /* LocalSendDeviceListViewController.h */,
-				944DB8495716F160555A2EA0 /* LocalSendDeviceListViewController.m */,
-				8C64DF42DF39D299674B7FD2 /* LocalSendSettingsViewController.h */,
-				AD5AF356C72FF45A3E44134D /* LocalSendSettingsViewController.m */,
-				00F45BF9A80943BDB9435E6E /* LocalSendAnimatedRadarView.h */,
-				5A5D25B1A8122AE11CB1545B /* LocalSendAnimatedRadarView.m */,
+				A24089ECC1F5B216BCD858A8 /* Discovery */,
+				0A9773E9DBA5188CE070B508 /* PhotoPicker */,
+				A404BDECC0275F1DA7D2454D /* Received */,
+				3BFAEFB05523DE91D924A6C2 /* Settings */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1633,14 +1946,16 @@
 		D3A33CB3D5D49D8220BA0EAB /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				87793C5A0B7A7020F5B3CE2D /* LocalSendHTTPResponseParser.h */,
-				ED57550CCBC267299B235DBD /* LocalSendHTTPResponseParser.m */,
-				3EECCC95D0DDDC8CBD9ED934 /* LocalSendHTTPSClient.h */,
-				ADA5030E6BA559EA9A1B7780 /* LocalSendHTTPSClient.m */,
-				3B59F73EA83C9A3FE131F95E /* LocalSendIncomingConnection.h */,
-				1B8EF271A20152F91E27ED97 /* LocalSendIncomingConnection.m */,
-				D2469E39D72729321E2DD064 /* LocalSendReceiveServer.h */,
-				33163537C68244EDBC716430 /* LocalSendReceiveServer.m */,
+				D8E0E4528EA0817BDA5EC9CA /* ConnectionActivity.h */,
+				999BB4AAB8A00B73BDAF3944 /* ConnectionActivity.m */,
+				87793C5A0B7A7020F5B3CE2D /* HTTPResponseParser.h */,
+				ED57550CCBC267299B235DBD /* HTTPResponseParser.m */,
+				3EECCC95D0DDDC8CBD9ED934 /* HTTPSClient.h */,
+				ADA5030E6BA559EA9A1B7780 /* HTTPSClient.m */,
+				3B59F73EA83C9A3FE131F95E /* IncomingConnection.h */,
+				1B8EF271A20152F91E27ED97 /* IncomingConnection.m */,
+				D2469E39D72729321E2DD064 /* ReceiveServer.h */,
+				33163537C68244EDBC716430 /* ReceiveServer.m */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -1654,6 +1969,108 @@
 			sourceTree = "<group>";
 		};
 		F40000000000000000000021 /* JSONKit */ = {isa = PBXGroup; children = (F40000000000000000000011 /* JSONKit.h */, F40000000000000000000012 /* JSONKit.m */, F40000000000000000000013 /* LICENSE-JSONKit.txt */, F40000000000000000000014 /* README.md */,); path = JSONKit; sourceTree = "<group>"; };
+		A404BDECC0275F1DA7D2454D /* Received */ = {
+			isa = PBXGroup;
+			children = (
+				D1808B050D06182281FDA5B8 /* ReceivedFilesViewController.h */,
+				E6A2F6E42CBC9AE147382877 /* ReceivedFilesViewController.m */,
+				92C1D42BB4DAB41E1132A587 /* ReceivedEmptyView.h */,
+				66E404AA5A60E90B9D00540D /* ReceivedEmptyView.m */,
+				696825223A044EAB78157F81 /* PhotoSaveOverlay.h */,
+				89713CC3C5A5D121161F1FF1 /* PhotoSaveOverlay.m */,
+			);
+			path = Received;
+			sourceTree = "<group>";
+		};
+		A24089ECC1F5B216BCD858A8 /* Discovery */ = {
+			isa = PBXGroup;
+			children = (
+				A5E84435029706BE5600DD0C /* DiscoveryViewController.h */,
+				5E171D305D819A230CDE92D7 /* DiscoveryViewController.m */,
+				B1C27C467BB5872132BB5128 /* DiscoveryViewController+Private.h */,
+				BB6B9E82CE54F91C403E4EF6 /* DiscoveryViewController+Radar.m */,
+				39E0463F1E07FF2A3818B018 /* DiscoveryViewController+Sending.m */,
+				581E70AE3AA31B664E283A53 /* DiscoveryViewController+Contacts.m */,
+				E4AA0CFF616A206526F50AE0 /* DiscoveryViewController+Receiving.m */,
+				2E64ABA36977907C6E753673 /* DeviceListViewController.h */,
+				944DB8495716F160555A2EA0 /* DeviceListViewController.m */,
+				8954474FAFF3A30A1AF51D25 /* DeviceBlobView.h */,
+				99D43C376503C62192BC1C83 /* DeviceBlobView.m */,
+				00F45BF9A80943BDB9435E6E /* AnimatedRadarView.h */,
+				5A5D25B1A8122AE11CB1545B /* AnimatedRadarView.m */,
+				72A3570BAE1256598482E54F /* RadarBackgroundView.h */,
+				8589A0665A4D3E64E031F25D /* RadarBackgroundView.m */,
+				0E39A747D578999A47E047B0 /* RadarLayout.h */,
+				A6FD34E01A5FDAB905998394 /* RadarLayout.m */,
+			);
+			path = Discovery;
+			sourceTree = "<group>";
+		};
+		0A9773E9DBA5188CE070B508 /* PhotoPicker */ = {
+			isa = PBXGroup;
+			children = (
+				FC066365A018D1844CB7BA3D /* PhotoLibraryLoader.h */,
+				4C22E5CC8A62B07C869752E1 /* PhotoLibraryLoader.m */,
+				44C402D25BCA31016EE646FC /* PickerAsset.h */,
+				E7A5C0BADEE21D416497FD39 /* PickerAsset.m */,
+				8D1FF413CE2B3DAE7DE844ED /* PhotoPickerViewController.h */,
+				E1AA6426AB4AC9FC322921CB /* PhotoPickerViewController.m */,
+				BF49280F32D90D94B9C2B9A8 /* PhotoGridCell.h */,
+				0E2FCE471EF21A0D9AEEA70C /* PhotoGridCell.m */,
+			);
+			path = PhotoPicker;
+			sourceTree = "<group>";
+		};
+		3BFAEFB05523DE91D924A6C2 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				8C64DF42DF39D299674B7FD2 /* SettingsViewController.h */,
+				AD5AF356C72FF45A3E44134D /* SettingsViewController.m */,
+				2FF6E17AB470ED5007D896D7 /* DeviceNameViewController.h */,
+				807B913491AC7B2F751F3B97 /* DeviceNameViewController.m */,
+				84FA760A3A526FFAC5E31EEE /* DiscoveryStatusViewController.h */,
+				29E5F2E5E3B8BD52F30FEB90 /* DiscoveryStatusViewController.m */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		BCF5A95235ED4EFBCFB2FCEE /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				0D15B97091AB8C51E2365524 /* ContactBackup.h */,
+				DA7E9AB16198B6092F47CDED /* ContactBackup.m */,
+				2D3459229227CC9C9D927E36 /* VCardWriter.h */,
+				69E0D181A9C438789E8DDE39 /* VCardWriter.m */,
+			);
+			path = Contacts;
+			sourceTree = "<group>";
+		};
+		C19696EFD043B27154BF1133 /* AssetsLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				3437999D1157A33CD45D97CE /* AssetsLibrary.h */,
+			);
+			path = AssetsLibrary;
+			sourceTree = "<group>";
+		};
+		BBDBB650F4596E81EE6F66D6 /* Stubs */ = {
+			isa = PBXGroup;
+			children = (
+				C19696EFD043B27154BF1133 /* AssetsLibrary */,
+			);
+			path = Stubs;
+			sourceTree = "<group>";
+		};
+		FACFFFFBCFC67E38DB68627B /* PhotoPicker */ = {
+			isa = PBXGroup;
+			children = (
+				BBDBB650F4596E81EE6F66D6 /* Stubs */,
+				CEDDA46510C333F90627ACCB /* loader_tests.m */,
+				FA336F221E00D2A3FD5DEAB4 /* run_tests.sh */,
+			);
+			path = PhotoPicker;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1783,38 +2200,60 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E808F30930C2634BD422AE6 /* Discovery+Identity.m in Sources */,
+				C41A149F78F3751A36DDAB6B /* Discovery+Network.m in Sources */,
+				FA1792C63FE4DD4C16ED615A /* Discovery+Probes.m in Sources */,
+				2F9DC8F9ED50E2678463B007 /* Discovery+Scanning.m in Sources */,
+				9443B0CA8E9F95B8A7DDCF7E /* PhotoLibraryLoader.m in Sources */,
+				2D169348CCFD5E51C414F57B /* PickerAsset.m in Sources */,
+				01843E8CF05CD8DEEC9194FF /* Transfer+Files.m in Sources */,
+				1AF9238BD99EC9EA127E27C1 /* Transfer+PhotoExport.m in Sources */,
+				57070C0AF67BE32E59C2235F /* Transfer+Protocol.m in Sources */,
+				83DC82223777D09308934EE7 /* Transfer+Transport.m in Sources */,
+				08BF1DE944D9FDB8AB6DEB2C /* DeviceNameViewController.m in Sources */,
+				74B1BFD3D97D5124CAA6CBB8 /* DiscoveryStatusViewController.m in Sources */,
 				13D80FF19E69CACB141928BB /* AppDelegate.m in Sources */,
 				61A09B3ABF3EAAFDEDC5C8D6 /* main.m in Sources */,
-				B471DCA56634EA2F48F71C26 /* LocalSendKeyDiagnostics.m in Sources */,
-				A19A4ACB632B93D7C2B4EE0E /* LocalSendKeyTestViewController.m in Sources */,
-				DCDE427499D3BC21FB373042 /* LocalSendDiscovery.m in Sources */,
-				39DDA7E6D05A389F98026758 /* LocalSendDiscoveryMessage.m in Sources */,
-				B05E37075E8E74F75EB28BD8 /* LocalSendDiscoveryProbe.m in Sources */,
-				33C3BF6724FC8FEBFD047BA0 /* LocalSendHTTPResponseParser.m in Sources */,
-				4175345F1E39BB481375DFBD /* LocalSendHTTPSClient.m in Sources */,
-				EC1B2988E32AAA1B3233F027 /* LocalSendIncomingConnection.m in Sources */,
-				FCFD239B8D2BFA2F4D47A80C /* LocalSendReceiveServer.m in Sources */,
-				4034CF255AD1CF24C220395B /* LocalSendReceivedFileStore.m in Sources */,
-				E2264E7F0E49D8CF371915F9 /* LocalSendReceiver.m in Sources */,
+				B471DCA56634EA2F48F71C26 /* KeyDiagnostics.m in Sources */,
+				A19A4ACB632B93D7C2B4EE0E /* KeyTestViewController.m in Sources */,
+				DCDE427499D3BC21FB373042 /* Discovery.m in Sources */,
+				39DDA7E6D05A389F98026758 /* DiscoveryMessage.m in Sources */,
+				B05E37075E8E74F75EB28BD8 /* DiscoveryProbe.m in Sources */,
+				33C3BF6724FC8FEBFD047BA0 /* HTTPResponseParser.m in Sources */,
+				4175345F1E39BB481375DFBD /* HTTPSClient.m in Sources */,
+				EC1B2988E32AAA1B3233F027 /* IncomingConnection.m in Sources */,
+				FCFD239B8D2BFA2F4D47A80C /* ReceiveServer.m in Sources */,
+				4034CF255AD1CF24C220395B /* ReceivedFileStore.m in Sources */,
+				E2264E7F0E49D8CF371915F9 /* Receiver.m in Sources */,
 				12B4525B2DED61D266DE3F11 /* DiscoveryViewController.m in Sources */,
-				626BD7D9BA689B7F1184C43D /* LocalSendPhotoGridCell.m in Sources */,
-				8015F2D2C81C9E8508B7CAB1 /* LocalSendPhotoPickerViewController.m in Sources */,
-				956E2646CA48D2C6E03A6454 /* LocalSendReceivedFilesViewController.m in Sources */,
-				811284E867C8B3072CA1EA03 /* LocalSendCertificateBuilder.m in Sources */,
-				25244691B39136E34DE5F30E /* LocalSendCertificateFingerprint.m in Sources */,
-				9913541E6A384EC014B95828 /* LocalSendIdentityStore.m in Sources */,
-				91DDEEB561DFA84B8DC094FD /* LocalSendTLS.m in Sources */,
-				2A82990B62E4BAF53FADEEE1 /* LocalSendTransfer.m in Sources */,
-				430B6FA718905A20AD52DAF8 /* LocalSendFormatting.m in Sources */,
-				F40000000000000000000002 /* LocalSendJSON.m in Sources */,
+				877A9DEB8B49FC51497B6960 /* DiscoveryViewController+Radar.m in Sources */,
+				12766DB656085302BA8547A7 /* DiscoveryViewController+Sending.m in Sources */,
+				DDAF190C49670EE5CA10763E /* DiscoveryViewController+Contacts.m in Sources */,
+				FC4746988660C869F442A761 /* DiscoveryViewController+Receiving.m in Sources */,
+				626BD7D9BA689B7F1184C43D /* PhotoGridCell.m in Sources */,
+				8015F2D2C81C9E8508B7CAB1 /* PhotoPickerViewController.m in Sources */,
+				956E2646CA48D2C6E03A6454 /* ReceivedFilesViewController.m in Sources */,
+				8FE2C7BAC123884CF1882827 /* ConnectionActivity.m in Sources */,
+				43191BBFA0B60E0973E387E8 /* ReceivedEmptyView.m in Sources */,
+				AAB6CC58DB89A829B8479DEB /* PhotoSaveOverlay.m in Sources */,
+				02F62FDB521EF5D013B6A335 /* PhotoLibrarySaver.m in Sources */,
+				811284E867C8B3072CA1EA03 /* CertificateBuilder.m in Sources */,
+				25244691B39136E34DE5F30E /* CertificateFingerprint.m in Sources */,
+				9913541E6A384EC014B95828 /* IdentityStore.m in Sources */,
+				91DDEEB561DFA84B8DC094FD /* TLS.m in Sources */,
+				2A82990B62E4BAF53FADEEE1 /* Transfer.m in Sources */,
+				85CD363BAC7D3BEB779C350C /* ContactBackup.m in Sources */,
+				180DE6E3272856C936CB1CB7 /* VCardWriter.m in Sources */,
+				430B6FA718905A20AD52DAF8 /* Formatting.m in Sources */,
+				F40000000000000000000002 /* JSON.m in Sources */,
 				F40000000000000000000001 /* JSONKit.m in Sources */,
-				652F27C498A438F47121ACB6 /* LocalSendSounds.m in Sources */,
-				17AC3D32FEBC8087678F4AB9 /* LocalSendRadarLayout.m in Sources */,
-				FC320536BD00EDA46452B22C /* LocalSendRadarBackgroundView.m in Sources */,
-				122878C59B9D30CB4EEAA73B /* LocalSendDeviceBlobView.m in Sources */,
-				6DC09D34F75AB777CA4E7568 /* LocalSendDeviceListViewController.m in Sources */,
-				42682ACA6511DD7C0A61AE3E /* LocalSendSettingsViewController.m in Sources */,
-				EF1D34BA722DFF4AED09FB85 /* LocalSendAnimatedRadarView.m in Sources */,
+				652F27C498A438F47121ACB6 /* Sounds.m in Sources */,
+				17AC3D32FEBC8087678F4AB9 /* RadarLayout.m in Sources */,
+				FC320536BD00EDA46452B22C /* RadarBackgroundView.m in Sources */,
+				122878C59B9D30CB4EEAA73B /* DeviceBlobView.m in Sources */,
+				6DC09D34F75AB777CA4E7568 /* DeviceListViewController.m in Sources */,
+				42682ACA6511DD7C0A61AE3E /* SettingsViewController.m in Sources */,
+				EF1D34BA722DFF4AED09FB85 /* AnimatedRadarView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1866,10 +2305,14 @@
 					"$(SRCROOT)/Sources/Application",
 					"$(SRCROOT)/Sources/Discovery",
 					"$(SRCROOT)/Sources/Sending",
+					"$(SRCROOT)/Sources/Sending/Contacts",
 					"$(SRCROOT)/Sources/Receiving",
 					"$(SRCROOT)/Sources/Networking",
 					"$(SRCROOT)/Sources/Security",
-					"$(SRCROOT)/Sources/Screens",
+					"$(SRCROOT)/Sources/Screens/Discovery",
+					"$(SRCROOT)/Sources/Screens/PhotoPicker",
+					"$(SRCROOT)/Sources/Screens/Settings",
+					"$(SRCROOT)/Sources/Screens/Received",
 					"$(SRCROOT)/Sources/Diagnostics",
 					"$(SRCROOT)/Sources/Shared",
 					"$(SRCROOT)/Vendor/JSONKit",
@@ -1904,10 +2347,14 @@
 					"$(SRCROOT)/Sources/Application",
 					"$(SRCROOT)/Sources/Discovery",
 					"$(SRCROOT)/Sources/Sending",
+					"$(SRCROOT)/Sources/Sending/Contacts",
 					"$(SRCROOT)/Sources/Receiving",
 					"$(SRCROOT)/Sources/Networking",
 					"$(SRCROOT)/Sources/Security",
-					"$(SRCROOT)/Sources/Screens",
+					"$(SRCROOT)/Sources/Screens/Discovery",
+					"$(SRCROOT)/Sources/Screens/PhotoPicker",
+					"$(SRCROOT)/Sources/Screens/Settings",
+					"$(SRCROOT)/Sources/Screens/Received",
 					"$(SRCROOT)/Sources/Diagnostics",
 					"$(SRCROOT)/Sources/Shared",
 					"$(SRCROOT)/Vendor/JSONKit",

@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #include <string.h>
-#import "LocalSendHTTPResponseParser.h"
-#import "LocalSendCertificateFingerprint.h"
+#import "HTTPResponseParser.h"
+#import "CertificateFingerprint.h"
 static int checks = 0, failed = 0;
 static void Check(BOOL pass, NSString *name) {
     checks++;
@@ -14,7 +14,7 @@ static void Response(NSString *name, NSString *wire, BOOL eof, int expected, NSS
     NSInteger status = 0;
     NSData *body = nil;
     NSString *error = nil;
-    int result = LocalSendParseHTTPResponse([wire dataUsingEncoding:NSISOLatin1StringEncoding], eof, &status,
+    int result = ParseHTTPResponse([wire dataUsingEncoding:NSISOLatin1StringEncoding], eof, &status,
                                             &body, &error);
     BOOL pass = result == expected;
     if (expected > 0 && expectedBody != nil) {
@@ -34,11 +34,11 @@ static void Fragmented(NSString *name, NSString *wire) {
     for (NSUInteger i = 0; i < [data length]; i++) {
         NSInteger status = 0;
         NSString *error = nil;
-        if (LocalSendParseHTTPResponse([data subdataWithRange:NSMakeRange(0, i)], NO, &status, NULL,
+        if (ParseHTTPResponse([data subdataWithRange:NSMakeRange(0, i)], NO, &status, NULL,
                                        &error) != 0) {
             pass = NO;
         }
-        if (LocalSendParseHTTPResponse([data subdataWithRange:NSMakeRange(0, i)], YES, &status, NULL,
+        if (ParseHTTPResponse([data subdataWithRange:NSMakeRange(0, i)], YES, &status, NULL,
                                        &error) != -1) {
             pass = NO;
         }
@@ -107,15 +107,15 @@ int main(void) {
              [@"HTTP/1.1 200 OK\r\nX: " stringByAppendingString:large], NO, -1, nil);
     NSString *fp = [@"A" stringByPaddingToLength:64 withString:@"A" startingAtIndex:0];
     NSString *other = [@"B" stringByPaddingToLength:64 withString:@"B" startingAtIndex:0];
-    Check(LocalSendPeerFingerprintMatches(fp, fp, NO), @"Transfer matching pin accepted");
-    Check(!LocalSendPeerFingerprintMatches(other, fp, NO), @"Transfer wrong pin rejected");
-    Check(!LocalSendPeerFingerprintMatches(nil, fp, NO), @"Transfer missing pin rejected");
-    Check(LocalSendPeerFingerprintMatches(nil, fp, YES), @"Unknown discovery learns pin");
-    Check(!LocalSendPeerFingerprintMatches(other, fp, YES), @"Advertised discovery pin cannot be bypassed");
-    Check(!LocalSendPeerFingerprintMatches(@"invalid", fp, YES), @"Invalid advertised pin rejected");
-    Check(!LocalSendPeerFingerprintMatches(nil, @"invalid", YES),
+    Check(PeerFingerprintMatches(fp, fp, NO), @"Transfer matching pin accepted");
+    Check(!PeerFingerprintMatches(other, fp, NO), @"Transfer wrong pin rejected");
+    Check(!PeerFingerprintMatches(nil, fp, NO), @"Transfer missing pin rejected");
+    Check(PeerFingerprintMatches(nil, fp, YES), @"Unknown discovery learns pin");
+    Check(!PeerFingerprintMatches(other, fp, YES), @"Advertised discovery pin cannot be bypassed");
+    Check(!PeerFingerprintMatches(@"invalid", fp, YES), @"Invalid advertised pin rejected");
+    Check(!PeerFingerprintMatches(nil, @"invalid", YES),
           @"Discovery requires valid actual fingerprint");
-    Check(LocalSendPeerFingerprintMatches([fp lowercaseString], fp, NO), @"Fingerprint case normalized");
+    Check(PeerFingerprintMatches([fp lowercaseString], fp, NO), @"Fingerprint case normalized");
     printf("%d/%d tests passed\n", checks - failed, checks);
     [pool drain];
     return failed ? 1 : 0;

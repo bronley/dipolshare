@@ -1,13 +1,13 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
 #import <arpa/inet.h>
-#import "LocalSendReceiveServer.h"
-@interface HarnessDelegate : NSObject <LocalSendReceiveServerDelegate> {
+#import "ReceiveServer.h"
+@interface HarnessDelegate : NSObject <ReceiveServerDelegate> {
     NSUInteger _began, _finished, _aborted, _maxBlock, _disconnects;
 }
 @end
 @implementation HarnessDelegate
-- (NSDictionary *)receiveServer:(LocalSendReceiveServer *)server
+- (NSDictionary *)receiveServer:(ReceiveServer *)server
               responseForMethod:(NSString *)method
                          target:(NSString *)target
                         headers:(NSDictionary *)headers
@@ -42,7 +42,7 @@
     return [NSDictionary
         dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:200], @"status", body, @"body", nil];
 }
-- (id)receiveServer:(LocalSendReceiveServer *)server
+- (id)receiveServer:(ReceiveServer *)server
     beginUploadToTarget:(NSString *)target
                 headers:(NSDictionary *)headers
                    peer:(NSDictionary *)peer
@@ -59,7 +59,7 @@
                                                              [NSNumber numberWithUnsignedLongLong:length],
                                                              @"length", nil];
 }
-- (BOOL)receiveServer:(LocalSendReceiveServer *)server upload:(id)upload appendData:(NSData *)data {
+- (BOOL)receiveServer:(ReceiveServer *)server upload:(id)upload appendData:(NSData *)data {
     @synchronized(self) {
         _maxBlock = MAX(_maxBlock, [data length]);
     }
@@ -67,7 +67,7 @@
     [accumulated appendData:data];
     return [accumulated length] <= [[upload objectForKey:@"length"] unsignedLongLongValue];
 }
-- (NSInteger)receiveServer:(LocalSendReceiveServer *)server finishUpload:(id)upload {
+- (NSInteger)receiveServer:(ReceiveServer *)server finishUpload:(id)upload {
     @synchronized(self) {
         _finished++;
     }
@@ -75,7 +75,7 @@
                ? 200
                : 422;
 }
-- (void)receiveServer:(LocalSendReceiveServer *)server abortUpload:(id)upload {
+- (void)receiveServer:(ReceiveServer *)server abortUpload:(id)upload {
     @synchronized(self) {
         _aborted++;
     }
@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
     SecIdentityRef identity =
         (SecIdentityRef)[[(NSArray *)imported objectAtIndex:0] objectForKey:(id)kSecImportItemIdentity];
     HarnessDelegate *delegate = [[HarnessDelegate alloc] init];
-    LocalSendReceiveServer *server = [[LocalSendReceiveServer alloc] initWithIdentity:identity
+    ReceiveServer *server = [[ReceiveServer alloc] initWithIdentity:identity
                                                                              delegate:delegate];
     CFRelease(imported);
     int listener = socket(AF_INET, SOCK_STREAM, 0);

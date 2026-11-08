@@ -29,8 +29,8 @@ clang -fno-objc-arc -g -fsanitize=address -Wall -Wextra \
     -include "$test_directory/security_legacy_declaration.h" \
     -I "$openssl_directory/include" -I "$source_directory/Networking" -I "$source_directory/Security" \
     -I "$source_directory/Shared" -I "$(dirname "$source_directory")/Vendor/JSONKit" \
-    "$test_directory/transport_harness.m" "$source_directory/Networking/LocalSendReceiveServer.m" "$source_directory/Networking/LocalSendIncomingConnection.m" \
-    "$source_directory/Security/LocalSendTLS.m" "$source_directory/Networking/LocalSendConnectionActivity.m" "$source_directory/Shared/LocalSendJSON.m" \
+    "$test_directory/transport_harness.m" "$source_directory/Networking/ReceiveServer.m" "$source_directory/Networking/IncomingConnection.m" \
+    "$source_directory/Security/TLS.m" "$source_directory/Networking/ConnectionActivity.m" "$source_directory/Shared/JSON.m" \
     "$(dirname "$source_directory")/Vendor/JSONKit/JSONKit.m" \
     "$openssl_directory/libssl.a" "$openssl_directory/libcrypto.a" \
     -framework Foundation -framework Security \

@@ -17,6 +17,7 @@ DipolShare_FRAMEWORKS = \
     Security \
     QuickLook \
     AssetsLibrary \
+    AddressBook \
     MobileCoreServices \
     AudioToolbox \
     QuartzCore

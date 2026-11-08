@@ -12,8 +12,8 @@ with tempfile.TemporaryDirectory(prefix='localsend-parser-tests-') as directory:
     subprocess.run([
         'xcrun', 'clang', '-framework', 'Foundation', '-Wall', '-Wextra', '-Werror',
         '-fsanitize=address,undefined', '-I', str(app_dir / 'Networking'), '-I', str(app_dir / 'Security'), '-o', str(binary), str(path),
-        str(app_dir / 'Networking/LocalSendHTTPResponseParser.m'),
-        str(app_dir / 'Security/LocalSendCertificateFingerprint.m'),
+        str(app_dir / 'Networking/HTTPResponseParser.m'),
+        str(app_dir / 'Security/CertificateFingerprint.m'),
     ], check=True)
     result = subprocess.run([str(binary)], capture_output=True, text=True)
 print(result.stdout, end='')

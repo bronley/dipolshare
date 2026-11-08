@@ -42,6 +42,8 @@
 	</dict>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>NSContactsUsageDescription</key>
+	<string>Create a contact backup to send to a device you choose.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>

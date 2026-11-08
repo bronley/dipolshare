@@ -13,6 +13,7 @@ DipolShare brings LocalSend-compatible sharing to classic iOS devices. You can s
 - Send and receive files and clipboard text
 - Discover nearby LocalSend devices
 - Browse received files in the app
+- Back up all contacts as a dated `.vcf` file: choose a device → **More...** → **Back Up Contacts** → **Send**
 
 ## Compatibility
 

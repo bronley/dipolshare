@@ -12,13 +12,13 @@ def source_file(name):
         raise RuntimeError(f"Expected exactly one {name}, found {len(matches)}")
     return matches[0]
 
-transfer = source_file("LocalSendTransfer.m")
-json_adapter = source_file("LocalSendJSON.m")
+transfer = source_file("Transfer.m")
+json_adapter = source_file("JSON.m")
 jsonkit = project / "Vendor/JSONKit/JSONKit.m"
 headers = [source_file(name).parent for name in (
-    "LocalSendTransfer.h", "LocalSendHTTPSClient.h",
-    "LocalSendIdentityStore.h", "LocalSendSounds.h", "LocalSendJSON.h",
-    "LocalSendDiscovery.h")]
+    "Transfer.h", "HTTPSClient.h",
+    "IdentityStore.h", "Sounds.h", "JSON.h",
+    "Discovery.h")]
 headers.append(jsonkit.parent)
 
 with tempfile.TemporaryDirectory(prefix="localsend-sending-tests-") as build:
@@ -29,7 +29,8 @@ with tempfile.TemporaryDirectory(prefix="localsend-sending-tests-") as build:
         "-I", str(tests / "Stubs")]
     for directory in sorted(set(headers)):
         command += ["-I", str(directory)]
-    command += [str(transfer), str(json_adapter), str(jsonkit),
+    command += [str(transfer)] + [str(p) for p in sorted(transfer.parent.glob("Transfer+*.m"))]
+    command += [str(json_adapter), str(jsonkit),
         str(tests / "sending_tests.m"), "-o", str(executable)]
     subprocess.run(command, check=True)
     subprocess.run([str(executable)], check=True)

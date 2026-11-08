@@ -11,9 +11,9 @@ clang -fno-objc-arc -fblocks -g -fsanitize=address,undefined -Wall -Wextra \
     -I "$source_directory/Receiving" -I "$source_directory/Networking" \
     -I "$source_directory/Security" -I "$source_directory/Shared" \
     -I "$project_directory/Vendor/JSONKit" \
-    "$test_directory/refresh_tests.m" "$source_directory/Discovery/LocalSendDiscovery.m" \
-    "$source_directory/Discovery/LocalSendDiscoveryMessage.m" \
-    "$source_directory/Networking/LocalSendConnectionActivity.m" \
-    "$source_directory/Shared/LocalSendJSON.m" "$project_directory/Vendor/JSONKit/JSONKit.m" \
+    "$test_directory/refresh_tests.m" "$source_directory/Discovery/Discovery.m" "$source_directory"/Discovery/Discovery+*.m \
+    "$source_directory/Discovery/DiscoveryMessage.m" \
+    "$source_directory/Networking/ConnectionActivity.m" \
+    "$source_directory/Shared/JSON.m" "$project_directory/Vendor/JSONKit/JSONKit.m" \
     -framework Foundation -framework Security -o "$temporary_directory/refresh_tests"
 "$temporary_directory/refresh_tests"

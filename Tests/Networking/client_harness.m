@@ -1,13 +1,13 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
-#import "LocalSendHTTPSClient.h"
+#import "HTTPSClient.h"
 #undef SecKeyRawSign
 extern OSStatus SecKeyRawSign(SecKeyRef key, SecPadding padding, const uint8_t *data,
                               size_t length, uint8_t *signature, size_t *signatureLength);
 static NSCondition *signingGate;
 static BOOL holdSigning, enteredSigning, releaseSigning;
 static NSUInteger signingCalls;
-OSStatus LocalSendTestSecKeyRawSign(SecKeyRef key, SecPadding padding, const uint8_t *data,
+OSStatus TestSecKeyRawSign(SecKeyRef key, SecPadding padding, const uint8_t *data,
                                     size_t length, uint8_t *signature, size_t *signatureLength) {
     [signingGate lock];
     signingCalls++;
@@ -22,7 +22,7 @@ static BOOL SigningHasEntered(void) {
     [signingGate unlock];
     return entered;
 }
-@interface ClientDelegate : NSObject <LocalSendHTTPSClientDelegate> {
+@interface ClientDelegate : NSObject <HTTPSClientDelegate> {
   @public
     BOOL done;
     NSDictionary *result;
@@ -32,7 +32,7 @@ static BOOL SigningHasEntered(void) {
 }
 @end
 @implementation ClientDelegate
-- (void)httpsClient:(LocalSendHTTPSClient *)transport
+- (void)httpsClient:(HTTPSClient *)transport
     didCompleteWithStatus:(NSInteger)status
                      body:(NSData *)body {
     NSString *text = [[[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding] autorelease];
@@ -42,13 +42,13 @@ static BOOL SigningHasEntered(void) {
                                                           [transport peerFingerprint] ?: @"", @"pin", nil];
     done = YES;
 }
-- (void)httpsClient:(LocalSendHTTPSClient *)transport didFailWithMessage:(NSString *)message {
+- (void)httpsClient:(HTTPSClient *)transport didFailWithMessage:(NSString *)message {
     result = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithBool:NO], @"completed", message,
                                                           @"error", [transport peerFingerprint] ?: @"",
                                                           @"pin", [transport diagnosticStatus], @"diagnostic", nil];
     done = YES;
 }
-- (void)httpsClient:(LocalSendHTTPSClient *)transport
+- (void)httpsClient:(HTTPSClient *)transport
     didSendBodyBytes:(unsigned long long)sent
           totalBytes:(unsigned long long)total {
     (void)transport;
@@ -62,12 +62,12 @@ static BOOL SigningHasEntered(void) {
 }
 @end
 
-@interface LocalSendHTTPSClient (ProgressTests)
+@interface HTTPSClient (ProgressTests)
 - (void)reportProgressSent:(unsigned long long)sent total:(unsigned long long)total;
 @end
 @interface ProgressProducer : NSObject {
   @public
-    LocalSendHTTPSClient *client;
+    HTTPSClient *client;
     NSCondition *condition;
     BOOL finished;
 }
@@ -91,7 +91,7 @@ static BOOL SigningHasEntered(void) {
 
 static int TestProgressBackpressure(void) {
     ClientDelegate *delegate = [ClientDelegate new];
-    LocalSendHTTPSClient *client = [[LocalSendHTTPSClient alloc] initWithHost:@"127.0.0.1" port:@1
+    HTTPSClient *client = [[HTTPSClient alloc] initWithHost:@"127.0.0.1" port:@1
         identity:NULL expectedFingerprint:nil delegate:delegate];
     ProgressProducer *producer = [ProgressProducer new];
     producer->client = client;
@@ -139,8 +139,8 @@ int main(int argc, char **argv) {
         (SecIdentityRef)[[(NSArray *)imported objectAtIndex:0] objectForKey:(id)kSecImportItemIdentity];
     ClientDelegate *delegate = [ClientDelegate new];
     NSString *expected = strcmp(argv[3], "-") == 0 ? nil : [NSString stringWithUTF8String:argv[3]];
-    LocalSendHTTPSClient *transport =
-        [[LocalSendHTTPSClient alloc] initWithHost:@"127.0.0.1"
+    HTTPSClient *transport =
+        [[HTTPSClient alloc] initWithHost:@"127.0.0.1"
                                               port:[NSNumber numberWithInt:atoi(argv[2])]
                                           identity:identity
                                expectedFingerprint:expected
