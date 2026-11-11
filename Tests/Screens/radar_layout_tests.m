@@ -107,7 +107,6 @@ int main(void) {
                                                      reservedFrames:[NSArray array]];
     CheckLayout(manyDevices, tallScreen, tall);
 
-    // Real discovery-pane sizes after subtracting the iPad sidebar and bars.
     CGRect tabletLandscape = CGRectMake(0, 0, 724, 704);
     CGRect tabletPortrait = CGRectMake(0, 0, 468, 960);
     CGFloat tabletRadarY = [RadarLayout radarCenterYInBounds:tabletLandscape];

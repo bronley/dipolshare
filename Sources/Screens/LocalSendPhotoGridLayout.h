@@ -24,7 +24,6 @@ static inline CGFloat LocalSendPhotoGridSpacing(CGFloat width) {
 static inline CGFloat LocalSendPhotoFrameBorder(CGFloat width) {
     return width < 468.0f ? 2.0f : 6.0f;
 }
-// Fit the entire image inside a white frame, centered in its square grid slot.
 static inline CGRect LocalSendPhotoFrameInSlot(CGRect slot, CGSize image, CGFloat border) {
     CGFloat available = MAX(1.0f, MIN(slot.size.width, slot.size.height) - 2 * border);
     if (image.width <= 0 || image.height <= 0) image = CGSizeMake(1, 1);

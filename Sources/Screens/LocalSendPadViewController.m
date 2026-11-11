@@ -68,10 +68,8 @@
 
 - (void)layoutPanes {
     CGRect bounds = self.view.bounds;
-    // Paper: a 300-point sidebar, with the rest of the screen for discovery.
     _receivedNavigation.view.frame = CGRectMake(0, 0, 300, bounds.size.height);
     _sendNavigation.view.frame = CGRectMake(300, 0, bounds.size.width - 300, bounds.size.height);
-    // Join the native navigation bars edge-to-edge. Only the content gets a divider.
     CGRect barFrame = [_receivedNavigation.navigationBar
         convertRect:_receivedNavigation.navigationBar.bounds toView:self.view];
     CGFloat dividerTop = CGRectGetMaxY(barFrame);
@@ -80,7 +78,6 @@
     [send layoutForContainer];
 }
 
-// Forward explicitly on every supported OS; iOS 4 has no containment forwarding.
 - (BOOL)automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers { return NO; }
 - (BOOL)shouldAutomaticallyForwardAppearanceMethods { return NO; }
 - (BOOL)shouldAutomaticallyForwardRotationMethods { return NO; }
@@ -125,12 +122,9 @@
     }
 }
 - (void)showSettings {
-    // A fresh stack always opens at the settings root, rather than an old drill-down.
     [_settingsPopover dismissPopoverAnimated:NO];
     [_settingsPopover release];
     SettingsViewController *settings = [[SettingsViewController alloc] init];
-    // Navigation controllers size popovers from their top screen plus the bar.
-    // Set the root's content size too, so pushes and pops keep the same height.
     settings.contentSizeForViewInPopover = CGSizeMake(320, 500);
     UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:settings];
     navigation.navigationBar.barStyle = UIBarStyleBlack;

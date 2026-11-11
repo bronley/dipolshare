@@ -90,7 +90,6 @@ static const NSUInteger MaximumSelectedPhotos = 100;
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)orientation {
     [super didRotateFromInterfaceOrientation:orientation];
-    // iOS 4 does not call viewDidLayoutSubviews.
     [self updateGridLayout];
 }
 

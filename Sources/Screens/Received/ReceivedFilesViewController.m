@@ -192,7 +192,6 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     }
     _fileActionsSheet.cancelButtonIndex = [_fileActionsSheet addButtonWithTitle:@"Cancel"];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        // Keep the anchor in table coordinates so scrolled rows work as well.
         CGRect rowRect = [tableView rectForRowAtIndexPath:indexPath];
         [_fileActionsSheet showFromRect:rowRect inView:tableView animated:YES];
     } else {
@@ -267,7 +266,6 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
         return;
     }
     if ([self selectedFileCanSaveToPhotos]) {
-        // Decode a bounded display image; Save and Open In still use the original file.
         CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)fileURL, NULL);
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithBool:YES], (NSString *)kCGImageSourceCreateThumbnailFromImageAlways,
@@ -304,8 +302,6 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     QLPreviewController *preview = [[QLPreviewController alloc] init];
     preview.dataSource = self;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        // Present from the whole workspace, rather than pushing into the sidebar.
-        // Modal Quick Look supplies its own navigation controls and Done button.
         preview.modalPresentationStyle = UIModalPresentationFullScreen;
         UIViewController *workspace = self.view.window.rootViewController;
         [workspace presentModalViewController:preview animated:YES];

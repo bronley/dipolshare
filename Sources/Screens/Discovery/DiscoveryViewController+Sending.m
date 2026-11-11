@@ -115,12 +115,9 @@ static const NSInteger ContactsAction = 2;
         NSString *identifier = [RadarLayout identifierForDevice:_selectedDevice];
         DeviceBlobView *blob = [_blobViewsByIdentifier objectForKey:identifier];
         if (blob.superview != nil && !blob.hidden) {
-            // Convert the tapped device's actual bounds, including its label,
-            // into the pane's coordinates rather than anchoring to the radar center.
             CGRect anchor = [blob convertRect:blob.bounds toView:self.view];
             [_sendActionsSheet showFromRect:anchor inView:self.view animated:YES];
         } else if (!self.navigationController.toolbarHidden && [self.toolbarItems count] > 0) {
-            // Devices selected from the overflow list may have no radar blob.
             [_sendActionsSheet showFromBarButtonItem:[self.toolbarItems objectAtIndex:0] animated:YES];
         } else {
             [_sendActionsSheet showFromRect:[_radarView convertRect:_radarView.bounds toView:self.view]
