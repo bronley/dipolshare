@@ -19,7 +19,8 @@ DipolShare_FRAMEWORKS = \
     AssetsLibrary \
     MobileCoreServices \
     AudioToolbox \
-    QuartzCore
+    QuartzCore \
+    ImageIO
 
 DipolShare_RESOURCE_DIRS = Resources/Images Resources/Sounds
 DipolShare_RESOURCE_FILES = Configuration/Info.plist

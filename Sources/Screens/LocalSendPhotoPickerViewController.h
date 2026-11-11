@@ -12,6 +12,7 @@
 @end
 
 @interface LocalSendPhotoPickerViewController : UITableViewController <LocalSendPhotoGridCellDelegate> {
+    NSUInteger _columns;
     ALAssetsLibrary *_library;
     NSMutableArray *_assets;
     NSOperationQueue *_photoLoadQueue;

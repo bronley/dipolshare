@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 
-extern const NSUInteger LocalSendPhotosPerRow;
+#import "LocalSendPhotoGridLayout.h"
 
 @class LocalSendPhotoGridCell;
 
@@ -12,10 +12,11 @@ extern const NSUInteger LocalSendPhotosPerRow;
     NSMutableArray *_photoButtons;
     NSMutableArray *_selectionBadges;
     NSMutableArray *_videoBadges;
-    NSUInteger _photoIndexes[4];
+    NSUInteger _columnCount;
     id<LocalSendPhotoGridCellDelegate> _delegate;
 }
 @property (nonatomic, assign) id<LocalSendPhotoGridCellDelegate> delegate;
+@property (nonatomic, assign) NSUInteger columnCount;
 - (void)setPhotoAtColumn:(NSUInteger)columnIndex
                    image:(UIImage *)image
               photoIndex:(NSUInteger)photoIndex

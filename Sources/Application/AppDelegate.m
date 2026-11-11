@@ -3,6 +3,7 @@
 #import "DiscoveryViewController.h"
 #import "LocalSendReceivedFilesViewController.h"
 #import "LocalSendSettingsViewController.h"
+#import "LocalSendPadViewController.h"
 
 static NSString *const LocalSendCertificateWarningShownKey = @"LocalSendCertificateWarningShown";
 
@@ -17,39 +18,46 @@ static NSString *const LocalSendCertificateWarningShownKey = @"LocalSendCertific
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 
-    DiscoveryViewController *send = [[DiscoveryViewController alloc] init];
-    LocalSendReceivedFilesViewController *received =
-        [[LocalSendReceivedFilesViewController alloc] initWithReceiveStatus:nil active:NO];
-    LocalSendSettingsViewController *settings = [[LocalSendSettingsViewController alloc] init];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        LocalSendPadViewController *pad = [[LocalSendPadViewController alloc] init];
+        self.window.rootViewController = pad;
+        [pad release];
+    } else {
+        DiscoveryViewController *send = [[DiscoveryViewController alloc] init];
+        LocalSendReceivedFilesViewController *received =
+            [[LocalSendReceivedFilesViewController alloc] initWithReceiveStatus:nil active:NO];
+        LocalSendSettingsViewController *settings = [[LocalSendSettingsViewController alloc] init];
 
-    NSArray *screens = [NSArray arrayWithObjects:send, received, settings, nil];
-    NSArray *titles = [NSArray arrayWithObjects:@"Send file", @"Received", @"Settings", nil];
-    NSArray *icons = [NSArray arrayWithObjects:@"Send file active", @"Received active",
-                                               @"Settings active", nil];
-    NSMutableArray *tabs = [NSMutableArray arrayWithCapacity:[screens count]];
-    for (NSUInteger index = 0; index < [screens count]; index++) {
-        UIViewController *screen = [screens objectAtIndex:index];
-        UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:screen];
-        navigation.navigationBar.barStyle = UIBarStyleBlack;
-        navigation.tabBarItem = [[[UITabBarItem alloc] initWithTitle:[titles objectAtIndex:index]
-                                                              image:[UIImage imageNamed:[icons objectAtIndex:index]]
-                                                                tag:index] autorelease];
-        [tabs addObject:navigation];
-        if (screen == received) {
-            [received refreshBadge];
+        NSArray *screens = [NSArray arrayWithObjects:send, received, settings, nil];
+        NSArray *titles = [NSArray arrayWithObjects:@"Send file", @"Received", @"Settings", nil];
+        NSArray *icons = [NSArray arrayWithObjects:@"Send file active", @"Received active",
+                                                   @"Settings active", nil];
+        NSMutableArray *tabs = [NSMutableArray arrayWithCapacity:[screens count]];
+        for (NSUInteger index = 0; index < [screens count]; index++) {
+            UIViewController *screen = [screens objectAtIndex:index];
+            UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:screen];
+            navigation.navigationBar.barStyle = UIBarStyleBlack;
+            navigation.tabBarItem = [[[UITabBarItem alloc] initWithTitle:[titles objectAtIndex:index]
+                                                                  image:[UIImage imageNamed:[icons objectAtIndex:index]]
+                                                                    tag:index] autorelease];
+            [tabs addObject:navigation];
+            if (screen == received) {
+                [received refreshBadge];
+            }
+            [navigation release];
         }
-        [navigation release];
+
+        UITabBarController *tabController = [[UITabBarController alloc] init];
+        tabController.viewControllers = tabs;
+        self.window.rootViewController = tabController;
+
+
+        [tabController release];
+        [send release];
+        [received release];
+        [settings release];
     }
-
-    UITabBarController *tabController = [[UITabBarController alloc] init];
-    tabController.viewControllers = tabs;
-    self.window.rootViewController = tabController;
     [self.window makeKeyAndVisible];
-
-    [tabController release];
-    [send release];
-    [received release];
-    [settings release];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(identityChanged:)
                                                  name:LocalSendDiscoverySetupDidChangeNotification
@@ -107,6 +115,10 @@ static NSString *const LocalSendCertificateWarningShownKey = @"LocalSendCertific
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     _certificateAlertVisible = NO;
     if (buttonIndex == 1) {
+        if ([self.window.rootViewController isKindOfClass:[LocalSendPadViewController class]]) {
+            [(LocalSendPadViewController *)self.window.rootViewController showSettings];
+            return;
+        }
         UITabBarController *tabs = (UITabBarController *)self.window.rootViewController;
         tabs.selectedIndex = 2;
     }

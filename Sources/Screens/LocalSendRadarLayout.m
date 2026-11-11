@@ -77,6 +77,10 @@ static BOOL LocalSendPlacementFits(NSDictionary *placement, CGRect bounds, CGFlo
 }
 
 + (CGFloat)radarCenterYInBounds:(CGRect)bounds {
+    // Tablet panes leave room below the radar for the larger status and hint.
+    if (CGRectGetWidth(bounds) >= 468.0f) {
+        return CGRectGetMinY(bounds) + CGRectGetHeight(bounds) * (266.0f / 704.0f);
+    }
     return CGRectGetMidY(bounds) + 2.0f;
 }
 

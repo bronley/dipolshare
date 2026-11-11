@@ -286,12 +286,18 @@ static const NSInteger LocalSendCreditCaptionTag = 1003;
     if (indexPath.section == 0) {
         if (indexPath.row == 1) {
             LocalSendDiscoveryStatusViewController *report = [[LocalSendDiscoveryStatusViewController alloc] init];
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                report.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+            }
             [self.navigationController pushViewController:report animated:YES];
             [report release];
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             return;
         }
         LocalSendDeviceNameViewController *editor = [[LocalSendDeviceNameViewController alloc] init];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            editor.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+        }
         [self.navigationController pushViewController:editor animated:YES];
         [editor release];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];

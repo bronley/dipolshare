@@ -41,6 +41,7 @@ static const NSUInteger LocalSendPhotoLoadingBatchSize = 32;
 
 @interface LocalSendPhotoPickerViewController ()
 - (void)loadPhotoLibraryIfNeeded;
+- (void)updateGridLayout;
 - (BOOL)isClosed;
 - (void)closePicker;
 - (void)enumeratePhotoGroup:(ALAssetsGroup *)group;
@@ -86,6 +87,7 @@ static const NSUInteger LocalSendPhotoLoadingBatchSize = 32;
 - (id)initWithDelegate:(id<LocalSendPhotoPickerDelegate>)delegate {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
+        _columns = 4;
         _delegate = delegate;
         _library = [[ALAssetsLibrary alloc] init];
         _assets = [[NSMutableArray alloc] init];
@@ -103,6 +105,10 @@ static const NSUInteger LocalSendPhotoLoadingBatchSize = 32;
     [super viewDidLoad];
     self.title = @"Select Photos & Videos";
     self.tableView.rowHeight = 80;
+    self.tableView.backgroundView = nil;
+    self.tableView.backgroundColor = [UIColor blackColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self updateGridLayout];
     UIBarButtonItem *cancelButton =
         [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                       target:self
@@ -120,7 +126,41 @@ static const NSUInteger LocalSendPhotoLoadingBatchSize = 32;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self updateGridLayout];
     [self loadPhotoLibraryIfNeeded];
+}
+
+- (void)updateGridLayout {
+    CGFloat width = self.tableView.bounds.size.width;
+    if (width <= 0) return;
+    NSUInteger columns = LocalSendPhotoColumnsForWidth(width);
+    CGFloat rowHeight = LocalSendPhotoTileSize(width, columns) + LocalSendPhotoGridRowPadding(width);
+    if (_columns != columns || self.tableView.rowHeight != rowHeight) {
+        _columns = columns;
+        self.tableView.rowHeight = rowHeight;
+        [self.tableView reloadData];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self updateGridLayout];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self updateGridLayout];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ||
+           orientation == UIInterfaceOrientationPortrait;
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    [super didRotateFromInterfaceOrientation:orientation];
+    // iOS 4 does not call viewDidLayoutSubviews.
+    [self updateGridLayout];
 }
 
 - (BOOL)isClosed {
@@ -213,18 +253,18 @@ static const NSUInteger LocalSendPhotoLoadingBatchSize = 32;
         return;
     }
     NSUInteger oldCount = [_assets count];
-    NSUInteger oldRows = (oldCount + LocalSendPhotosPerRow - 1) / LocalSendPhotosPerRow;
+    NSUInteger oldRows = (oldCount + _columns - 1) / _columns;
     [_assets addObjectsFromArray:entries];
     if (![self isViewLoaded]) {
         return;
     }
-    NSUInteger newRows = ([_assets count] + LocalSendPhotosPerRow - 1) / LocalSendPhotosPerRow;
+    NSUInteger newRows = ([_assets count] + _columns - 1) / _columns;
     NSMutableArray *insertedRows = [NSMutableArray array];
     for (NSUInteger row = oldRows; row < newRows; row++) {
         [insertedRows addObject:[NSIndexPath indexPathForRow:row inSection:0]];
     }
     [self.tableView beginUpdates];
-    if (oldCount % LocalSendPhotosPerRow != 0) {
+    if (oldCount % _columns != 0) {
         [self.tableView reloadRowsAtIndexPaths:
             [NSArray arrayWithObject:[NSIndexPath indexPathForRow:oldRows - 1 inSection:0]]
                              withRowAnimation:UITableViewRowAnimationNone];
@@ -296,7 +336,7 @@ static const NSUInteger LocalSendPhotoLoadingBatchSize = 32;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return ([_assets count] + LocalSendPhotosPerRow - 1) / LocalSendPhotosPerRow;
+    return ([_assets count] + _columns - 1) / _columns;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -308,8 +348,9 @@ static const NSUInteger LocalSendPhotoLoadingBatchSize = 32;
                                               reuseIdentifier:identifier] autorelease];
     }
     cell.delegate = self;
-    for (NSUInteger columnIndex = 0; columnIndex < LocalSendPhotosPerRow; columnIndex++) {
-        NSUInteger photoIndex = indexPath.row * LocalSendPhotosPerRow + columnIndex;
+    cell.columnCount = _columns;
+    for (NSUInteger columnIndex = 0; columnIndex < _columns; columnIndex++) {
+        NSUInteger photoIndex = indexPath.row * _columns + columnIndex;
         if (photoIndex >= [_assets count]) {
             [cell hidePhotoAtColumn:columnIndex];
             continue;
@@ -317,8 +358,10 @@ static const NSUInteger LocalSendPhotoLoadingBatchSize = 32;
         LocalSendPickerAsset *entry = [_assets objectAtIndex:photoIndex];
         NSUInteger selectionIndex = [_selectedAssets indexOfObjectIdenticalTo:entry->asset];
         NSUInteger selectionNumber = selectionIndex == NSNotFound ? 0 : selectionIndex + 1;
+        CGImageRef thumbnail = [entry->asset respondsToSelector:@selector(aspectRatioThumbnail)]
+            ? [entry->asset aspectRatioThumbnail] : [entry->asset thumbnail];
         [cell setPhotoAtColumn:columnIndex
-                         image:[UIImage imageWithCGImage:[entry->asset thumbnail]]
+                         image:thumbnail != NULL ? [UIImage imageWithCGImage:thumbnail] : nil
                     photoIndex:photoIndex
                selectionNumber:selectionNumber
                        isVideo:entry->isVideo];
@@ -352,8 +395,8 @@ static const NSUInteger LocalSendPhotoLoadingBatchSize = 32;
 - (void)updateVisibleSelectionBadges {
     for (NSIndexPath *indexPath in [self.tableView indexPathsForVisibleRows]) {
         LocalSendPhotoGridCell *cell = (LocalSendPhotoGridCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-        for (NSUInteger column = 0; column < LocalSendPhotosPerRow; column++) {
-            NSUInteger photoIndex = indexPath.row * LocalSendPhotosPerRow + column;
+        for (NSUInteger column = 0; column < _columns; column++) {
+            NSUInteger photoIndex = indexPath.row * _columns + column;
             if (photoIndex >= [_assets count]) {
                 break;
             }

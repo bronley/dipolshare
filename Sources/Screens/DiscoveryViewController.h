@@ -16,6 +16,7 @@
     LocalSendAnimatedRadarView *_radarView;
     UIImageView *_wifiOffView;
     UILabel *_statusLabel;
+    UILabel *_discoveryHintLabel;
     NSDictionary *_selectedDevice;
     LocalSendTransfer *_transfer;
     NSString *_outgoingTransferStatus;
@@ -33,4 +34,5 @@
     BOOL _radarScreenVisible;
     BOOL _observingNotifications;
 }
+- (void)layoutForContainer;
 @end

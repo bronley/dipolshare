@@ -106,13 +106,32 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
     _statusLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
     _statusLabel.adjustsFontSizeToFitWidth = YES;
     _statusLabel.minimumFontSize = 11.0f;
-    _statusLabel.text = @"Searching for devices....";
+    _statusLabel.text = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+        ? @"Searching for devices…" : @"Searching for devices....";
     _statusLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *statusTap =
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showLastError:)];
     [_statusLabel addGestureRecognizer:statusTap];
     [statusTap release];
     [self.view addSubview:_statusLabel];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        _statusLabel.font = [UIFont boldSystemFontOfSize:28.0f];
+        _statusLabel.textColor = [UIColor colorWithWhite:0.96f alpha:1.0f];
+        _discoveryHintLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _discoveryHintLabel.backgroundColor = [UIColor clearColor];
+        _discoveryHintLabel.textAlignment = UITextAlignmentCenter;
+        _discoveryHintLabel.font = [UIFont systemFontOfSize:16.0f];
+        _discoveryHintLabel.textColor = [UIColor colorWithWhite:0.82f alpha:1.0f];
+        _discoveryHintLabel.text = @"Nearby devices will appear here automatically.";
+        [self.view addSubview:_discoveryHintLabel];
+    }
+}
+
+- (void)layoutForContainer {
+    if ([self isViewLoaded]) {
+        [self layoutMainScreen];
+        [self synchronizeDeviceBlobs];
+    }
 }
 
 - (void)layoutMainScreen {
@@ -124,6 +143,11 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
     _wifiOffView.center = CGPointMake(width / 2.0f, radarCenterY);
     _statusLabel.frame = CGRectMake(6.0f, radarCenterY + (_wifiUnavailable ? 88.0f : 78.0f),
                                     width - 12.0f, 32.0f);
+    if (_discoveryHintLabel != nil) {
+        _statusLabel.frame = CGRectMake(20, radarCenterY + 101, width - 40, 38);
+        _discoveryHintLabel.frame = CGRectMake(12, radarCenterY + 153, width - 24, 22);
+        _discoveryHintLabel.hidden = _wifiUnavailable || _isSendingFiles || _isReceivingFiles;
+    }
 }
 
 - (void)updateWiFiState {
@@ -134,7 +158,9 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
     _radarView.hidden = unavailable;
     if (unavailable) {
         [_radarView stopAnimating];
-        self.navigationItem.leftBarButtonItem = nil;
+        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+            self.navigationItem.leftBarButtonItem = nil;
+        }
     } else {
         if (changed) {
             [self synchronizeDeviceBlobs];
@@ -336,6 +362,7 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
     [_receiveStatus release];
     _receiveStatus = [status copy];
     _isReceivingFiles = [[info objectForKey:@"active"] boolValue];
+    _discoveryHintLabel.hidden = _wifiUnavailable || _isSendingFiles || _isReceivingFiles;
     [self updateReceiveIdleTimer];
     if ([status length] > 0 && !_wifiUnavailable) {
         _statusLabel.text = status;
@@ -493,6 +520,10 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
     }
 
     NSMutableArray *reservedFrames = [NSMutableArray array];
+    if (_discoveryHintLabel != nil) {
+        CGRect textArea = CGRectUnion(_statusLabel.frame, _discoveryHintLabel.frame);
+        [reservedFrames addObject:[NSValue valueWithBytes:&textArea objCType:@encode(CGRect)]];
+    }
     for (LocalSendDeviceBlobView *retiring in _retiringBlobViews) {
         CGRect frame = retiring.frame;
         [reservedFrames addObject:[NSValue valueWithBytes:&frame objCType:@encode(CGRect)]];
@@ -551,8 +582,23 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
         [blob release];
     }
     NSUInteger overflowCount = [_devices count] - [placements count];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        BOOL showOverflow = !_wifiUnavailable && overflowCount > 0;
+        if (showOverflow) {
+            UIBarButtonItem *more = [[[UIBarButtonItem alloc]
+                initWithTitle:[NSString stringWithFormat:@"%lu more devices", (unsigned long)overflowCount]
+                style:UIBarButtonItemStyleBordered target:self action:@selector(showAllDevices:)] autorelease];
+            self.toolbarItems = [NSArray arrayWithObject:more];
+        }
+        if (self.navigationController.toolbarHidden == showOverflow) {
+            [self.navigationController setToolbarHidden:!showOverflow animated:NO];
+        }
+        return;
+    }
     if (_wifiUnavailable || overflowCount == 0) {
-        self.navigationItem.leftBarButtonItem = nil;
+        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+            self.navigationItem.leftBarButtonItem = nil;
+        }
     } else {
         UIBarButtonItem *more = self.navigationItem.leftBarButtonItem;
         if (more == nil) {
@@ -576,6 +622,7 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
     [_outgoingTransferStatus release];
     _outgoingTransferStatus = [status copy];
     _isSendingFiles = [[progress objectForKey:@"isActive"] boolValue];
+    _discoveryHintLabel.hidden = _wifiUnavailable || _isSendingFiles || _isReceivingFiles;
     if ([[progress objectForKey:@"isError"] boolValue]) {
         [_lastErrorMessage release];
         _lastErrorMessage = [status copy];
@@ -604,7 +651,24 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
                                                 cancelButtonTitle:@"Cancel"
                                            destructiveButtonTitle:nil
                                                 otherButtonTitles:@"Send Photos & Videos", @"Send Clipboard", nil];
-    [actions showFromTabBar:self.tabBarController.tabBar];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        NSString *identifier = [LocalSendRadarLayout identifierForDevice:_selectedDevice];
+        LocalSendDeviceBlobView *blob = [_blobViewsByIdentifier objectForKey:identifier];
+        if (blob.superview != nil && !blob.hidden) {
+            // Convert the tapped device's actual bounds, including its label,
+            // into the pane's coordinates rather than anchoring to the radar center.
+            CGRect anchor = [blob convertRect:blob.bounds toView:self.view];
+            [actions showFromRect:anchor inView:self.view animated:YES];
+        } else if (!self.navigationController.toolbarHidden && [self.toolbarItems count] > 0) {
+            // Devices selected from the overflow list may have no radar blob.
+            [actions showFromBarButtonItem:[self.toolbarItems objectAtIndex:0] animated:YES];
+        } else {
+            [actions showFromRect:[_radarView convertRect:_radarView.bounds toView:self.view]
+                           inView:self.view animated:YES];
+        }
+    } else {
+        [actions showFromTabBar:self.tabBarController.tabBar];
+    }
     [actions release];
 }
 
@@ -654,6 +718,7 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
 }
 
 - (void)updateStatusLabel {
+    _discoveryHintLabel.hidden = _wifiUnavailable || _isSendingFiles || _isReceivingFiles;
     [self updateWiFiState];
     if (_wifiUnavailable) {
         _statusLabel.text = @"No network";
@@ -675,7 +740,8 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
         _statusLabel.text = @"Device key failed. See Settings.";
         return;
     }
-    _statusLabel.text = @"Searching for devices....";
+    _statusLabel.text = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+        ? @"Searching for devices…" : @"Searching for devices....";
 }
 
 - (void)setupChanged:(NSNotification *)notification {
@@ -696,6 +762,8 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
     _wifiOffView = nil;
     [_statusLabel release];
     _statusLabel = nil;
+    [_discoveryHintLabel release];
+    _discoveryHintLabel = nil;
     [super viewDidUnload];
 }
 
@@ -717,6 +785,7 @@ static NSString *LocalSendDisplayNameForReceivePrompt(NSString *name) {
     [_selectedDevice release];
     [_statusLabel release];
     [_devices release];
+    [_discoveryHintLabel release];
     [_lastErrorMessage release];
     [super dealloc];
 }

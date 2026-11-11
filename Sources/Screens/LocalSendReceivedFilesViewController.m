@@ -1,6 +1,10 @@
 #import "LocalSendReceivedFilesViewController.h"
 #import "LocalSendReceiver.h"
 #import "LocalSendFormatting.h"
+#import <QuartzCore/QuartzCore.h>
+#import <dispatch/dispatch.h>
+#import <ImageIO/ImageIO.h>
+#import "LocalSendPhotoPreviewViewController.h"
 
 static const unsigned long long LocalSendMaximumClipboardFileSize = 1024ULL * 1024ULL;
 static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 1024ULL * 1024ULL;
@@ -66,6 +70,12 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
 - (void)copySelectedText;
 - (void)saveSelectedPhoto;
 - (void)photoSaveFinished:(NSString *)errorMessage;
+- (void)showSavingOverlay;
+- (void)sharePreviewPhoto:(LocalSendPhotoPreviewViewController *)preview;
+- (BOOL)photoPreviewVisible;
+- (UIView *)fileActionHostView;
+- (void)printSelectedPhoto;
+- (void)writePhotoData:(NSData *)data;
 @end
 
 @implementation LocalSendReceivedFilesViewController
@@ -121,8 +131,10 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
     if ([self isViewLoaded]) {
         [self reloadFiles];
     }
-    if (self.navigationController.tabBarController.selectedViewController == self.navigationController &&
-        self.navigationController.visibleViewController == self && self.presentedViewController == nil) {
+    BOOL paneVisible = [self isViewLoaded] && self.view.window != nil;
+    BOOL selectedTab = self.navigationController.tabBarController.selectedViewController == self.navigationController;
+    if ((selectedTab || (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && paneVisible)) &&
+        self.navigationController.visibleViewController == self && self.modalViewController == nil) {
         [[LocalSendReceiver sharedReceiver] markReceivedFilesSeen];
     }
     [self refreshBadge];
@@ -229,10 +241,16 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
         [_fileActionsSheet addButtonWithTitle:@"Copy Text"];
     }
     _fileActionsSheet.cancelButtonIndex = [_fileActionsSheet addButtonWithTitle:@"Cancel"];
-    [_fileActionsSheet showInView:self.navigationController.view];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        // Keep the anchor in table coordinates so scrolled rows work as well.
+        CGRect rowRect = [tableView rectForRowAtIndexPath:indexPath];
+        [_fileActionsSheet showFromRect:rowRect inView:tableView animated:YES];
+    } else {
+        [_fileActionsSheet showInView:self.navigationController.view];
+    }
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet != _fileActionsSheet) {
         return;
     }
@@ -255,6 +273,8 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
         [self saveSelectedPhoto];
     } else if ([buttonTitle isEqualToString:@"Copy Text"]) {
         [self copySelectedText];
+    } else if ([buttonTitle isEqualToString:@"Print"]) {
+        [self printSelectedPhoto];
     }
     [buttonTitle release];
 }
@@ -293,6 +313,33 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
     if (fileURL == nil) {
         return;
     }
+    if ([self selectedFileCanSaveToPhotos]) {
+        // Decode a bounded display image; Save and Open In still use the original file.
+        CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)fileURL, NULL);
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+            [NSNumber numberWithBool:YES], (NSString *)kCGImageSourceCreateThumbnailFromImageAlways,
+            [NSNumber numberWithBool:YES], (NSString *)kCGImageSourceCreateThumbnailWithTransform,
+            [NSNumber numberWithInt:2048], (NSString *)kCGImageSourceThumbnailMaxPixelSize, nil];
+        CGImageRef thumbnail = source == NULL ? NULL :
+            CGImageSourceCreateThumbnailAtIndex(source, 0, (CFDictionaryRef)options);
+        if (source != NULL) CFRelease(source);
+        if (thumbnail == NULL) {
+            [self showMessage:@"This photo could not be opened." title:@"Cannot preview photo"];
+            return;
+        }
+        UIImage *image = [UIImage imageWithCGImage:thumbnail];
+        CGImageRelease(thumbnail);
+        LocalSendPhotoPreviewViewController *photo = [[LocalSendPhotoPreviewViewController alloc]
+            initWithImage:image title:[_selectedFile objectForKey:@"name"]
+            target:self action:@selector(sharePreviewPhoto:)];
+        [_photoPreviewNavigation release];
+        _photoPreviewNavigation = [[UINavigationController alloc] initWithRootViewController:photo];
+        _photoPreviewNavigation.navigationBar.barStyle = UIBarStyleBlack;
+        _photoPreviewNavigation.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self.view.window.rootViewController presentModalViewController:_photoPreviewNavigation animated:YES];
+        [photo release];
+        return;
+    }
     if (![QLPreviewController canPreviewItem:fileURL]) {
         [self showMessage:
                   @"A preview is not available for this file type. Try Open In to use another installed app."
@@ -303,8 +350,60 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
     _previewURL = [fileURL retain];
     QLPreviewController *preview = [[QLPreviewController alloc] init];
     preview.dataSource = self;
-    [self.navigationController pushViewController:preview animated:YES];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        // Present from the whole workspace, rather than pushing into the sidebar.
+        // Modal Quick Look supplies its own navigation controls and Done button.
+        preview.modalPresentationStyle = UIModalPresentationFullScreen;
+        UIViewController *workspace = self.view.window.rootViewController;
+        [workspace presentModalViewController:preview animated:YES];
+    } else {
+        [self.navigationController pushViewController:preview animated:YES];
+    }
     [preview release];
+}
+
+- (BOOL)photoPreviewVisible {
+    return [_photoPreviewNavigation isViewLoaded] && _photoPreviewNavigation.view.window != nil;
+}
+
+- (UIView *)fileActionHostView {
+    if ([self photoPreviewVisible]) return _photoPreviewNavigation.view;
+    UIView *host = self.view.window.rootViewController.view;
+    return host != nil ? host : self.navigationController.view;
+}
+
+- (void)sharePreviewPhoto:(LocalSendPhotoPreviewViewController *)preview {
+    if (_fileActionsSheet != nil || _isSavingPhoto) return;
+    _fileActionsSheet = [[UIActionSheet alloc] initWithTitle:[_selectedFile objectForKey:@"name"]
+        delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil
+        otherButtonTitles:@"Save to Photos", @"Open In…", nil];
+    if ([UIPrintInteractionController isPrintingAvailable]) {
+        [_fileActionsSheet addButtonWithTitle:@"Print"];
+    }
+    _fileActionsSheet.cancelButtonIndex = [_fileActionsSheet addButtonWithTitle:@"Cancel"];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [_fileActionsSheet showFromBarButtonItem:preview.shareButton animated:YES];
+    } else {
+        [_fileActionsSheet showInView:preview.navigationController.view];
+    }
+}
+
+- (void)printSelectedPhoto {
+    NSURL *url = [self selectedFileURL];
+    if (url == nil) return;
+    if (![UIPrintInteractionController canPrintURL:url]) {
+        [self showMessage:@"This photo cannot be printed." title:@"Cannot print photo"];
+        return;
+    }
+    UIPrintInteractionController *printer = [UIPrintInteractionController sharedPrintController];
+    printer.printingItem = url;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        LocalSendPhotoPreviewViewController *preview =
+            (LocalSendPhotoPreviewViewController *)_photoPreviewNavigation.topViewController;
+        [printer presentFromBarButtonItem:preview.shareButton animated:YES completionHandler:nil];
+    } else {
+        [printer presentAnimated:YES completionHandler:nil];
+    }
 }
 
 - (NSInteger)numberOfPreviewItemsInPreviewController:(QLPreviewController *)controller {
@@ -326,11 +425,18 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
     _documentInteractionController =
         [[UIDocumentInteractionController interactionControllerWithURL:fileURL] retain];
     _documentInteractionController.delegate = self;
-    if (![_documentInteractionController
+    BOOL shown;
+    if ([self photoPreviewVisible]) {
+        LocalSendPhotoPreviewViewController *preview =
+            (LocalSendPhotoPreviewViewController *)_photoPreviewNavigation.topViewController;
+        shown = [_documentInteractionController presentOpenInMenuFromBarButtonItem:preview.shareButton animated:YES];
+    } else {
+        shown = [_documentInteractionController
             presentOpenInMenuFromRect:CGRectMake(0, self.view.bounds.size.height - 1,
                                                  self.view.bounds.size.width, 1)
-                               inView:self.view
-                             animated:YES]) {
+                               inView:self.view animated:YES];
+    }
+    if (!shown) {
         [self showMessage:@"No installed app can open this file. It remains saved in Received."
                     title:@"No compatible app"];
     }
@@ -375,17 +481,62 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
                     title:@"Cannot save photo"];
         return;
     }
-    _photoSaveData = [[NSData alloc] initWithContentsOfFile:[fileURL path]];
-    if ([_photoSaveData length] != size) {
-        [_photoSaveData release];
-        _photoSaveData = nil;
-        [self showMessage:@"The photo could not be read." title:@"Cannot save photo"];
-        return;
+    _isSavingPhoto = YES;
+    [self showSavingOverlay];
+    // Reading a large photo must not block the overlay's spinner or its first draw.
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSData *data = [[NSData alloc] initWithContentsOfFile:[fileURL path]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([data length] != size) {
+                [self photoSaveFinished:@"The photo could not be read."];
+            } else {
+                [self writePhotoData:data];
+            }
+        });
+        [data release];
+        [pool drain];
+    });
+}
+
+- (void)showSavingOverlay {
+    UIView *host = [self fileActionHostView];
+    _savingOverlay = [[UIView alloc] initWithFrame:host.bounds];
+    _savingOverlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _savingOverlay.backgroundColor = [UIColor colorWithWhite:0 alpha:0.35f];
+    if ([_savingOverlay respondsToSelector:@selector(setAccessibilityViewIsModal:)]) {
+        _savingOverlay.accessibilityViewIsModal = YES;
     }
+
+    UIView *panel = [[[UIView alloc] initWithFrame:
+        CGRectMake((host.bounds.size.width - 260) / 2, (host.bounds.size.height - 120) / 2, 260, 120)] autorelease];
+    panel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin |
+                            UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    panel.backgroundColor = [UIColor colorWithWhite:0.05f alpha:0.88f];
+    panel.layer.cornerRadius = 12;
+    [_savingOverlay addSubview:panel];
+
+    UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(16, 25, 228, 28)] autorelease];
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor whiteColor];
+    label.textAlignment = UITextAlignmentCenter;
+    label.font = [UIFont boldSystemFontOfSize:20];
+    label.text = @"Saving…";
+    [panel addSubview:label];
+    UIActivityIndicatorView *spinner = [[[UIActivityIndicatorView alloc]
+        initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge] autorelease];
+    spinner.center = CGPointMake(130, 84);
+    [panel addSubview:spinner];
+    [spinner startAnimating];
+    [host addSubview:_savingOverlay];
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, label);
+}
+
+- (void)writePhotoData:(NSData *)data {
+    _photoSaveData = [data retain];
     if (_photoLibrary == nil) {
         _photoLibrary = [[ALAssetsLibrary alloc] init];
     }
-    _isSavingPhoto = YES;
     [_photoLibrary writeImageDataToSavedPhotosAlbum:_photoSaveData
                                            metadata:nil
                                     completionBlock:^(NSURL *assetURL, NSError *error) {
@@ -401,6 +552,9 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
 
 - (void)photoSaveFinished:(NSString *)errorMessage {
     _isSavingPhoto = NO;
+    [_savingOverlay removeFromSuperview];
+    [_savingOverlay release];
+    _savingOverlay = nil;
     [_photoSaveData release];
     _photoSaveData = nil;
     [self showMessage:errorMessage == nil ? @"The photo is now in the Camera Roll." : errorMessage
@@ -431,7 +585,10 @@ static const unsigned long long LocalSendMaximumPhotoAlbumFileSize = 64ULL * 102
     [_emptyStateView release];
     [_receiveStatus release];
     [_photoLibrary release];
+    [_photoPreviewNavigation release];
     [_photoSaveData release];
+    [_savingOverlay removeFromSuperview];
+    [_savingOverlay release];
     [super dealloc];
 }
 @end

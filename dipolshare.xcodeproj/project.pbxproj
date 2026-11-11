@@ -6,6 +6,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+        F61000000000000000000001 = {isa = PBXBuildFile; fileRef = F61000000000000000000002; };
+        F61000000000000000000004 = {isa = PBXBuildFile; fileRef = F61000000000000000000005; };
+		F60000000000000000000001 = {isa = PBXBuildFile; fileRef = F60000000000000000000002; };
 		0EA44541A636364FA0E66F49 /* Send file active@2x.png in Resources */ = {
 			isa = PBXBuildFile;
 			fileRef = AA7417A9E41E57FC082A7068 /* Send file active@2x.png */;
@@ -368,6 +371,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+        F61000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Screens/LocalSendPhotoPreviewViewController.m; sourceTree = SOURCE_ROOT; };
+        F61000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Screens/LocalSendPhotoPreviewViewController.h; sourceTree = SOURCE_ROOT; };
+        F61000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		F60000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Screens/LocalSendPhotoGridLayout.h; sourceTree = SOURCE_ROOT; };
+		F60000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Screens/LocalSendPadViewController.m; sourceTree = SOURCE_ROOT; };
+		F60000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Screens/LocalSendPadViewController.h; sourceTree = SOURCE_ROOT; };
 		04284B91F177010D03C9AAD1 /* README.md */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = text;
@@ -1266,6 +1275,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+                F61000000000000000000004,
 				100000000000000000000003 /* UIKit.framework in Frameworks */,
 				100000000000000000000004 /* Foundation.framework in Frameworks */,
 				B10000000000000000009999 /* QuickLook.framework in Frameworks */,
@@ -1368,6 +1378,12 @@
 			isa = PBXGroup;
 			children = (
 				647F22983932505F8226C46F /* Sources */,
+                F61000000000000000000002,
+                F61000000000000000000003,
+                F61000000000000000000005,
+				F60000000000000000000002 /* LocalSendPadViewController.m */,
+				F60000000000000000000003 /* LocalSendPadViewController.h */,
+				F60000000000000000000004 /* LocalSendPhotoGridLayout.h */,
 				369366657F0CC118760331FE /* Resources */,
 				341E6928838892729241ECD7 /* Configuration */,
 				646899D46593647A8441FF1F /* Vendor */,
@@ -1784,6 +1800,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13D80FF19E69CACB141928BB /* AppDelegate.m in Sources */,
+                F61000000000000000000001,
+				F60000000000000000000001,
 				61A09B3ABF3EAAFDEDC5C8D6 /* main.m in Sources */,
 				B471DCA56634EA2F48F71C26 /* LocalSendKeyDiagnostics.m in Sources */,
 				A19A4ACB632B93D7C2B4EE0E /* LocalSendKeyTestViewController.m in Sources */,
@@ -1832,6 +1850,7 @@
 				ENTITLEMENTS_REQUIRED = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv6 armv7";
 			};
@@ -1847,6 +1866,7 @@
 				CODE_SIGN_IDENTITY = "";
 				ENTITLEMENTS_REQUIRED = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv6 armv7";
 			};
@@ -1876,6 +1896,7 @@
 				);
 				INFOPLIST_FILE = Configuration/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Vendor/OpenSSL",
@@ -1914,6 +1935,7 @@
 				);
 				INFOPLIST_FILE = Configuration/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Vendor/OpenSSL",

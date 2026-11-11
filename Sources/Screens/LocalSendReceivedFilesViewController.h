@@ -17,6 +17,8 @@
     ALAssetsLibrary *_photoLibrary;
     NSData *_photoSaveData;
     BOOL _isSavingPhoto;
+    UIView *_savingOverlay;
+    UINavigationController *_photoPreviewNavigation;
 }
 - (id)initWithReceiveStatus:(NSString *)status active:(BOOL)active;
 - (void)refreshBadge;
