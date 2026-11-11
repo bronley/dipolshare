@@ -8,8 +8,9 @@ trap 'rm -rf "$temporary_directory"' EXIT HUP INT TERM
 
 clang -fno-objc-arc -g -fsanitize=address,undefined -Wall -Wextra \
     -I "$project_directory/Sources/Screens" \
+    -I "$project_directory/Sources/Screens/Discovery" \
     "$test_directory/radar_layout_tests.m" \
-    "$project_directory/Sources/Screens/LocalSendRadarLayout.m" \
+    "$project_directory/Sources/Screens/Discovery/RadarLayout.m" \
     -framework Foundation -framework CoreGraphics \
     -o "$temporary_directory/radar_layout_tests"
 

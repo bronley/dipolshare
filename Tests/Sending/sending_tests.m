@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
-#import "LocalSendTransfer.h"
-#import "LocalSendIdentityStore.h"
-#import "LocalSendSounds.h"
-#import "LocalSendDiscovery.h"
+#import "Transfer.h"
+#import "IdentityStore.h"
+#import "Sounds.h"
+#import "Discovery.h"
 
 static NSUInteger CompletionSoundCount = 0;
 static NSUInteger LiveExportTemporaries = 0;
@@ -30,7 +30,7 @@ NSString *const ALAssetTypeVideo = @"ALAssetTypeVideo";
 }
 @end
 
-@implementation LocalSendDiscovery
+@implementation Discovery
 + (NSString *)deviceName { return @"Test Device"; }
 @end
 
@@ -138,14 +138,14 @@ NSString *const ALAssetTypeVideo = @"ALAssetTypeVideo";
 }
 @end
 
-@implementation LocalSendIdentityStore
+@implementation IdentityStore
 + (SecIdentityRef)copyIdentityWithFingerprint:(NSString **)fingerprint error:(NSString **)errorMessage {
     *fingerprint = @"test-fingerprint";
     return (SecIdentityRef)CFRetain(kCFBooleanTrue);
 }
 @end
 
-@implementation LocalSendSounds
+@implementation Sounds
 + (void)playOutgoingTransferComplete {
     CompletionSoundCount++;
 }
@@ -153,7 +153,7 @@ NSString *const ALAssetTypeVideo = @"ALAssetTypeVideo";
 }
 @end
 
-@implementation LocalSendHTTPSClient
+@implementation HTTPSClient
 - (id)initWithHost:(NSString *)host
                    port:(NSNumber *)port
                identity:(SecIdentityRef)identity
@@ -174,7 +174,7 @@ NSString *const ALAssetTypeVideo = @"ALAssetTypeVideo";
 }
 @end
 
-@interface LocalSendTransfer (TestMethods)
+@interface Transfer (TestMethods)
 - (void)handleResponseData:(NSData *)data statusCode:(NSInteger)statusCode;
 - (void)beginRequestToPath:(NSString *)path
                       body:(NSData *)body
@@ -182,12 +182,13 @@ NSString *const ALAssetTypeVideo = @"ALAssetTypeVideo";
                contentType:(NSString *)contentType;
 - (void)preparePhotoFile:(NSDictionary *)file;
 - (void)photoFilePrepared:(NSDictionary *)result;
+- (void)postUploadProgressWithBytesSent:(unsigned long long)sent totalBytes:(unsigned long long)total;
 - (NSURLRequest *)connection:(NSURLConnection *)connection
              willSendRequest:(NSURLRequest *)request
             redirectResponse:(NSURLResponse *)response;
 @end
 
-@interface RecordingTransfer : LocalSendTransfer {
+@interface RecordingTransfer : Transfer {
     NSMutableArray *_recordedRequests;
     NSDictionary *_lastStatus;
     NSDictionary *_exportResult;
@@ -261,7 +262,7 @@ static void Check(BOOL condition, const char *description) {
 static void Observe(RecordingTransfer *transfer) {
     [[NSNotificationCenter defaultCenter] addObserver:transfer
                                              selector:@selector(recordStatus:)
-                                                 name:LocalSendTransferDidUpdateNotification
+                                                 name:TransferDidUpdateNotification
                                                object:transfer];
 }
 
@@ -571,6 +572,72 @@ static void TestRedirect(void) {
           "HTTP redirects are rejected before following another endpoint");
 }
 
+static RecordingTransfer *ContactsTransfer(NSString **path) {
+    *path = [NSTemporaryDirectory() stringByAppendingPathComponent:
+        [NSString stringWithFormat:@"contacts-test-%@.vcf", [[NSProcessInfo processInfo] globallyUniqueString]]];
+    [@"BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Марія\r\nEND:VCARD\r\n"
+        writeToFile:*path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+    RecordingTransfer *transfer = [[[RecordingTransfer alloc]
+        initWithDevice:[NSDictionary dictionaryWithObject:@"https" forKey:@"protocol"]
+        contactsFileAtPath:*path fileName:@"Contacts-2026-11-08.vcf"] autorelease];
+    Observe(transfer);
+    return transfer;
+}
+
+static void TestContacts(void) {
+    NSString *path;
+    RecordingTransfer *transfer = ContactsTransfer(&path);
+    NSData *expected = [NSData dataWithContentsOfFile:path];
+    NSUInteger sounds = CompletionSoundCount;
+    [transfer start];
+    NSDictionary *files = [RequestMetadata(transfer) objectForKey:@"files"];
+    NSDictionary *file = [[files allValues] objectAtIndex:0];
+    Check([files count] == 1 && [[file objectForKey:@"fileType"] isEqual:@"text/vcard"] &&
+          [[file objectForKey:@"fileName"] isEqual:@"Contacts-2026-11-08.vcf"] &&
+          [[file objectForKey:@"size"] unsignedIntegerValue] == [expected length],
+          "contact backup advertises one dated vCard with its byte length");
+    Check([file objectForKey:@"preview"] == nil && [file objectForKey:@"data"] == nil &&
+          [file objectForKey:@"path"] == nil, "contact contents and local path never enter negotiation metadata");
+    [transfer handleResponseData:AcceptanceForFiles(files) statusCode:200];
+    NSDictionary *upload = [[transfer recordedRequests] lastObject];
+    Check([[upload objectForKey:@"temporaryPath"] isEqual:path] && [[upload objectForKey:@"body"] isEqual:expected],
+          "accepted backup streams its original UTF-8 file");
+    [transfer postUploadProgressWithBytesSent:65 totalBytes:100];
+    Check([[[transfer lastStatus] objectForKey:@"status"] isEqual:@"Sending contacts… 65%"] &&
+          CompletionSoundCount == sounds, "contacts use radar progress and do not complete before acknowledgment");
+    [transfer handleResponseData:[NSData data] statusCode:200];
+    Check([[[transfer lastStatus] objectForKey:@"status"] isEqual:@"Contacts sent."] &&
+          ![[[transfer lastStatus] objectForKey:@"isActive"] boolValue] &&
+          ![[NSFileManager defaultManager] fileExistsAtPath:path] && CompletionSoundCount == sounds + 1,
+          "successful contact transfer deletes its temporary file and plays completion sound");
+
+    transfer = ContactsTransfer(&path);
+    [transfer start];
+    [transfer handleResponseData:[NSData data] statusCode:204];
+    Check([[[transfer lastStatus] objectForKey:@"isError"] boolValue] &&
+          ![[NSFileManager defaultManager] fileExistsAtPath:path] && [[transfer recordedRequests] count] == 1,
+          "204 cannot falsely mark a contact file as backed up without an upload");
+
+    transfer = ContactsTransfer(&path);
+    [transfer start];
+    [transfer handleResponseData:[NSData data] statusCode:403];
+    Check([[[transfer lastStatus] objectForKey:@"isError"] boolValue] &&
+          ![[NSFileManager defaultManager] fileExistsAtPath:path], "declined backup deletes its temporary file");
+
+    transfer = ContactsTransfer(&path);
+    [transfer start];
+    files = [RequestMetadata(transfer) objectForKey:@"files"];
+    [transfer handleResponseData:AcceptanceForFiles(files) statusCode:200];
+    [transfer cancel];
+    Check(![[NSFileManager defaultManager] fileExistsAtPath:path], "cancelled contact upload deletes its temporary file");
+
+    transfer = ContactsTransfer(&path);
+    [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+    [transfer start];
+    Check([[transfer recordedRequests] count] == 0 && [[[transfer lastStatus] objectForKey:@"isError"] boolValue],
+          "missing contact file fails before contacting recipient");
+}
+
 int main(void) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     TestClipboard();
@@ -579,6 +646,7 @@ int main(void) {
     TestLegacyAssetMetadata();
     TestPhotoExport();
     TestRedirect();
+    TestContacts();
     printf("%lu/%lu checks passed\n", (unsigned long)(TestCount - FailureCount), (unsigned long)TestCount);
     [pool drain];
     return FailureCount == 0 ? 0 : 1;

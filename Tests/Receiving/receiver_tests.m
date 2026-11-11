@@ -12,8 +12,8 @@ static NSArray *TestSearchDirectories(NSSearchPathDirectory directory, NSSearchP
     return [NSArray arrayWithObject:[testRootDirectory stringByAppendingPathComponent:name]];
 }
 #define NSSearchPathForDirectoriesInDomains TestSearchDirectories
-#import "LocalSendReceivedFileStore.m"
-#import "LocalSendReceiver.m"
+#import "ReceivedFileStore.m"
+#import "Receiver.m"
 #undef NSSearchPathForDirectoriesInDomains
 
 static int checks, failures;
@@ -27,7 +27,7 @@ static void Check(BOOL condition, NSString *label) {
 static void Pump(void) {
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 }
-@interface TestReceiver : LocalSendReceiver {
+@interface TestReceiver : Receiver {
   @public
     BOOL noSpace;
 }
@@ -57,7 +57,7 @@ static NSDictionary *File(NSString *fileId, NSString *name, unsigned long long s
 static NSDictionary *Payload(NSDictionary *files) {
     return @{@"info" : @{@"alias" : @"Test sender"}, @"files" : files};
 }
-static NSDictionary *Request(LocalSendReceiver *receiver, NSString *target, NSDictionary *payload,
+static NSDictionary *Request(Receiver *receiver, NSString *target, NSDictionary *payload,
                              NSDictionary *peer) {
     NSData *body = payload == nil ? [NSData data]
                                   : [NSJSONSerialization dataWithJSONObject:payload options:0 error:NULL];
@@ -99,15 +99,15 @@ static NSInteger Status(NSDictionary *response) {
 
 @interface PrepareTask : NSObject {
   @public
-    LocalSendReceiver *receiver;
+    Receiver *receiver;
     NSDictionary *payload, *peer, *response;
     NSCondition *lock;
     BOOL done;
     pthread_t thread;
     id server;
 }
-- (id)initWithReceiver:(LocalSendReceiver *)value payload:(NSDictionary *)body peer:(NSDictionary *)origin;
-- (id)initWithReceiver:(LocalSendReceiver *)value
+- (id)initWithReceiver:(Receiver *)value payload:(NSDictionary *)body peer:(NSDictionary *)origin;
+- (id)initWithReceiver:(Receiver *)value
                payload:(NSDictionary *)body
                   peer:(NSDictionary *)origin
                 server:(id)connectionServer;
@@ -120,10 +120,10 @@ static void *RunPrepare(void *object) {
     return NULL;
 }
 @implementation PrepareTask
-- (id)initWithReceiver:(LocalSendReceiver *)value payload:(NSDictionary *)body peer:(NSDictionary *)origin {
+- (id)initWithReceiver:(Receiver *)value payload:(NSDictionary *)body peer:(NSDictionary *)origin {
     return [self initWithReceiver:value payload:body peer:origin server:nil];
 }
-- (id)initWithReceiver:(LocalSendReceiver *)value
+- (id)initWithReceiver:(Receiver *)value
                payload:(NSDictionary *)body
                   peer:(NSDictionary *)origin
                 server:(id)connectionServer {
@@ -197,7 +197,7 @@ static NSDictionary *Join(PrepareTask *task) {
     Pump();
     return result;
 }
-static NSDictionary *Accept(LocalSendReceiver *receiver, NSDictionary *files) {
+static NSDictionary *Accept(Receiver *receiver, NSDictionary *files) {
     PrepareTask *task = [[PrepareTask alloc] initWithReceiver:receiver payload:Payload(files) peer:Peer()];
     NSDictionary *pending = Pending(task);
     [receiver respondToRequest:[pending objectForKey:@"requestId"] accept:YES];
@@ -212,7 +212,7 @@ static NSString *Target(NSDictionary *session, NSString *fileId) {
     return [NSString stringWithFormat:@"/api/localsend/v2/upload?sessionId=%@&fileId=%@&token=%@",
                                       session[@"sessionId"], fileId, session[@"files"][fileId]];
 }
-static id Begin(LocalSendReceiver *receiver, NSDictionary *session, NSString *fileId, NSString *length,
+static id Begin(Receiver *receiver, NSDictionary *session, NSString *fileId, NSString *length,
                 NSInteger *status) {
     return [receiver receiveServer:nil
                beginUploadToTarget:Target(session, fileId)
@@ -235,7 +235,7 @@ static NSUInteger StagedCount(void) {
                                       stringByAppendingPathComponent:@"Caches/LocalSendIncoming"]
                             error:NULL] count];
 }
-static TestReceiver *Receiver(NSString *suite) {
+static TestReceiver *MakeReceiver(NSString *suite) {
     testRootDirectory = [testRunDirectory stringByAppendingPathComponent:suite];
     [[NSFileManager defaultManager] removeItemAtPath:testRootDirectory error:NULL];
     TestReceiver *receiver = [[[TestReceiver alloc] init] autorelease];
@@ -250,7 +250,7 @@ int main(int argc, const char **argv) {
         return 2;
     }
     testRunDirectory = [NSString stringWithUTF8String:argv[1]];
-    TestReceiver *r = Receiver(@"primary");
+    TestReceiver *r = MakeReceiver(@"primary");
     NSDictionary *peer = Peer();
     NSInteger status;
     NSData *abc = [@"abc" dataUsingEncoding:NSUTF8StringEncoding];
@@ -479,7 +479,7 @@ int main(int argc, const char **argv) {
     NSDictionary *response = Join(task);
     session = [NSJSONSerialization JSONObjectWithData:response[@"body"] options:0 error:NULL];
     upload = [Begin(r, session, @"one", [NSString stringWithFormat:@"%llu", large], &status) retain];
-    Check(upload != nil && ((LocalSendIncomingUpload *)upload)->expectedByteCount == large,
+    Check(upload != nil && ((IncomingUpload *)upload)->expectedByteCount == large,
           @"upload expected-byte counter preserves64bit size");
     [r cancelCurrentTransfer];
     [upload release];
@@ -510,7 +510,7 @@ int main(int argc, const char **argv) {
     NSUInteger preserved = [[r receivedFiles] count];
     Check(preserved == 5, @"cancel/failure/stop preserve all five completed files");
 
-    r = Receiver(@"storage-failure");
+    r = MakeReceiver(@"storage-failure");
     session = Accept(r, files);
     upload = [Begin(r, session, @"one", @"3", &status) retain];
     [r receiveServer:nil upload:upload appendData:abc];
@@ -521,7 +521,7 @@ int main(int argc, const char **argv) {
               StagedCount() == 0,
           @"destination disappearance fails cleanly without publishing file");
     [upload release];
-    r = Receiver(@"index-failure");
+    r = MakeReceiver(@"index-failure");
     session = Accept(r, files);
     upload = [Begin(r, session, @"one", @"3", &status) retain];
     [r receiveServer:nil upload:upload appendData:abc];
@@ -539,7 +539,7 @@ int main(int argc, const char **argv) {
                                       error:NULL] count] == 0,
           @"index write failure rolls back new final file and staging");
     [upload release];
-    r = Receiver(@"startup-cleanup");
+    r = MakeReceiver(@"startup-cleanup");
     NSString *orphan =
         [testRootDirectory stringByAppendingPathComponent:@"Caches/LocalSendIncoming/orphan.part"];
     [abc writeToFile:orphan atomically:NO];
@@ -548,7 +548,7 @@ int main(int argc, const char **argv) {
 
     // A three-photo offer has one approval, independent upload tokens, and
     // three persisted files even when two source filenames are identical.
-    r = Receiver(@"three-photos");
+    r = MakeReceiver(@"three-photos");
     NSData *photoA = [NSData dataWithBytes:"\xff\xd8\x01\xff\xd9" length:5];
     NSData *photoB = [NSData dataWithBytes:"\xff\xd8\x02\xff\xd9" length:5];
     NSData *photoC = [NSData dataWithBytes:"\x89PNG\r\n" length:6];

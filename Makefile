@@ -17,6 +17,7 @@ DipolShare_FRAMEWORKS = \
     Security \
     QuickLook \
     AssetsLibrary \
+    AddressBook \
     MobileCoreServices \
     AudioToolbox \
     QuartzCore \
@@ -32,7 +33,7 @@ DipolShare_LDFLAGS += \
     $(THEOS_PROJECT_DIR)/Vendor/OpenSSL/libssl-3.5.8-ios4.a \
     $(THEOS_PROJECT_DIR)/Vendor/OpenSSL/libcrypto-3.5.8-ios4.a
 
-# iOS 4.2
+# iOS 4.2 and armv6 require the classic linker on modern Xcode.
 CLASSIC_LINKER ?= $(shell xcrun --find ld-classic 2>/dev/null)
 ifneq ($(CLASSIC_LINKER),)
 DipolShare_LDFLAGS += -fuse-ld=$(CLASSIC_LINKER)

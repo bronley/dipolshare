@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "LocalSendDiscovery.h"
-#import "LocalSendReceiver.h"
-#import "LocalSendReceiveServer.h"
+#import "Discovery+Private.h"
+#import "Receiver.h"
+#import "ReceiveServer.h"
 #import <float.h>
 #import <fcntl.h>
 #import <sys/socket.h>
@@ -14,8 +14,8 @@ static unsigned checks;
 #define CHECK(condition) do { checks++; if (!(condition)) { \
     fprintf(stderr, "FAIL line %d: %s\n", __LINE__, #condition); exit(1); } } while (0)
 
-@implementation LocalSendDiscoveryProbe
-- (id)initWithDelegate:(id<LocalSendDiscoveryProbeDelegate>)delegate endpoint:(NSDictionary *)value
+@implementation DiscoveryProbe
+- (id)initWithDelegate:(id<DiscoveryProbeDelegate>)delegate endpoint:(NSDictionary *)value
             generation:(NSUInteger)valueGeneration {
     if ((self = [super init])) {
         endpoint = [value copy]; generation = valueGeneration; _delegate = delegate;
@@ -35,28 +35,28 @@ static unsigned checks;
 - (void)dealloc { [endpoint release]; [super dealloc]; }
 @end
 
-NSString *const LocalSendReceivePeerDidRegisterNotification = @"TestPeerRegistered";
-@implementation LocalSendReceiver
-+ (LocalSendReceiver *)sharedReceiver {
-    static LocalSendReceiver *receiver;
+NSString *const ReceivePeerDidRegisterNotification = @"TestPeerRegistered";
+@implementation Receiver
++ (Receiver *)sharedReceiver {
+    static Receiver *receiver;
     if (receiver == nil) receiver = [self new];
     return receiver;
 }
 - (void)stop { receiverStops++; }
 @end
-@implementation LocalSendReceiveServer
+@implementation ReceiveServer
 @end
-@implementation LocalSendIdentityStore
+@implementation IdentityStore
 @end
 @implementation UIDevice
 @end
 
-@interface LocalSendDiscovery (SchedulerTests)
+@interface Discovery (SchedulerTests)
 - (void)beginScan;
 - (void)tick:(NSTimer *)timer;
 - (void)enqueueProbe:(NSDictionary *)endpoint;
 @end
-@interface TestDiscovery : LocalSendDiscovery
+@interface TestDiscovery : Discovery
 - (void)activate;
 - (void)advanceRefresh;
 - (NSTimeInterval)refreshDeadline;
@@ -126,7 +126,7 @@ int main(void) {
     [discovery advanceRefresh];
     CHECK([discovery announcements] == 1);
     CHECK([discovery activeCount] == 0 && [discovery pendingCount] == 2);
-    for (LocalSendDiscoveryProbe *probe in old) [discovery discoveryProbe:probe didCompleteWithMessage:nil];
+    for (DiscoveryProbe *probe in old) [discovery discoveryProbe:probe didCompleteWithMessage:nil];
     CHECK([discovery failures] == 0 && [[discovery devices] count] == 2);
     [runningWorkers removeObject:[old objectAtIndex:0]];
     [discovery tick:nil];
@@ -136,7 +136,7 @@ int main(void) {
     CHECK([discovery retiringCount] == 0 && [discovery activeCount] == 2);
     [old release];
 
-    LocalSendDiscoveryProbe *timedOut = [[[discovery active] objectAtIndex:0] retain];
+    DiscoveryProbe *timedOut = [[[discovery active] objectAtIndex:0] retain];
     [discovery enqueueProbe:Endpoint(4)];
     [discovery discoveryProbe:timedOut didCompleteWithMessage:nil];
     CHECK([discovery retiringCount] == 1 && [discovery activeCount] == 1 && [discovery pendingCount] == 1);

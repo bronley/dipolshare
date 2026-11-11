@@ -1,7 +1,7 @@
 #import "LocalSendPadViewController.h"
 #import "DiscoveryViewController.h"
-#import "LocalSendReceivedFilesViewController.h"
-#import "LocalSendSettingsViewController.h"
+#import "ReceivedFilesViewController.h"
+#import "SettingsViewController.h"
 
 @interface LocalSendPadViewController ()
 - (void)layoutPanes;
@@ -34,8 +34,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    LocalSendReceivedFilesViewController *received =
-        [[LocalSendReceivedFilesViewController alloc] initWithReceiveStatus:nil active:NO];
+    ReceivedFilesViewController *received =
+        [[ReceivedFilesViewController alloc] initWithReceiveStatus:nil active:NO];
     DiscoveryViewController *send = [[DiscoveryViewController alloc] init];
     send.title = @"Send file";
     _receivedNavigation = [[UINavigationController alloc] initWithRootViewController:received];
@@ -128,7 +128,7 @@
     // A fresh stack always opens at the settings root, rather than an old drill-down.
     [_settingsPopover dismissPopoverAnimated:NO];
     [_settingsPopover release];
-    LocalSendSettingsViewController *settings = [[LocalSendSettingsViewController alloc] init];
+    SettingsViewController *settings = [[SettingsViewController alloc] init];
     // Navigation controllers size popovers from their top screen plus the bar.
     // Set the root's content size too, so pushes and pops keep the same height.
     settings.contentSizeForViewInPopover = CGSizeMake(320, 500);

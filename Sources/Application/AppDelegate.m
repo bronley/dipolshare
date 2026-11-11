@@ -1,11 +1,11 @@
 #import "AppDelegate.h"
-#import "LocalSendDiscovery.h"
+#import "Discovery.h"
 #import "DiscoveryViewController.h"
-#import "LocalSendReceivedFilesViewController.h"
-#import "LocalSendSettingsViewController.h"
+#import "ReceivedFilesViewController.h"
+#import "SettingsViewController.h"
 #import "LocalSendPadViewController.h"
 
-static NSString *const LocalSendCertificateWarningShownKey = @"LocalSendCertificateWarningShown";
+static NSString *const CertificateWarningShownKey = @"LocalSendCertificateWarningShown";
 
 @interface AppDelegate ()
 - (void)checkCertificateDate;
@@ -24,9 +24,9 @@ static NSString *const LocalSendCertificateWarningShownKey = @"LocalSendCertific
         [pad release];
     } else {
         DiscoveryViewController *send = [[DiscoveryViewController alloc] init];
-        LocalSendReceivedFilesViewController *received =
-            [[LocalSendReceivedFilesViewController alloc] initWithReceiveStatus:nil active:NO];
-        LocalSendSettingsViewController *settings = [[LocalSendSettingsViewController alloc] init];
+        ReceivedFilesViewController *received =
+            [[ReceivedFilesViewController alloc] initWithReceiveStatus:nil active:NO];
+        SettingsViewController *settings = [[SettingsViewController alloc] init];
 
         NSArray *screens = [NSArray arrayWithObjects:send, received, settings, nil];
         NSArray *titles = [NSArray arrayWithObjects:@"Send file", @"Received", @"Settings", nil];
@@ -60,17 +60,17 @@ static NSString *const LocalSendCertificateWarningShownKey = @"LocalSendCertific
     [self.window makeKeyAndVisible];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(identityChanged:)
-                                                 name:LocalSendDiscoverySetupDidChangeNotification
-                                               object:[LocalSendDiscovery sharedDiscovery]];
+                                                 name:DiscoverySetupDidChangeNotification
+                                               object:[Discovery sharedDiscovery]];
     return YES;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [[LocalSendDiscovery sharedDiscovery] stop];
+    [[Discovery sharedDiscovery] stop];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    [[LocalSendDiscovery sharedDiscovery] start];
+    [[Discovery sharedDiscovery] start];
     [self checkCertificateDate];
 }
 
@@ -82,11 +82,11 @@ static NSString *const LocalSendCertificateWarningShownKey = @"LocalSendCertific
     if (_certificateAlertVisible || [UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
         return;
     }
-    LocalSendDiscovery *discovery = [LocalSendDiscovery sharedDiscovery];
-    LocalSendCertificateDateStatus status = [discovery certificateDateStatus];
-    if (status != LocalSendCertificateDateStatusExpired &&
-        status != LocalSendCertificateDateStatusNotYetValid &&
-        status != LocalSendCertificateDateStatusClockIncorrect) {
+    Discovery *discovery = [Discovery sharedDiscovery];
+    CertificateDateStatus status = [discovery certificateDateStatus];
+    if (status != CertificateDateStatusExpired &&
+        status != CertificateDateStatusNotYetValid &&
+        status != CertificateDateStatusClockIncorrect) {
         return;
     }
     NSString *fingerprint = [discovery identityFingerprint];
@@ -95,12 +95,12 @@ static NSString *const LocalSendCertificateWarningShownKey = @"LocalSendCertific
     }
     NSString *warningID = [NSString stringWithFormat:@"%@:%d", fingerprint, (int)status];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([[defaults stringForKey:LocalSendCertificateWarningShownKey] isEqualToString:warningID]) {
+    if ([[defaults stringForKey:CertificateWarningShownKey] isEqualToString:warningID]) {
         return;
     }
-    [defaults setObject:warningID forKey:LocalSendCertificateWarningShownKey];
+    [defaults setObject:warningID forKey:CertificateWarningShownKey];
     [defaults synchronize];
-    NSString *message = status == LocalSendCertificateDateStatusClockIncorrect
+    NSString *message = status == CertificateDateStatusClockIncorrect
         ? @"This device's date looks too far in the past. Set the correct date and time, then regenerate the device key in Settings so secure transfers work."
         : @"This device's certificate is outside its valid dates. Check the device clock, then regenerate the device key in Settings so secure transfers work.";
     _certificateAlertVisible = YES;

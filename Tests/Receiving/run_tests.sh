@@ -14,7 +14,7 @@ clang -fno-objc-arc -fblocks -g -fsanitize=address,undefined \
     -I "$project_directory/Sources/Shared" \
     -I "$project_directory/Vendor/JSONKit" \
     "$test_directory/receiver_tests.m" \
-    "$project_directory/Sources/Shared/LocalSendJSON.m" \
+    "$project_directory/Sources/Shared/JSON.m" \
     "$project_directory/Vendor/JSONKit/JSONKit.m" \
     -framework Foundation -framework Security \
     -o "$temporary_directory/receiver_tests"

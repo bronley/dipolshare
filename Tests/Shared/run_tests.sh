@@ -9,7 +9,7 @@ trap 'rm -rf "$temporary_directory"' EXIT HUP INT TERM
 clang -fno-objc-arc -g -fsanitize=address,undefined -Wall -Wextra \
     -I "$project_directory/Sources/Shared" -I "$project_directory/Vendor/JSONKit" \
     "$test_directory/json_tests.m" \
-    "$project_directory/Sources/Shared/LocalSendJSON.m" \
+    "$project_directory/Sources/Shared/JSON.m" \
     "$project_directory/Vendor/JSONKit/JSONKit.m" \
     -framework Foundation -o "$temporary_directory/json_tests"
 
