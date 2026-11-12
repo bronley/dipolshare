@@ -26,6 +26,7 @@ extern NSString *const ReceivePeerDidRegisterNotification;
 - (void)respondToRequest:(NSString *)requestIdentifier accept:(BOOL)accept;
 - (void)cancelCurrentTransfer;
 - (NSArray *)receivedFiles;
+- (NSArray *)deleteReceivedFilesAtPaths:(NSArray *)paths errorMessage:(NSString **)errorMessage;
 - (NSUInteger)unseenReceivedFileCount;
 - (BOOL)markReceivedFilesSeen;
 @end

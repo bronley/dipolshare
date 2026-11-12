@@ -35,7 +35,7 @@ DipolShare encrypts transfers with TLS 1.2 and keeps its private key in the iOS 
 
 The app requires as a jailbroken iOS with AppSync installed.
 
-TLSFix is not required.
+TLSFix is not required for file sharing. The optional version check uses system HTTPS, which may need TLSFix enabled for DipolShare and updated trusted certificates on older iOS versions.
 
 ## The app was tested on:
 
@@ -50,6 +50,24 @@ TLSFix is not required.
 - iOS 4.2.1
 - iOS 5
 - iOS 6
+
+## Version notifications
+
+The app checks `updates/latest.json` over HTTPS when it becomes active, at most once every 15 minutes per app session. A successful response containing a strictly newer compatible version shows an informational alert when the app is idle. Offline requests, HTTP errors, invalid JSON, incompatible versions, and equal or older versions produce no UI.
+
+- **Dismiss** ignores that version on subsequent checks.
+- **Remind Later** postpones that version for 24 hours. A later release can still be announced.
+- The app never downloads an IPA or installs an update.
+
+The test manifest announces **1.0.4** while the app remains **1.0.3**. `DipolShareUpdateManifestURL` in `Configuration/Info.plist` currently points at the `v1.0.4` branch:
+
+```text
+https://raw.githubusercontent.com/bronley/dipolshare/v1.0.4/updates/latest.json
+```
+
+Before shipping, point this setting at a stable branch such as `main` and announce only released versions. Keep the manifest path stable. The optional `minimumOSVersion` prevents notifying devices that cannot run a release. Version strings contain one to four dot-separated numeric components; prerelease labels are ignored.
+
+The manifest is fetched with `NSURLConnection` using the device's system certificate validation, including user-installed trusted certificates. No CA bundle ships with the app. Certificate and connection failures remain silent; redirects and responses larger than 16 KiB are rejected, and requests are cancelled after 20 seconds. File transfers continue to use OpenSSL and certificate fingerprint verification.
 
 ## Third-party software
 

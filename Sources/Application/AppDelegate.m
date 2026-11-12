@@ -4,12 +4,16 @@
 #import "ReceivedFilesViewController.h"
 #import "SettingsViewController.h"
 #import "LocalSendPadViewController.h"
+#import "Receiver.h"
+#import "Transfer.h"
 
 static NSString *const CertificateWarningShownKey = @"LocalSendCertificateWarningShown";
 
 @interface AppDelegate ()
 - (void)checkCertificateDate;
 - (void)identityChanged:(NSNotification *)notification;
+- (void)showPendingUpdate;
+- (void)transferActivityChanged:(NSNotification *)notification;
 @end
 
 @implementation AppDelegate
@@ -58,6 +62,15 @@ static NSString *const CertificateWarningShownKey = @"LocalSendCertificateWarnin
         [settings release];
     }
     [self.window makeKeyAndVisible];
+    NSBundle *bundle = [NSBundle mainBundle];
+    _updateChecker = [[UpdateChecker alloc] initWithURL:[NSURL URLWithString:[bundle objectForInfoDictionaryKey:@"DipolShareUpdateManifestURL"]]
+        installedVersion:[bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
+        systemVersion:[[UIDevice currentDevice] systemVersion] defaults:[NSUserDefaults standardUserDefaults]];
+    _updateChecker.delegate = self;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transferActivityChanged:)
+        name:TransferDidUpdateNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transferActivityChanged:)
+        name:ReceiveProgressNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(identityChanged:)
                                                  name:DiscoverySetupDidChangeNotification
@@ -66,12 +79,22 @@ static NSString *const CertificateWarningShownKey = @"LocalSendCertificateWarnin
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+    [_updateChecker cancel];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showPendingUpdate) object:nil];
+    [_pendingUpdateVersion release];
+    _pendingUpdateVersion = nil;
+    _updateAlert.delegate = nil;
+    [_updateAlert dismissWithClickedButtonIndex:0 animated:NO];
+    [_updateAlert release];
+    _updateAlert = nil;
     [[Discovery sharedDiscovery] stop];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [[Discovery sharedDiscovery] start];
     [self checkCertificateDate];
+    [_updateChecker check];
+    [self showPendingUpdate];
 }
 
 - (void)identityChanged:(NSNotification *)notification {
@@ -113,6 +136,16 @@ static NSString *const CertificateWarningShownKey = @"LocalSendCertificateWarnin
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView == _updateAlert) {
+        if (buttonIndex == 0) [_updateChecker dismissVersion:_pendingUpdateVersion];
+        else [_updateChecker remindLaterForVersion:_pendingUpdateVersion];
+        [_pendingUpdateVersion release];
+        _pendingUpdateVersion = nil;
+        _updateAlert.delegate = nil;
+        [_updateAlert release];
+        _updateAlert = nil;
+        return;
+    }
     _certificateAlertVisible = NO;
     if (buttonIndex == 1) {
         if ([self.window.rootViewController isKindOfClass:[LocalSendPadViewController class]]) {
@@ -124,7 +157,51 @@ static NSString *const CertificateWarningShownKey = @"LocalSendCertificateWarnin
     }
 }
 
+- (void)transferActivityChanged:(NSNotification *)notification {
+    if ([[notification name] isEqualToString:TransferDidUpdateNotification]) {
+        _sendingFiles = [[[notification userInfo] objectForKey:@"isActive"] boolValue];
+    } else {
+        _receivingFiles = [[[notification userInfo] objectForKey:@"active"] boolValue];
+    }
+}
+
+- (void)updateChecker:(UpdateChecker *)checker foundVersion:(NSString *)version {
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive || _updateAlert != nil) return;
+    [_pendingUpdateVersion release];
+    _pendingUpdateVersion = [version copy];
+    [self showPendingUpdate];
+}
+
+- (void)showPendingUpdate {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showPendingUpdate) object:nil];
+    if (_pendingUpdateVersion == nil || _updateAlert != nil ||
+        [UIApplication sharedApplication].applicationState != UIApplicationStateActive) return;
+    BOOL blocked = _certificateAlertVisible || _sendingFiles || _receivingFiles ||
+        [[Receiver sharedReceiver] pendingRequest] != nil ||
+        [UIApplication sharedApplication].keyWindow != _window ||
+        _window.rootViewController.modalViewController != nil;
+    for (UIWindow *window in [UIApplication sharedApplication].windows) {
+        if (!window.hidden && window.windowLevel > UIWindowLevelNormal) blocked = YES;
+    }
+    if (blocked) {
+        [self performSelector:@selector(showPendingUpdate) withObject:nil afterDelay:5.0];
+        return;
+    }
+    NSString *installed = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString *message = [NSString stringWithFormat:@"DipolShare %@ is available.\n\nCurrent version is %@.", _pendingUpdateVersion, installed];
+    _updateAlert = [[UIAlertView alloc] initWithTitle:@"New Version Available" message:message delegate:self
+        cancelButtonTitle:@"Dismiss" otherButtonTitles:@"Remind Later", nil];
+    [_updateAlert show];
+}
+
 - (void)dealloc {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    _updateChecker.delegate = nil;
+    [_updateChecker release];
+    _updateAlert.delegate = nil;
+    [_updateAlert dismissWithClickedButtonIndex:0 animated:NO];
+    [_updateAlert release];
+    [_pendingUpdateVersion release];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [_window release];
     [super dealloc];

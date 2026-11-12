@@ -6,6 +6,7 @@ static const unsigned long long MaximumPhotoAlbumFileSize = 64ULL * 1024ULL * 10
 @interface PhotoLibrarySaver ()
 - (void)savePhotoInBackground:(NSString *)path;
 - (void)photoSaveFinished:(NSString *)errorMessage;
+- (void)startPhotoAtPath:(NSString *)path;
 @end
 
 @implementation PhotoLibrarySaver
@@ -14,10 +15,24 @@ static const unsigned long long MaximumPhotoAlbumFileSize = 64ULL * 1024ULL * 10
 - (BOOL)savePhotoAtPath:(NSString *)path {
     if (_saving) return NO;
     _saving = YES;
+    [self startPhotoAtPath:path];
+    return YES;
+}
+
+- (BOOL)savePhotosAtPaths:(NSArray *)paths {
+    if (_saving || [paths count] == 0) return NO;
+    _batchPaths = [[NSArray alloc] initWithArray:paths copyItems:YES];
+    _failedPaths = [[NSMutableArray alloc] init];
+    _completedPhotos = 0;
+    _saving = YES;
+    [self startPhotoAtPath:[_batchPaths objectAtIndex:0]];
+    return YES;
+}
+
+- (void)startPhotoAtPath:(NSString *)path {
     NSString *snapshot = [path copy];
     [NSThread detachNewThreadSelector:@selector(savePhotoInBackground:) toTarget:self withObject:snapshot];
     [snapshot release];
-    return YES;
 }
 
 - (void)savePhotoInBackground:(NSString *)path {
@@ -65,13 +80,43 @@ static const unsigned long long MaximumPhotoAlbumFileSize = 64ULL * 1024ULL * 10
 }
 
 - (void)photoSaveFinished:(NSString *)errorMessage {
-    _saving = NO;
     [_photoSaveData release];
     _photoSaveData = nil;
+    if (_batchPaths != nil) {
+        if (errorMessage != nil) {
+            [_failedPaths addObject:[_batchPaths objectAtIndex:_completedPhotos]];
+            if (_batchError == nil) _batchError = [errorMessage copy];
+        }
+        _completedPhotos++;
+        if ([_delegate respondsToSelector:@selector(photoLibrarySaver:didCompletePhotos:total:)]) {
+            [_delegate photoLibrarySaver:self didCompletePhotos:_completedPhotos total:[_batchPaths count]];
+        }
+        if (_completedPhotos < [_batchPaths count]) {
+            [self startPhotoAtPath:[_batchPaths objectAtIndex:_completedPhotos]];
+            return;
+        }
+        NSUInteger savedCount = _completedPhotos - [_failedPaths count];
+        NSArray *failedPaths = [_failedPaths autorelease];
+        NSString *message = [_batchError autorelease];
+        _failedPaths = nil;
+        _batchError = nil;
+        [_batchPaths release];
+        _batchPaths = nil;
+        _saving = NO;
+        if ([_delegate respondsToSelector:@selector(photoLibrarySaver:didFinishBatchWithSavedCount:failedPaths:errorMessage:)]) {
+            [_delegate photoLibrarySaver:self didFinishBatchWithSavedCount:savedCount
+                             failedPaths:failedPaths errorMessage:message];
+        }
+        return;
+    }
+    _saving = NO;
     [_delegate photoLibrarySaver:self didFinishWithErrorMessage:errorMessage];
 }
 
 - (void)dealloc {
+    [_batchPaths release];
+    [_failedPaths release];
+    [_batchError release];
     [_photoLibrary release];
     [_photoSaveData release];
     [super dealloc];

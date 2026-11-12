@@ -1,4 +1,7 @@
 #import "ReceivedFileStore.h"
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
 
 static const unsigned long long ReservedFreeStorage = 16ULL * 1024ULL * 1024ULL;
 
@@ -132,6 +135,55 @@ static const unsigned long long ReservedFreeStorage = 16ULL * 1024ULL * 1024ULL;
         [files addObject:file];
     }
     return [NSArray arrayWithArray:files];
+}
+
+- (NSArray *)deleteFilesAtPaths:(NSArray *)paths errorMessage:(NSString **)errorMessage {
+    if (errorMessage != NULL) *errorMessage = nil;
+    NSMutableArray *failed = [NSMutableArray array];
+    NSMutableSet *requested = [NSMutableSet setWithArray:paths];
+    NSMutableArray *remaining = [NSMutableArray arrayWithArray:_receivedFiles];
+    BOOL changed = NO;
+    struct stat rootInfo;
+    BOOL validRoot = lstat([_receivedFilesPath fileSystemRepresentation], &rootInfo) == 0 && S_ISDIR(rootInfo.st_mode);
+    for (NSDictionary *entry in _receivedFiles) {
+        NSString *relative = [entry objectForKey:@"relativePath"];
+        NSString *path = [_receivedFilesPath stringByAppendingPathComponent:relative];
+        if (![requested containsObject:path]) continue;
+        [requested removeObject:path];
+        NSArray *parts = [relative pathComponents];
+        NSString *parent = [path stringByDeletingLastPathComponent];
+        struct stat parentInfo, fileInfo;
+        int parentResult = lstat([parent fileSystemRepresentation], &parentInfo);
+        BOOL validParent = parentResult == 0 ? S_ISDIR(parentInfo.st_mode) : errno == ENOENT;
+        BOOL safe = validRoot && validParent && [parts count] == 2 &&
+            ![parts containsObject:@".."] && ![parts containsObject:@"."] && ![relative isAbsolutePath];
+        BOOL removed = NO;
+        if (safe) {
+            int result = lstat([path fileSystemRepresentation], &fileInfo);
+            if (result != 0) removed = errno == ENOENT;
+            else if (S_ISREG(fileInfo.st_mode) || S_ISLNK(fileInfo.st_mode)) {
+                removed = unlink([path fileSystemRepresentation]) == 0 || errno == ENOENT;
+            }
+        }
+        if (!removed) {
+            [failed addObject:path];
+            continue;
+        }
+        [remaining removeObjectIdenticalTo:entry];
+        changed = YES;
+        rmdir([parent fileSystemRepresentation]);
+    }
+    [failed addObjectsFromArray:[requested allObjects]];
+    if (changed) {
+        [_receivedFiles setArray:remaining];
+        if (![_receivedFiles writeToFile:_indexPath atomically:YES] && errorMessage != NULL) {
+            *errorMessage = @"The files were deleted, but the received-files index could not be updated.";
+        }
+    }
+    if ([failed count] > 0 && errorMessage != NULL) {
+        *errorMessage = @"Some files could not be deleted. They remain in Received.";
+    }
+    return [NSArray arrayWithArray:failed];
 }
 
 - (NSUInteger)unseenFileCount {

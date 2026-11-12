@@ -6,6 +6,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F62100000000000000000001 = {isa = PBXBuildFile; fileRef = F62000000000000000000001; };
+		F62100000000000000000003 = {isa = PBXBuildFile; fileRef = F62000000000000000000003; };
+
         F61000000000000000000001 = {isa = PBXBuildFile; fileRef = F61000000000000000000002; };
         F61000000000000000000004 = {isa = PBXBuildFile; fileRef = F61000000000000000000005; };
 		F60000000000000000000001 = {isa = PBXBuildFile; fileRef = F60000000000000000000002; };
@@ -454,6 +457,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F62000000000000000000000 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Application/UpdateChecker.h; sourceTree = SOURCE_ROOT; };
+		F62000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Application/UpdateChecker.m; sourceTree = SOURCE_ROOT; };
+		F62000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Application/UpdateManifest.h; sourceTree = SOURCE_ROOT; };
+		F62000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Application/UpdateManifest.m; sourceTree = SOURCE_ROOT; };
+
         F61000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Screens/LocalSendPhotoPreviewViewController.m; sourceTree = SOURCE_ROOT; };
         F61000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Screens/LocalSendPhotoPreviewViewController.h; sourceTree = SOURCE_ROOT; };
         F61000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -1699,6 +1707,10 @@
 		400000000000000000000001 /* Group */ = {
 			isa = PBXGroup;
 			children = (
+				F62000000000000000000000,
+				F62000000000000000000001,
+				F62000000000000000000002,
+				F62000000000000000000003,
 				647F22983932505F8226C46F /* Sources */,
                 F61000000000000000000002,
                 F61000000000000000000003,
@@ -2216,6 +2228,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F62100000000000000000001,
+				F62100000000000000000003,
 				5E808F30930C2634BD422AE6 /* Discovery+Identity.m in Sources */,
 				C41A149F78F3751A36DDAB6B /* Discovery+Network.m in Sources */,
 				FA1792C63FE4DD4C16ED615A /* Discovery+Probes.m in Sources */,

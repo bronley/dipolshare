@@ -17,6 +17,7 @@
                    byteCount:(unsigned long long)byteCount
                 errorMessage:(NSString **)errorMessage;
 - (NSArray *)receivedFiles;
+- (NSArray *)deleteFilesAtPaths:(NSArray *)paths errorMessage:(NSString **)errorMessage;
 - (NSUInteger)unseenFileCount;
 - (BOOL)markAllFilesSeen;
 @end

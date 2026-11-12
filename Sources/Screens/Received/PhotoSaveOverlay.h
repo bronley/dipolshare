@@ -5,4 +5,5 @@
     UILabel *_label;
     UIActivityIndicatorView *_activityIndicator;
 }
+- (void)setCompletedPhotos:(NSUInteger)completed total:(NSUInteger)total;
 @end

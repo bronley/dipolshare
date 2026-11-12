@@ -64,6 +64,9 @@ static void Finish(BOOL success, NSError *error) {
 @public
     NSUInteger calls;
     NSString *message;
+    NSUInteger batchCalls, savedCount, progressCalls;
+    NSArray *failedPaths;
+
 }
 @end
 @implementation SaveObserver
@@ -74,7 +77,23 @@ static void Finish(BOOL success, NSError *error) {
     [message release];
     message = [errorMessage copy];
 }
+- (void)photoLibrarySaver:(PhotoLibrarySaver *)saver didCompletePhotos:(NSUInteger)completed total:(NSUInteger)total {
+    Check([NSThread isMainThread] && saver.saving, @"batch progress stays on main and remains busy");
+    Check(completed > 0 && completed <= total, @"batch progress stays within its total");
+    progressCalls++;
+}
+- (void)photoLibrarySaver:(PhotoLibrarySaver *)saver didFinishBatchWithSavedCount:(NSUInteger)count
+             failedPaths:(NSArray *)paths errorMessage:(NSString *)errorMessage {
+    Check([NSThread isMainThread] && !saver.saving, @"batch completion reaches main after clearing busy state");
+    batchCalls++;
+    savedCount = count;
+    [failedPaths release];
+    failedPaths = [paths copy];
+    [message release];
+    message = [errorMessage copy];
+}
 - (void)dealloc {
+    [failedPaths release];
     [message release];
     [super dealloc];
 }
@@ -142,6 +161,38 @@ int main(int argc, const char *argv[]) {
               @"invalid file reports the existing validation message");
     }
     Check(writes == 3, @"invalid files never reach the photo library");
+    Check(![saver savePhotosAtPaths:[NSArray array]] && !saver.saving, @"empty batch never starts");
+    NSMutableArray *batch = [NSMutableArray arrayWithObjects:photo, missing, photo, photo, nil];
+    NSUInteger singleCalls = observer->calls;
+    Check([saver savePhotosAtPaths:batch] && saver.saving, @"batch starts and immediately becomes busy");
+    [batch removeAllObjects];
+    Check(![saver savePhotoAtPath:photo] && ![saver savePhotosAtPaths:[NSArray arrayWithObject:photo]],
+          @"single and batch saves cannot interrupt a running batch");
+    if (!WaitFor(^BOOL { return HasPendingWrite(); })) return 2;
+    Check(writes == 4, @"only the first photo is submitted before its callback");
+    Finish(YES, nil);
+    if (!WaitFor(^BOOL { return HasPendingWrite() && observer->progressCalls == 2; })) return 2;
+    Check(writes == 5 && observer->batchCalls == 0, @"missing file is skipped and later photos still save");
+    Finish(NO, [NSError errorWithDomain:@"Test" code:2 userInfo:
+        [NSDictionary dictionaryWithObject:@"Library full" forKey:NSLocalizedDescriptionKey]]);
+    if (!WaitFor(^BOOL { return HasPendingWrite() && observer->progressCalls == 3; })) return 2;
+    Finish(YES, nil);
+    Check(WaitFor(^BOOL { return observer->batchCalls == 1; }) && observer->savedCount == 2 &&
+          [observer->failedPaths isEqualToArray:[NSArray arrayWithObjects:missing, photo, nil]],
+          @"batch snapshots input and reports exact successes and failed paths");
+    Check(observer->progressCalls == 4 && observer->calls == singleCalls,
+          @"each batch photo reports progress without single-save alerts");
+    Check([observer->message isEqualToString:@"This file is no longer available."],
+          @"batch keeps the first error for the summary");
+    Check([saver savePhotosAtPaths:[NSArray arrayWithObject:photo]], @"completed saver accepts another batch");
+    if (!WaitFor(^BOOL { return HasPendingWrite(); })) return 2;
+    Finish(YES, nil);
+    Check(WaitFor(^BOOL { return observer->batchCalls == 2; }) && observer->savedCount == 1 &&
+          [observer->failedPaths count] == 0 && observer->message == nil,
+          @"successful retry clears previous errors and counts");
+    [saver savePhotosAtPaths:invalidPaths];
+    Check(WaitFor(^BOOL { return observer->batchCalls == 3; }) && observer->savedCount == 0 &&
+          [observer->failedPaths isEqualToArray:invalidPaths], @"all-invalid batch finishes with all failures");
     saver.delegate = nil;
     [saver release];
 
@@ -156,6 +207,25 @@ int main(int argc, const char *argv[]) {
     Finish(YES, nil);
     Check(WaitFor(^BOOL { return destroyedSavers == 1; }), @"completed detached save is released");
     Check(observer->calls == previousCalls, @"detached screen receives no late callback");
+
+    detached = [[TrackedPhotoSaver alloc] init];
+    detached.delegate = observer;
+    [detached savePhotosAtPaths:[NSArray arrayWithObjects:photo, photo, nil]];
+    if (!WaitFor(^BOOL { return HasPendingWrite(); })) return 2;
+    detached.delegate = nil;
+    [detached release];
+    __block NSUInteger lastWrites;
+    @synchronized([ALAssetsLibrary class]) { lastWrites = writes; }
+    Finish(YES, nil);
+    if (!WaitFor(^BOOL {
+        @synchronized([ALAssetsLibrary class]) {
+            return writes == lastWrites + 1 && pendingCompletion != nil;
+        }
+    })) return 2;
+    Check(destroyedSavers == 1, @"detached batch survives until its final photo");
+    Finish(YES, nil);
+    Check(WaitFor(^BOOL { return destroyedSavers == 2; }), @"detached batch releases after its final callback");
+    Check(observer->batchCalls == 3, @"detached batch never calls its former delegate");
 
     [observer release];
     [writtenData release];
