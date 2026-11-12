@@ -41,7 +41,7 @@
 		</dict>
 	</dict>
 	<key>DipolShareUpdateManifestURL</key>
-	<string>https://raw.githubusercontent.com/bronley/dipolshare/v1.0.4/updates/latest.json</string>
+	<string>https://raw.githubusercontent.com/bronley/dipolshare/main/updates/latest.json</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>NSContactsUsageDescription</key>
