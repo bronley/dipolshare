@@ -8,4 +8,7 @@
     UIView *_paneDivider;
 }
 - (void)showSettings;
+#if DIPOLSHARE_DEV_TESTING
+- (void)dismissSettingsForScreenshot;
+#endif
 @end

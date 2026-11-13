@@ -3,11 +3,18 @@
 #import "DiscoveryStatusViewController.h"
 #import "Discovery.h"
 #import "Sounds.h"
+#if DIPOLSHARE_DEV_TESTING
+#import "SplashScreenshotViewController.h"
+#import "LocalSendPadViewController.h"
+#endif
 
 typedef enum {
     SettingsSectionThisDevice,
     SettingsSectionSecurity,
     SettingsSectionAbout,
+#if DIPOLSHARE_DEV_TESTING
+    SettingsSectionDevelopment,
+#endif
     SettingsSectionCount
 } SettingsSection;
 
@@ -46,6 +53,9 @@ static const NSInteger CreditCaptionTag = 1003;
 - (void)showRegenerateKeyConfirmation;
 - (void)layoutCreditFooter;
 - (void)soundEffectsChanged:(UISwitch *)sender;
+#if DIPOLSHARE_DEV_TESTING
+- (void)showSplashScreenshot;
+#endif
 @end
 
 @implementation SettingsViewController
@@ -138,6 +148,10 @@ static const NSInteger CreditCaptionTag = 1003;
             return SettingsSecurityRowCount;
         case SettingsSectionAbout:
             return SettingsAboutRowCount;
+#if DIPOLSHARE_DEV_TESTING
+        case SettingsSectionDevelopment:
+            return 1;
+#endif
         default:
             return 0;
     }
@@ -151,6 +165,10 @@ static const NSInteger CreditCaptionTag = 1003;
             return @"Security";
         case SettingsSectionAbout:
             return @"About";
+#if DIPOLSHARE_DEV_TESTING
+        case SettingsSectionDevelopment:
+            return @"Development";
+#endif
         default:
             return nil;
     }
@@ -196,6 +214,13 @@ static const NSInteger CreditCaptionTag = 1003;
         case SettingsSectionAbout:
             [self configureAboutCell:cell forRow:indexPath.row];
             break;
+#if DIPOLSHARE_DEV_TESTING
+        case SettingsSectionDevelopment:
+            cell.textLabel.text = @"Splash screen screenshot";
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            break;
+#endif
         default:
             break;
     }
@@ -258,7 +283,7 @@ static const NSInteger CreditCaptionTag = 1003;
             case CertificateDateStatusValid: cell.detailTextLabel.text = @"Valid"; break;
             case CertificateDateStatusExpired: cell.detailTextLabel.text = @"Expired"; break;
             case CertificateDateStatusNotYetValid: cell.detailTextLabel.text = @"Not yet valid"; break;
-            case CertificateDateStatusClockIncorrect: cell.detailTextLabel.text = @"Check clock"; break;
+            case CertificateDateStatusClockIncorrect: cell.detailTextLabel.text = @"Check Date & Time"; break;
             case CertificateDateStatusInvalid: cell.detailTextLabel.text = @"Invalid"; break;
             default: cell.detailTextLabel.text = @"Checking…"; break;
         }
@@ -303,6 +328,11 @@ static const NSInteger CreditCaptionTag = 1003;
         case SettingsSectionAbout:
             [self handleAboutRowSelection:indexPath.row];
             return;
+#if DIPOLSHARE_DEV_TESTING
+        case SettingsSectionDevelopment:
+            [self showSplashScreenshot];
+            return;
+#endif
         default:
             return;
     }
@@ -334,6 +364,19 @@ static const NSInteger CreditCaptionTag = 1003;
             return;
     }
 }
+
+#if DIPOLSHARE_DEV_TESTING
+- (void)showSplashScreenshot {
+    UIViewController *root = [UIApplication sharedApplication].delegate.window.rootViewController;
+    if ([root isKindOfClass:[LocalSendPadViewController class]]) {
+        [(LocalSendPadViewController *)root dismissSettingsForScreenshot];
+    }
+    SplashScreenshotViewController *screenshot = [[SplashScreenshotViewController alloc] init];
+    screenshot.modalPresentationStyle = UIModalPresentationFullScreen;
+    [root presentModalViewController:screenshot animated:NO];
+    [screenshot release];
+}
+#endif
 
 - (void)handleSecurityRowSelection:(NSInteger)row {
     switch (row) {

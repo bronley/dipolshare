@@ -5,6 +5,7 @@
 
 + (NSString *)identifierForDevice:(NSDictionary *)device;
 + (CGFloat)radarCenterYInBounds:(CGRect)bounds;
++ (CGFloat)tabletRadarCenterYInBounds:(CGRect)bounds;
 + (CGRect)frameForPlacement:(NSDictionary *)placement;
 + (NSDictionary *)placementsForDevices:(NSArray *)devices
                               inBounds:(CGRect)bounds

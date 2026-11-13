@@ -3,7 +3,6 @@
 #import "Formatting.h"
 #import "ReceivedEmptyView.h"
 #import "PhotoSaveOverlay.h"
-#import <ImageIO/ImageIO.h>
 #import "LocalSendPhotoPreviewViewController.h"
 
 static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
@@ -12,7 +11,7 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
 - (void)reloadFiles;
 - (void)filesChanged:(NSNotification *)notification;
 - (void)receiveUpdated:(NSNotification *)notification;
-- (void)updateReceiveStatus;
+- (void)updateReceiveControls;
 - (void)cancelReceive:(id)sender;
 - (void)showMessage:(NSString *)message title:(NSString *)title;
 - (BOOL)selectedFileCanCopyText;
@@ -40,11 +39,10 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
 
 @implementation ReceivedFilesViewController
 
-- (id)initWithReceiveStatus:(NSString *)status active:(BOOL)active {
+- (id)initWithReceiveActive:(BOOL)active {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
         _selectedFilePaths = [[NSMutableSet alloc] init];
-        _receiveStatus = [status copy];
         _isReceivingFiles = active;
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(filesChanged:)
@@ -70,7 +68,7 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     _emptyStateView = [[ReceivedEmptyView alloc] initWithFrame:self.tableView.bounds];
     _emptyStateView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self reloadFiles];
-    [self updateReceiveStatus];
+    [self updateReceiveControls];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -78,7 +76,7 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     [self reloadFiles];
     [[Receiver sharedReceiver] markReceivedFilesSeen];
     [self refreshBadge];
-    [self updateReceiveStatus];
+    [self updateReceiveControls];
 }
 
 - (void)filesChanged:(NSNotification *)notification {
@@ -120,17 +118,13 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
 }
 
 - (void)receiveUpdated:(NSNotification *)notification {
-    NSString *status = [[notification userInfo] objectForKey:@"status"];
-    [_receiveStatus release];
-    _receiveStatus = [status copy];
     _isReceivingFiles = [[[notification userInfo] objectForKey:@"active"] boolValue];
     if ([self isViewLoaded]) {
-        [self updateReceiveStatus];
+        [self updateReceiveControls];
     }
 }
 
-- (void)updateReceiveStatus {
-    self.navigationItem.prompt = [_receiveStatus length] > 0 ? _receiveStatus : nil;
+- (void)updateReceiveControls {
     _cancelReceiveButton.enabled = _isReceivingFiles;
     [self updateSelectionControls];
 }
@@ -208,15 +202,17 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     UIBarButtonItem *select = [[[UIBarButtonItem alloc] initWithTitle:_selectingFiles ? @"Cancel" : @"Select"
         style:UIBarButtonItemStyleBordered target:self action:@selector(toggleFileSelection:)] autorelease];
     select.enabled = !_photoSaver.isSaving && (_selectingFiles || [_files count] > 0);
-    self.navigationItem.rightBarButtonItem = select;
-    self.navigationItem.leftBarButtonItem = nil;
+    BOOL selectOnLeft = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    self.navigationItem.leftBarButtonItem = selectOnLeft ? select : nil;
+    self.navigationItem.rightBarButtonItem = selectOnLeft ? nil : select;
     NSMutableArray *items = [NSMutableArray array];
     if (_selectingFiles) {
         UIBarButtonItem *all = [[[UIBarButtonItem alloc]
             initWithTitle:[_selectedFilePaths count] == [_files count] ? @"Clear" : @"Select All"
             style:UIBarButtonItemStyleBordered target:self action:@selector(selectAllFiles:)] autorelease];
         all.enabled = !_photoSaver.isSaving && [_files count] > 0;
-        self.navigationItem.leftBarButtonItem = all;
+        if (selectOnLeft) self.navigationItem.rightBarButtonItem = all;
+        else self.navigationItem.leftBarButtonItem = all;
         UIBarButtonItem *save = [[[UIBarButtonItem alloc] initWithTitle:@"Save Photos"
             style:UIBarButtonItemStyleDone target:self action:@selector(saveSelectedPhotos:)] autorelease];
         save.enabled = selectedPhotoCount > 0 && !_photoSaver.isSaving;
@@ -407,6 +403,8 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         CGRect rowRect = [tableView rectForRowAtIndexPath:indexPath];
         [_fileActionsSheet showFromRect:rowRect inView:tableView animated:YES];
+    } else if (self.tabBarController != nil) {
+        [_fileActionsSheet showFromTabBar:self.tabBarController.tabBar];
     } else {
         [_fileActionsSheet showInView:self.navigationController.view];
     }
@@ -479,28 +477,13 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
         return;
     }
     if ([self selectedFileCanSaveToPhotos]) {
-        CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)fileURL, NULL);
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithBool:YES], (NSString *)kCGImageSourceCreateThumbnailFromImageAlways,
-            [NSNumber numberWithBool:YES], (NSString *)kCGImageSourceCreateThumbnailWithTransform,
-            [NSNumber numberWithInt:2048], (NSString *)kCGImageSourceThumbnailMaxPixelSize, nil];
-        CGImageRef thumbnail = source == NULL ? NULL :
-            CGImageSourceCreateThumbnailAtIndex(source, 0, (CFDictionaryRef)options);
-        if (source != NULL) CFRelease(source);
-        if (thumbnail == NULL) {
-            [self showMessage:@"This photo could not be opened." title:@"Cannot preview photo"];
-            return;
-        }
-        UIImage *image = [UIImage imageWithCGImage:thumbnail];
-        CGImageRelease(thumbnail);
         LocalSendPhotoPreviewViewController *photo = [[LocalSendPhotoPreviewViewController alloc]
-            initWithImage:image title:[_selectedFile objectForKey:@"name"]
+            initWithFileURL:fileURL title:[_selectedFile objectForKey:@"name"]
             target:self action:@selector(sharePreviewPhoto:)];
-        [_photoPreviewNavigation release];
-        _photoPreviewNavigation = [[UINavigationController alloc] initWithRootViewController:photo];
-        _photoPreviewNavigation.navigationBar.barStyle = UIBarStyleBlack;
-        _photoPreviewNavigation.modalPresentationStyle = UIModalPresentationFullScreen;
-        [self.view.window.rootViewController presentModalViewController:_photoPreviewNavigation animated:YES];
+        [_photoPreview release];
+        _photoPreview = [photo retain];
+        _photoPreview.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self.view.window.rootViewController presentModalViewController:_photoPreview animated:YES];
         [photo release];
         return;
     }
@@ -525,11 +508,11 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
 }
 
 - (BOOL)photoPreviewVisible {
-    return [_photoPreviewNavigation isViewLoaded] && _photoPreviewNavigation.view.window != nil;
+    return [_photoPreview isViewLoaded] && _photoPreview.view.window != nil;
 }
 
 - (UIView *)fileActionHostView {
-    if ([self photoPreviewVisible]) return _photoPreviewNavigation.view;
+    if ([self photoPreviewVisible]) return _photoPreview.view;
     UIView *host = self.view.window.rootViewController.view;
     return host != nil ? host : self.navigationController.view;
 }
@@ -546,7 +529,7 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [_fileActionsSheet showFromBarButtonItem:preview.shareButton animated:YES];
     } else {
-        [_fileActionsSheet showInView:preview.navigationController.view];
+        [_fileActionsSheet showInView:preview.view];
     }
 }
 
@@ -560,9 +543,7 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     UIPrintInteractionController *printer = [UIPrintInteractionController sharedPrintController];
     printer.printingItem = url;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        LocalSendPhotoPreviewViewController *preview =
-            (LocalSendPhotoPreviewViewController *)_photoPreviewNavigation.topViewController;
-        [printer presentFromBarButtonItem:preview.shareButton animated:YES completionHandler:nil];
+        [printer presentFromBarButtonItem:_photoPreview.shareButton animated:YES completionHandler:nil];
     } else {
         [printer presentAnimated:YES completionHandler:nil];
     }
@@ -592,9 +573,7 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     _documentInteractionController.delegate = self;
     BOOL shown;
     if ([self photoPreviewVisible]) {
-        LocalSendPhotoPreviewViewController *preview =
-            (LocalSendPhotoPreviewViewController *)_photoPreviewNavigation.topViewController;
-        shown = [_documentInteractionController presentOpenInMenuFromBarButtonItem:preview.shareButton animated:YES];
+        shown = [_documentInteractionController presentOpenInMenuFromBarButtonItem:_photoPreview.shareButton animated:YES];
     } else {
         shown = [_documentInteractionController
             presentOpenInMenuFromRect:CGRectMake(0, self.view.bounds.size.height - 1,
@@ -713,12 +692,11 @@ static const unsigned long long MaximumClipboardFileSize = 1024ULL * 1024ULL;
     [_previewURL release];
     [_cancelReceiveButton release];
     [_emptyStateView release];
-    [_receiveStatus release];
     _photoSaver.delegate = nil;
     [_photoSaver release];
     [_photoSaveOverlay removeFromSuperview];
     [_photoSaveOverlay release];
-    [_photoPreviewNavigation release];
+    [_photoPreview release];
     [super dealloc];
 }
 @end

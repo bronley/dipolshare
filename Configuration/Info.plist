@@ -17,13 +17,19 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.0</string>
+	<string>1.1.1</string>
 	<key>CFBundleVersion</key>
-	<string>1.1.0</string>
+	<string>1.1.1</string>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>Localsend.png</string>
 		<string>Localsend@2x.png</string>
+		<string>Icon-72.png</string>
+		<string>Icon-72@2x.png</string>
+		<string>Icon-Small.png</string>
+		<string>Icon-Small@2x.png</string>
+		<string>Icon-Small-50.png</string>
+		<string>Icon-Small-50@2x.png</string>
 	</array>
 	<key>UIPrerenderedIcon</key>
 	<true/>
@@ -35,6 +41,12 @@
 			<array>
 				<string>Localsend.png</string>
 				<string>Localsend@2x.png</string>
+				<string>Icon-72.png</string>
+				<string>Icon-72@2x.png</string>
+				<string>Icon-Small.png</string>
+				<string>Icon-Small@2x.png</string>
+				<string>Icon-Small-50.png</string>
+				<string>Icon-Small-50@2x.png</string>
 			</array>
 			<key>UIPrerenderedIcon</key>
 			<true/>

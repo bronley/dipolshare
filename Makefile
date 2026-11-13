@@ -3,6 +3,15 @@ ARCHS = armv6 armv7
 
 PACKAGE_FORMAT = ipa
 
+DEV_TESTING ?= 0
+ifeq ($(filter $(DEV_TESTING),0 1),)
+$(error DEV_TESTING must be 0 or 1)
+endif
+ifeq ($(DEV_TESTING),1)
+THEOS_OBJ_DIR_NAME = obj/dev-testing$(_THEOS_OBJ_DIR_EXTENSION)
+THEOS_PACKAGE_DIR = packages/dev-testing
+endif
+
 include $(THEOS)/makefiles/common.mk
 
 APPLICATION_NAME = DipolShare
@@ -39,6 +48,7 @@ DipolShare_LDFLAGS += -fuse-ld=$(CLASSIC_LINKER)
 endif
 
 DipolShare_CFLAGS += \
+    -DDIPOLSHARE_DEV_TESTING=$(DEV_TESTING) \
     -fblocks \
     -I$(THEOS_PROJECT_DIR)/Vendor/OpenSSL/include \
     -I$(THEOS_PROJECT_DIR)/Sources/Shared

@@ -1,4 +1,5 @@
 #import "ReceivedEmptyView.h"
+#import "RadarLayout.h"
 
 @implementation ReceivedEmptyView
 
@@ -28,8 +29,16 @@
     CGFloat iconSize = MIN(142.0f, width - 32.0f);
     CGFloat groupHeight = iconSize + 16.0f + 24.0f;
     CGFloat top = MAX(0.0f, (height - groupHeight) / 2.0f);
+    CGFloat messageTop = top + iconSize + 16.0f;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        CGFloat radarCenterY = [RadarLayout tabletRadarCenterYInBounds:self.bounds];
+        // The radar face is 4 points above its canvas center. Match the
+        // discovery heading's vertical center while retaining a 24-point label.
+        top = radarCenterY - 4.0f - iconSize / 2.0f;
+        messageTop = radarCenterY + 101.0f + (38.0f - 24.0f) / 2.0f;
+    }
     _satelliteImageView.frame = CGRectMake((width - iconSize) / 2.0f, top, iconSize, iconSize);
-    _messageLabel.frame = CGRectMake(12.0f, top + iconSize + 16.0f, width - 24.0f, 24.0f);
+    _messageLabel.frame = CGRectMake(12.0f, messageTop, width - 24.0f, 24.0f);
 }
 
 - (void)dealloc {
