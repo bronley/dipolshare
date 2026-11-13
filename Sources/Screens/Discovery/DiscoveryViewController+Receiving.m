@@ -61,6 +61,7 @@
     _receiveStatus = [status copy];
     _isReceivingFiles = [[info objectForKey:@"active"] boolValue];
     [self updateReceiveIdleTimer];
+    _discoveryHintLabel.hidden = _wifiUnavailable || _isSendingFiles || _isReceivingFiles || _contactBackup != nil;
     if ([status length] > 0 && !_wifiUnavailable) {
         _statusLabel.text = status;
     }

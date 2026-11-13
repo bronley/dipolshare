@@ -33,6 +33,13 @@
     [self refresh:nil];
 }
 
+- (void)layoutForContainer {
+    if ([self isViewLoaded]) {
+        [self layoutMainScreen];
+        [self synchronizeDeviceBlobs];
+    }
+}
+
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     if (_backgroundView != nil) {
@@ -237,7 +244,8 @@
         _statusLabel.text = @"Device key failed. See Settings.";
         return;
     }
-    _statusLabel.text = @"Searching for devices....";
+    _statusLabel.text = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+        ? @"Searching for devices…" : @"Searching for devices....";
 }
 
 - (void)setupChanged:(NSNotification *)notification {
@@ -256,6 +264,8 @@
     _radarView = nil;
     [_wifiOffView release];
     _wifiOffView = nil;
+    [_discoveryHintLabel release];
+    _discoveryHintLabel = nil;
     [_statusLabel release];
     _statusLabel = nil;
     [super viewDidUnload];
@@ -279,6 +289,8 @@
     [_transfer release];
     [_outgoingTransferStatus release];
     [_selectedDevice release];
+    [_discoveryHintLabel release];
+    _discoveryHintLabel = nil;
     [_statusLabel release];
     [_devices release];
     [_lastErrorMessage release];

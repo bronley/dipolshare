@@ -35,7 +35,7 @@ DipolShare encrypts transfers with TLS 1.2 and keeps its private key in the iOS 
 
 The app requires as a jailbroken iOS with AppSync installed.
 
-TLSFix is not required.
+TLSFix is not required for file sharing. The optional version check uses system HTTPS, which may need TLSFix enabled for DipolShare and updated trusted certificates on older iOS versions.
 
 ## The app was tested on:
 

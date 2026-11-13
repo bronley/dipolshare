@@ -32,13 +32,25 @@
     _statusLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
     _statusLabel.adjustsFontSizeToFitWidth = YES;
     _statusLabel.minimumFontSize = 11.0f;
-    _statusLabel.text = @"Searching for devices....";
+    _statusLabel.text = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+        ? @"Searching for devices…" : @"Searching for devices....";
     _statusLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *statusTap =
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showLastError:)];
     [_statusLabel addGestureRecognizer:statusTap];
     [statusTap release];
     [self.view addSubview:_statusLabel];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        _statusLabel.font = [UIFont boldSystemFontOfSize:28.0f];
+        _statusLabel.textColor = [UIColor colorWithWhite:0.96f alpha:1.0f];
+        _discoveryHintLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _discoveryHintLabel.backgroundColor = [UIColor clearColor];
+        _discoveryHintLabel.textAlignment = UITextAlignmentCenter;
+        _discoveryHintLabel.font = [UIFont systemFontOfSize:16.0f];
+        _discoveryHintLabel.textColor = [UIColor colorWithWhite:0.82f alpha:1.0f];
+        _discoveryHintLabel.text = @"Nearby devices will appear here automatically.";
+        [self.view addSubview:_discoveryHintLabel];
+    }
 }
 
 - (void)layoutMainScreen {
@@ -50,6 +62,11 @@
     _wifiOffView.center = CGPointMake(width / 2.0f, radarCenterY);
     _statusLabel.frame = CGRectMake(6.0f, radarCenterY + (_wifiUnavailable ? 88.0f : 78.0f),
                                     width - 12.0f, 32.0f);
+    if (_discoveryHintLabel != nil) {
+        _statusLabel.frame = CGRectMake(20, radarCenterY + 101, width - 40, 38);
+        _discoveryHintLabel.frame = CGRectMake(12, radarCenterY + 153, width - 24, 22);
+        _discoveryHintLabel.hidden = _wifiUnavailable || _isSendingFiles || _isReceivingFiles || _contactBackup != nil;
+    }
 }
 
 - (void)updateWiFiState {
@@ -60,7 +77,9 @@
     _radarView.hidden = unavailable;
     if (unavailable) {
         [_radarView stopAnimating];
-        self.navigationItem.leftBarButtonItem = nil;
+        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+            self.navigationItem.leftBarButtonItem = nil;
+        }
     } else {
         if (changed) {
             [self synchronizeDeviceBlobs];
@@ -137,6 +156,10 @@
     }
 
     NSMutableArray *reservedFrames = [NSMutableArray array];
+    if (_discoveryHintLabel != nil) {
+        CGRect textArea = CGRectUnion(_statusLabel.frame, _discoveryHintLabel.frame);
+        [reservedFrames addObject:[NSValue valueWithBytes:&textArea objCType:@encode(CGRect)]];
+    }
     for (DeviceBlobView *retiring in _retiringBlobViews) {
         CGRect frame = retiring.frame;
         [reservedFrames addObject:[NSValue valueWithBytes:&frame objCType:@encode(CGRect)]];
@@ -195,8 +218,23 @@
         [blob release];
     }
     NSUInteger overflowCount = [_devices count] - [placements count];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        BOOL showOverflow = !_wifiUnavailable && overflowCount > 0;
+        if (showOverflow) {
+            UIBarButtonItem *more = [[[UIBarButtonItem alloc]
+                initWithTitle:[NSString stringWithFormat:@"%lu more devices", (unsigned long)overflowCount]
+                style:UIBarButtonItemStyleBordered target:self action:@selector(showAllDevices:)] autorelease];
+            self.toolbarItems = [NSArray arrayWithObject:more];
+        }
+        if (self.navigationController.toolbarHidden == showOverflow) {
+            [self.navigationController setToolbarHidden:!showOverflow animated:NO];
+        }
+        return;
+    }
     if (_wifiUnavailable || overflowCount == 0) {
-        self.navigationItem.leftBarButtonItem = nil;
+        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+            self.navigationItem.leftBarButtonItem = nil;
+        }
     } else {
         UIBarButtonItem *more = self.navigationItem.leftBarButtonItem;
         if (more == nil) {

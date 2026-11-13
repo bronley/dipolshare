@@ -35,6 +35,7 @@
 - (void)transferUpdated:(NSNotification *)notification;
 - (void)showSendActionsForSelectedDevice;
 - (void)showMoreActions;
+- (void)presentSendActionsSheet;
 - (void)dismissSendActions;
 - (void)dismissInsecureTransferAlert;
 - (void)performSendActionAtIndex:(NSInteger)index;

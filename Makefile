@@ -20,7 +20,8 @@ DipolShare_FRAMEWORKS = \
     AddressBook \
     MobileCoreServices \
     AudioToolbox \
-    QuartzCore
+    QuartzCore \
+    ImageIO
 
 DipolShare_RESOURCE_DIRS = Resources/Images Resources/Sounds
 DipolShare_RESOURCE_FILES = Configuration/Info.plist
@@ -31,6 +32,11 @@ include $(THEOS_MAKE_PATH)/application.mk
 DipolShare_LDFLAGS += \
     $(THEOS_PROJECT_DIR)/Vendor/OpenSSL/libssl-3.5.8-ios4.a \
     $(THEOS_PROJECT_DIR)/Vendor/OpenSSL/libcrypto-3.5.8-ios4.a
+
+CLASSIC_LINKER ?= $(shell xcrun --find ld-classic 2>/dev/null)
+ifneq ($(CLASSIC_LINKER),)
+DipolShare_LDFLAGS += -fuse-ld=$(CLASSIC_LINKER)
+endif
 
 DipolShare_CFLAGS += \
     -fblocks \

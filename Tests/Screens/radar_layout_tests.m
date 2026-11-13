@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "RadarLayout.h"
+#import "LocalSendPhotoGridLayout.h"
 #import <math.h>
 
 static NSUInteger checks = 0;
@@ -50,6 +51,32 @@ static void CheckLayout(NSArray *devices, CGRect bounds, NSDictionary *placement
 
 int main(void) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    Check(LocalSendPhotoColumnsForWidth(320) == 4, @"Phone keeps four photo columns");
+    Check(LocalSendPhotoColumnsForWidth(768) == 5, @"Portrait iPad uses five larger photo columns");
+    Check(LocalSendPhotoColumnsForWidth(1024) == 7, @"Landscape iPad uses seven larger photo columns");
+    CGFloat galleryWidths[] = {320, 468, 724, 768, 1024};
+    for (NSUInteger i = 0; i < 5; i++) {
+        CGFloat width = galleryWidths[i];
+        NSUInteger columns = LocalSendPhotoColumnsForWidth(width);
+        CGFloat tile = LocalSendPhotoTileSize(width, columns);
+        CGFloat used = columns * tile + (columns - 1) * LocalSendPhotoGridSpacing(width);
+        CGFloat available = width - 2 * LocalSendPhotoGridMargin(width);
+        if (width >= 468) Check(tile >= 110, @"iPad gallery uses larger thumbnails");
+        Check(tile >= 44, @"Photo tiles remain usable touch targets");
+        Check(used <= available && used > available - columns, @"Photo grid fills the pane without clipping");
+    }
+    CGRect photoSlot = CGRectMake(28, 14, 120, 120);
+    CGSize photoSizes[] = {CGSizeMake(1600, 900), CGSizeMake(900, 1600), CGSizeMake(1000, 1000)};
+    for (NSUInteger i = 0; i < 3; i++) {
+        CGRect frame = LocalSendPhotoFrameInSlot(photoSlot, photoSizes[i], 6);
+        Check(CGRectContainsRect(photoSlot, frame), @"White photo frame stays within its grid slot");
+        Check(fabs(CGRectGetMidX(frame) - CGRectGetMidX(photoSlot)) < 0.01 &&
+              fabs(CGRectGetMidY(frame) - CGRectGetMidY(photoSlot)) < 0.01,
+              @"Portrait and landscape photos stay centered");
+        Check(fabs((frame.size.width - 12) / (frame.size.height - 12) -
+                   photoSizes[i].width / photoSizes[i].height) < 0.01,
+              @"Framed photos preserve their original aspect ratio");
+    }
     CGRect shortScreen = CGRectMake(0.0f, 0.0f, 320.0f, 387.0f);
     CGRect tallScreen = CGRectMake(0.0f, 0.0f, 320.0f, 475.0f);
     NSArray *firstTwo = [NSArray arrayWithObjects:Device(1), Device(2), nil];
@@ -79,6 +106,25 @@ int main(void) {
                                                  previousPlacements:nil
                                                      reservedFrames:[NSArray array]];
     CheckLayout(manyDevices, tallScreen, tall);
+
+    CGRect tabletLandscape = CGRectMake(0, 0, 724, 704);
+    CGRect tabletPortrait = CGRectMake(0, 0, 468, 960);
+    CGFloat tabletRadarY = [RadarLayout radarCenterYInBounds:tabletLandscape];
+    CGRect tabletText = CGRectMake(12, tabletRadarY + 101, 700, 74);
+    NSArray *tabletReserved = [NSArray arrayWithObject:
+        [NSValue valueWithBytes:&tabletText objCType:@encode(CGRect)]];
+    NSDictionary *landscape = [RadarLayout placementsForDevices:manyDevices
+        inBounds:tabletLandscape previousPlacements:nil reservedFrames:tabletReserved];
+    for (NSDictionary *placement in [landscape allValues]) {
+        Check(!CGRectIntersectsRect([RadarLayout frameForPlacement:placement], tabletText),
+              @"iPad devices avoid the enlarged status and hint");
+    }
+    Check([landscape count] > 0, @"iPad landscape shows nearby devices");
+    CheckLayout(manyDevices, tabletLandscape, landscape);
+    NSDictionary *portrait = [RadarLayout placementsForDevices:manyDevices
+        inBounds:tabletPortrait previousPlacements:landscape reservedFrames:[NSArray array]];
+    Check([portrait count] > 0, @"iPad rotation retains nearby devices");
+    CheckLayout(manyDevices, tabletPortrait, portrait);
 
     NSDictionary *firstPlacement =
         [initial objectForKey:[RadarLayout identifierForDevice:Device(1)]];

@@ -312,12 +312,18 @@ static const NSInteger CreditCaptionTag = 1003;
     switch (row) {
         case SettingsThisDeviceRowName: {
             DeviceNameViewController *editor = [[DeviceNameViewController alloc] init];
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                editor.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+            }
             [self.navigationController pushViewController:editor animated:YES];
             [editor release];
             return;
         }
         case SettingsThisDeviceRowDiscoveryStatus: {
             DiscoveryStatusViewController *report = [[DiscoveryStatusViewController alloc] init];
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                report.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+            }
             [self.navigationController pushViewController:report animated:YES];
             [report release];
             return;

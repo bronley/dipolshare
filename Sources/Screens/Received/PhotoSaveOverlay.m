@@ -54,6 +54,13 @@
     [_activityIndicator startAnimating];
 }
 
+- (void)setCompletedPhotos:(NSUInteger)completed total:(NSUInteger)total {
+    _label.text = [NSString stringWithFormat:@"Saving %lu of %lu…",
+        (unsigned long)MIN(completed + 1, total), (unsigned long)total];
+    _label.adjustsFontSizeToFitWidth = YES;
+    _label.minimumFontSize = 12.0f;
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     CGFloat width = MIN(260.0f, self.bounds.size.width - 40.0f);

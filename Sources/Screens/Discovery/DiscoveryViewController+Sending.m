@@ -1,5 +1,8 @@
 #import "DiscoveryViewController+Private.h"
 #import "Transfer.h"
+#import "RadarLayout.h"
+#import "DeviceBlobView.h"
+#import "AnimatedRadarView.h"
 
 static const NSInteger MoreActionsTag = 1001;
 static const NSInteger ContactsAction = 2;
@@ -76,6 +79,7 @@ static const NSInteger ContactsAction = 2;
     [_outgoingTransferStatus release];
     _outgoingTransferStatus = [status copy];
     _isSendingFiles = [[progress objectForKey:@"isActive"] boolValue];
+    _discoveryHintLabel.hidden = _wifiUnavailable || _isSendingFiles || _isReceivingFiles || _contactBackup != nil;
     if ([[progress objectForKey:@"isError"] boolValue]) {
         [_lastErrorMessage release];
         _lastErrorMessage = [status copy];
@@ -93,7 +97,7 @@ static const NSInteger ContactsAction = 2;
                                                 cancelButtonTitle:@"Cancel"
                                            destructiveButtonTitle:nil
                                                 otherButtonTitles:@"Send Photos & Videos", @"Send Clipboard", @"More...", nil];
-    [_sendActionsSheet showFromTabBar:self.tabBarController.tabBar];
+    [self presentSendActionsSheet];
 }
 
 - (void)showMoreActions {
@@ -103,7 +107,25 @@ static const NSInteger ContactsAction = 2;
     _sendActionsSheet = [[UIActionSheet alloc] initWithTitle:title delegate:self
         cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Back Up Contacts", nil];
     _sendActionsSheet.tag = MoreActionsTag;
-    [_sendActionsSheet showFromTabBar:self.tabBarController.tabBar];
+    [self presentSendActionsSheet];
+}
+
+- (void)presentSendActionsSheet {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        NSString *identifier = [RadarLayout identifierForDevice:_selectedDevice];
+        DeviceBlobView *blob = [_blobViewsByIdentifier objectForKey:identifier];
+        if (blob.superview != nil && !blob.hidden) {
+            CGRect anchor = [blob convertRect:blob.bounds toView:self.view];
+            [_sendActionsSheet showFromRect:anchor inView:self.view animated:YES];
+        } else if (!self.navigationController.toolbarHidden && [self.toolbarItems count] > 0) {
+            [_sendActionsSheet showFromBarButtonItem:[self.toolbarItems objectAtIndex:0] animated:YES];
+        } else {
+            [_sendActionsSheet showFromRect:[_radarView convertRect:_radarView.bounds toView:self.view]
+                           inView:self.view animated:YES];
+        }
+    } else {
+        [_sendActionsSheet showFromTabBar:self.tabBarController.tabBar];
+    }
 }
 
 - (void)dismissSendActions {

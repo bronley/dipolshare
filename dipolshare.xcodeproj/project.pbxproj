@@ -6,6 +6,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F62100000000000000000001 = {isa = PBXBuildFile; fileRef = F62000000000000000000001; };
+		F62100000000000000000003 = {isa = PBXBuildFile; fileRef = F62000000000000000000003; };
+
+        F61000000000000000000001 = {isa = PBXBuildFile; fileRef = F61000000000000000000002; };
+        F61000000000000000000004 = {isa = PBXBuildFile; fileRef = F61000000000000000000005; };
+		F60000000000000000000001 = {isa = PBXBuildFile; fileRef = F60000000000000000000002; };
 		0EA44541A636364FA0E66F49 /* Send file active@2x.png in Resources */ = {
 			isa = PBXBuildFile;
 			fileRef = AA7417A9E41E57FC082A7068 /* Send file active@2x.png */;
@@ -451,6 +457,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F62000000000000000000000 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Application/UpdateChecker.h; sourceTree = SOURCE_ROOT; };
+		F62000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Application/UpdateChecker.m; sourceTree = SOURCE_ROOT; };
+		F62000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Application/UpdateManifest.h; sourceTree = SOURCE_ROOT; };
+		F62000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Application/UpdateManifest.m; sourceTree = SOURCE_ROOT; };
+
+        F61000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Screens/LocalSendPhotoPreviewViewController.m; sourceTree = SOURCE_ROOT; };
+        F61000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Screens/LocalSendPhotoPreviewViewController.h; sourceTree = SOURCE_ROOT; };
+        F61000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		F60000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Screens/LocalSendPhotoGridLayout.h; sourceTree = SOURCE_ROOT; };
+		F60000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Screens/LocalSendPadViewController.m; sourceTree = SOURCE_ROOT; };
+		F60000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Screens/LocalSendPadViewController.h; sourceTree = SOURCE_ROOT; };
 		04284B91F177010D03C9AAD1 /* README.md */ = {
 			isa = PBXFileReference;
 			lastKnownFileType = text;
@@ -1576,6 +1593,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+                F61000000000000000000004,
 				100000000000000000000003 /* UIKit.framework in Frameworks */,
 				100000000000000000000004 /* Foundation.framework in Frameworks */,
 				B10000000000000000009999 /* QuickLook.framework in Frameworks */,
@@ -1689,7 +1707,17 @@
 		400000000000000000000001 /* Group */ = {
 			isa = PBXGroup;
 			children = (
+				F62000000000000000000000,
+				F62000000000000000000001,
+				F62000000000000000000002,
+				F62000000000000000000003,
 				647F22983932505F8226C46F /* Sources */,
+                F61000000000000000000002,
+                F61000000000000000000003,
+                F61000000000000000000005,
+				F60000000000000000000002,
+				F60000000000000000000003,
+				F60000000000000000000004,
 				369366657F0CC118760331FE /* Resources */,
 				341E6928838892729241ECD7 /* Configuration */,
 				646899D46593647A8441FF1F /* Vendor */,
@@ -2200,6 +2228,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F62100000000000000000001,
+				F62100000000000000000003,
 				5E808F30930C2634BD422AE6 /* Discovery+Identity.m in Sources */,
 				C41A149F78F3751A36DDAB6B /* Discovery+Network.m in Sources */,
 				FA1792C63FE4DD4C16ED615A /* Discovery+Probes.m in Sources */,
@@ -2213,6 +2243,8 @@
 				08BF1DE944D9FDB8AB6DEB2C /* DeviceNameViewController.m in Sources */,
 				74B1BFD3D97D5124CAA6CBB8 /* DiscoveryStatusViewController.m in Sources */,
 				13D80FF19E69CACB141928BB /* AppDelegate.m in Sources */,
+                F61000000000000000000001,
+				F60000000000000000000001,
 				61A09B3ABF3EAAFDEDC5C8D6 /* main.m in Sources */,
 				B471DCA56634EA2F48F71C26 /* KeyDiagnostics.m in Sources */,
 				A19A4ACB632B93D7C2B4EE0E /* KeyTestViewController.m in Sources */,
@@ -2271,6 +2303,7 @@
 				ENTITLEMENTS_REQUIRED = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv6 armv7";
 			};
@@ -2286,6 +2319,7 @@
 				CODE_SIGN_IDENTITY = "";
 				ENTITLEMENTS_REQUIRED = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv6 armv7";
 			};
@@ -2309,6 +2343,7 @@
 					"$(SRCROOT)/Sources/Receiving",
 					"$(SRCROOT)/Sources/Networking",
 					"$(SRCROOT)/Sources/Security",
+					"$(SRCROOT)/Sources/Screens",
 					"$(SRCROOT)/Sources/Screens/Discovery",
 					"$(SRCROOT)/Sources/Screens/PhotoPicker",
 					"$(SRCROOT)/Sources/Screens/Settings",
@@ -2319,6 +2354,7 @@
 				);
 				INFOPLIST_FILE = Configuration/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Vendor/OpenSSL",
@@ -2351,6 +2387,7 @@
 					"$(SRCROOT)/Sources/Receiving",
 					"$(SRCROOT)/Sources/Networking",
 					"$(SRCROOT)/Sources/Security",
+					"$(SRCROOT)/Sources/Screens",
 					"$(SRCROOT)/Sources/Screens/Discovery",
 					"$(SRCROOT)/Sources/Screens/PhotoPicker",
 					"$(SRCROOT)/Sources/Screens/Settings",
@@ -2361,6 +2398,7 @@
 				);
 				INFOPLIST_FILE = Configuration/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Vendor/OpenSSL",

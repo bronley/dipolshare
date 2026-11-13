@@ -300,6 +300,14 @@ static NSString *ValidatedReceiveFileName(id value) {
     return [files autorelease];
 }
 
+- (NSArray *)deleteReceivedFilesAtPaths:(NSArray *)paths errorMessage:(NSString **)errorMessage {
+    [_sessionCondition lock];
+    NSArray *failed = [[_fileStore deleteFilesAtPaths:paths errorMessage:errorMessage] retain];
+    [_sessionCondition unlock];
+    [self postNotification:ReceivedFilesDidChangeNotification info:nil];
+    return [failed autorelease];
+}
+
 - (NSUInteger)unseenReceivedFileCount {
     [_sessionCondition lock];
     NSUInteger count = [_fileStore unseenFileCount];

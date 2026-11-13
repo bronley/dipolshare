@@ -17,9 +17,9 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.3</string>
+	<string>1.1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.3</string>
+	<string>1.1.0</string>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>Localsend.png</string>
@@ -40,6 +40,8 @@
 			<true/>
 		</dict>
 	</dict>
+	<key>DipolShareUpdateManifestURL</key>
+	<string>https://raw.githubusercontent.com/bronley/dipolshare/main/updates/latest.json</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>NSContactsUsageDescription</key>
@@ -52,6 +54,15 @@
 	<false/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleBlackOpaque</string>
+	<key>UIDeviceFamily</key>
+	<array><integer>1</integer><integer>2</integer></array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

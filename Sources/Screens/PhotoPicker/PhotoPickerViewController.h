@@ -21,6 +21,7 @@
     id<PhotoPickerDelegate> _delegate;
     BOOL _isLoadingPhotos;
     BOOL _isClosed;
+    NSUInteger _columns;
 }
 - (id)initWithDelegate:(id<PhotoPickerDelegate>)delegate;
 @end

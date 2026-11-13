@@ -592,6 +592,78 @@ int main(int argc, const char **argv) {
           @"three original photo payloads persist separately with identical names allowed");
     TestReceiver *reloaded = [[[TestReceiver alloc] init] autorelease];
     Check([[reloaded receivedFiles] count] == 3, @"all three photos survive receiver restart");
+    NSFileManager *manager = [NSFileManager defaultManager];
+    NSString *deleteError = nil;
+    NSString *firstPath = received[2][@"path"];
+    NSArray *failedDeletes = [r deleteReceivedFilesAtPaths:@[firstPath, firstPath] errorMessage:&deleteError];
+    Check([failedDeletes count] == 0 && deleteError == nil && [[r receivedFiles] count] == 2 &&
+          ![manager fileExistsAtPath:firstPath] &&
+          ![manager fileExistsAtPath:[firstPath stringByDeletingLastPathComponent]] &&
+          [[NSData dataWithContentsOfFile:received[1][@"path"]] isEqual:photoB],
+          @"deleting one duplicate-named file removes only that file and its empty folder");
+    Check([r unseenReceivedFileCount] == 2, @"deletion updates the unseen count");
+    TestReceiver *afterDelete = [[[TestReceiver alloc] init] autorelease];
+    Check([[afterDelete receivedFiles] count] == 2, @"deletion persists across restart");
+    NSString *outside = [testRootDirectory stringByAppendingPathComponent:@"outside.jpg"];
+    [photoA writeToFile:outside atomically:YES];
+    NSString *traversal = [testRootDirectory stringByAppendingPathComponent:@"Documents/Received/../../outside.jpg"];
+    failedDeletes = [r deleteReceivedFilesAtPaths:@[outside, traversal] errorMessage:&deleteError];
+    Check([failedDeletes count] == 2 && [[NSData dataWithContentsOfFile:outside] isEqual:photoA],
+          @"unindexed and traversal paths cannot delete outside files");
+    NSString *protectedPath = received[1][@"path"];
+    NSString *protectedParent = [protectedPath stringByDeletingLastPathComponent];
+    NSString *movedParent = [testRootDirectory stringByAppendingPathComponent:@"moved-photo"];
+    [manager moveItemAtPath:protectedParent toPath:movedParent error:NULL];
+    [manager createSymbolicLinkAtPath:protectedParent withDestinationPath:movedParent error:NULL];
+    failedDeletes = [r deleteReceivedFilesAtPaths:@[protectedPath, received[0][@"path"]] errorMessage:&deleteError];
+    Check([failedDeletes isEqualToArray:@[protectedPath]] && deleteError != nil &&
+          [[r receivedFiles] count] == 1 &&
+          [manager fileExistsAtPath:[movedParent stringByAppendingPathComponent:[protectedPath lastPathComponent]]] &&
+          ![manager fileExistsAtPath:received[0][@"path"]],
+          @"bulk deletion reports a blocked symlink parent while removing other selected files");
+    [manager removeItemAtPath:protectedParent error:NULL];
+    [manager moveItemAtPath:movedParent toPath:protectedParent error:NULL];
+    session = Accept(r, files);
+    upload = [Begin(r, session, @"one", @"3", &status) retain];
+    failedDeletes = [r deleteReceivedFilesAtPaths:@[protectedPath] errorMessage:&deleteError];
+    Check([failedDeletes count] == 0 && [[r receivedFiles] count] == 0 && StagedCount() == 1 &&
+          [r receiveServer:nil upload:upload appendData:abc] && [r receiveServer:nil finishUpload:upload] == 200,
+          @"deleting received files leaves an in-progress upload intact");
+    [upload release];
+    NSString *lastPath = [[[r receivedFiles] objectAtIndex:0] objectForKey:@"path"];
+    [manager removeItemAtPath:lastPath error:NULL];
+    failedDeletes = [r deleteReceivedFilesAtPaths:@[lastPath] errorMessage:&deleteError];
+    Check([failedDeletes count] == 0 && [[r receivedFiles] count] == 0,
+          @"deleting an already-missing file removes its stale list entry");
+    Check([[r deleteReceivedFilesAtPaths:@[] errorMessage:&deleteError] count] == 0 && deleteError == nil,
+          @"empty deletion is harmless");
+    session = Accept(r, files);
+    upload = [Begin(r, session, @"one", @"3", &status) retain];
+    [r receiveServer:nil upload:upload appendData:abc];
+    [r receiveServer:nil finishUpload:upload];
+    [upload release];
+    lastPath = [[[r receivedFiles] objectAtIndex:0] objectForKey:@"path"];
+    [manager removeItemAtPath:lastPath error:NULL];
+    [manager createDirectoryAtPath:lastPath withIntermediateDirectories:NO attributes:nil error:NULL];
+    NSString *unexpectedChild = [lastPath stringByAppendingPathComponent:@"keep.txt"];
+    [abc writeToFile:unexpectedChild atomically:YES];
+    failedDeletes = [r deleteReceivedFilesAtPaths:@[lastPath] errorMessage:&deleteError];
+    Check([failedDeletes count] == 1 && [manager fileExistsAtPath:unexpectedChild] && [[r receivedFiles] count] == 1,
+          @"a file replaced by a directory is never recursively deleted");
+    [manager removeItemAtPath:lastPath error:NULL];
+    [abc writeToFile:lastPath atomically:YES];
+    NSString *indexPath = [testRootDirectory stringByAppendingPathComponent:@"ApplicationSupport/LocalSendReceived.plist"];
+    NSData *savedIndex = [NSData dataWithContentsOfFile:indexPath];
+    [manager removeItemAtPath:indexPath error:NULL];
+    [manager createDirectoryAtPath:indexPath withIntermediateDirectories:NO attributes:nil error:NULL];
+    failedDeletes = [r deleteReceivedFilesAtPaths:@[lastPath] errorMessage:&deleteError];
+    Check([failedDeletes count] == 0 && deleteError != nil && ![manager fileExistsAtPath:lastPath] &&
+          [[r receivedFiles] count] == 0, @"index-write failure reports a warning after successful file deletion");
+    [manager removeItemAtPath:indexPath error:NULL];
+    [savedIndex writeToFile:indexPath atomically:YES];
+    afterDelete = [[[TestReceiver alloc] init] autorelease];
+    Check([[afterDelete receivedFiles] count] == 0 && [afterDelete unseenReceivedFileCount] == 0,
+          @"stale persisted entries cannot resurrect deleted files on restart");
     Pump();
     printf("RESULT %d checks, %d failures\n", checks, failures);
     [pool drain];
