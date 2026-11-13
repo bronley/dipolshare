@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
         while (result->calls == 0 && [deadline timeIntervalSinceNow] > 0) {
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
         }
-        Check(result->calls == 1 && [result->latest isEqual:@"1.0.4"], @"live manifest fetched using system HTTPS");
+        Check(result->calls == 1 && [result->latest isEqual:@"1.1.0"], @"live manifest fetched using system HTTPS");
         [live cancel]; [live release]; [result release];
         [pool drain];
         return failures ? 1 : 0;
