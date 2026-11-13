@@ -35,7 +35,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     ReceivedFilesViewController *received =
-        [[ReceivedFilesViewController alloc] initWithReceiveStatus:nil active:NO];
+        [[ReceivedFilesViewController alloc] initWithReceiveActive:NO];
     DiscoveryViewController *send = [[DiscoveryViewController alloc] init];
     send.title = @"Send file";
     _receivedNavigation = [[UINavigationController alloc] initWithRootViewController:received];
@@ -136,6 +136,11 @@
     [navigation release];
     [settings release];
 }
+#if DIPOLSHARE_DEV_TESTING
+- (void)dismissSettingsForScreenshot {
+    [_settingsPopover dismissPopoverAnimated:NO];
+}
+#endif
 - (void)viewDidUnload {
     [_settingsPopover dismissPopoverAnimated:NO];
     [_settingsPopover release]; _settingsPopover = nil;

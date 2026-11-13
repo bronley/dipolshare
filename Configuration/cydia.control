@@ -1,0 +1,12 @@
+Name: DipolShare
+Description: Modern file sharing for classic iOS.
+ Share photos, videos, and clipboard content over Wi-Fi with devices
+ running LocalSend on iOS, Android, Windows, Linux, and macOS.
+Maintainer: Oleh Bespalov
+Author: Oleh Bespalov - Love is in the Tech
+Section: Utilities
+Depends: firmware (>= 4.2), firmware (<= 6.1.6)
+Homepage: https://dipolshare.loveisinthe.tech/
+Depiction: http://cydia.loveisinthe.tech/depictions/dipolshare/
+Icon: https://dipolshare.loveisinthe.tech/assets/app-icon.png
+Architecture: iphoneos-arm

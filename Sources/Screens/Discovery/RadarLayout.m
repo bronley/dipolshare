@@ -78,9 +78,13 @@ static BOOL PlacementFits(NSDictionary *placement, CGRect bounds, CGFloat radarC
 
 + (CGFloat)radarCenterYInBounds:(CGRect)bounds {
     if (CGRectGetWidth(bounds) >= 468.0f) {
-        return CGRectGetMinY(bounds) + CGRectGetHeight(bounds) * (266.0f / 704.0f);
+        return [self tabletRadarCenterYInBounds:bounds];
     }
     return CGRectGetMidY(bounds) + 2.0f;
+}
+
++ (CGFloat)tabletRadarCenterYInBounds:(CGRect)bounds {
+    return CGRectGetMinY(bounds) + CGRectGetHeight(bounds) * (266.0f / 704.0f);
 }
 
 + (CGRect)frameForPlacement:(NSDictionary *)placement {

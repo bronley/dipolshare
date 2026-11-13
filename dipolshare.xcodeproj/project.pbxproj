@@ -6,6 +6,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F67100000000000000000000 = {isa = PBXBuildFile; fileRef = F67000000000000000000000; };
+		F67100000000000000000001 = {isa = PBXBuildFile; fileRef = F67000000000000000000001; };
+		F66100000000000000000000 = {isa = PBXBuildFile; fileRef = F66000000000000000000000; };
+		F66100000000000000000001 = {isa = PBXBuildFile; fileRef = F66000000000000000000001; };
+		F65100000000000000000000 = {isa = PBXBuildFile; fileRef = F65000000000000000000000; };
+		F65100000000000000000001 = {isa = PBXBuildFile; fileRef = F65000000000000000000001; };
+		F64100000000000000000000 = {isa = PBXBuildFile; fileRef = F64000000000000000000000; };
+		F64100000000000000000001 = {isa = PBXBuildFile; fileRef = F64000000000000000000001; };
+		F63100000000000000000001 = {isa = PBXBuildFile; fileRef = F63000000000000000000001; };
 		F62100000000000000000001 = {isa = PBXBuildFile; fileRef = F62000000000000000000001; };
 		F62100000000000000000003 = {isa = PBXBuildFile; fileRef = F62000000000000000000003; };
 
@@ -457,6 +466,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F67000000000000000000000 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
+		F67000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50@2x.png"; sourceTree = "<group>"; };
+		F66000000000000000000000 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		F66000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
+		F65000000000000000000000 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
+		F65000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
+		F64000000000000000000000 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		F64000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		F63000000000000000000000 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Development/SplashScreenshotViewController.h; sourceTree = SOURCE_ROOT; };
+		F63000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Development/SplashScreenshotViewController.m; sourceTree = SOURCE_ROOT; };
 		F62000000000000000000000 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Application/UpdateChecker.h; sourceTree = SOURCE_ROOT; };
 		F62000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Sources/Application/UpdateChecker.m; sourceTree = SOURCE_ROOT; };
 		F62000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sources/Application/UpdateManifest.h; sourceTree = SOURCE_ROOT; };
@@ -1707,6 +1726,8 @@
 		400000000000000000000001 /* Group */ = {
 			isa = PBXGroup;
 			children = (
+				F63000000000000000000000,
+				F63000000000000000000001,
 				F62000000000000000000000,
 				F62000000000000000000001,
 				F62000000000000000000002,
@@ -1892,6 +1913,14 @@
 		7FFAAEE585764A8A0DA841F1 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				F64000000000000000000000,
+				F65000000000000000000000,
+				F66000000000000000000000,
+				F67000000000000000000000,
+				F67000000000000000000001,
+				F66000000000000000000001,
+				F65000000000000000000001,
+				F64000000000000000000001,
 				AA2500000000000000000002 /* Default-568h.png */,
 				4062614AA4D75CB4CA5EAEED /* Default-568h@2x.png */,
 				CB72554B22A8F21DC814955C /* Default.png */,
@@ -2151,6 +2180,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA2500000000000000000001 /* Default-568h.png in Resources */,
+				F64100000000000000000000,
+				F65100000000000000000000,
+				F66100000000000000000000,
+				F67100000000000000000000,
+				F67100000000000000000001,
+				F66100000000000000000001,
+				F65100000000000000000001,
+				F64100000000000000000001,
 				535079D00FDE29C45E27E2EA /* Default-568h@2x.png in Resources */,
 				AE2E3C20328FD78D7CC38919 /* Default.png in Resources */,
 				ABF32B9FFDEDA31ED3AE609C /* Default@2x.png in Resources */,
@@ -2228,6 +2265,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F63100000000000000000001,
 				F62100000000000000000001,
 				F62100000000000000000003,
 				5E808F30930C2634BD422AE6 /* Discovery+Identity.m in Sources */,
@@ -2337,6 +2375,7 @@
 					"$(inherited)",
 					"$(DERIVED_FILE_DIR)/OpenSSLHeaders/include",
 					"$(SRCROOT)/Sources/Application",
+					"$(SRCROOT)/Sources/Development",
 					"$(SRCROOT)/Sources/Discovery",
 					"$(SRCROOT)/Sources/Sending",
 					"$(SRCROOT)/Sources/Sending/Contacts",
@@ -2359,6 +2398,8 @@
 					"$(inherited)",
 					"$(SRCROOT)/Vendor/OpenSSL",
 				);
+				DEV_TESTING = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("$(inherited)", "DIPOLSHARE_DEV_TESTING=$(DEV_TESTING)");
 				OTHER_CFLAGS = "-fblocks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -2381,6 +2422,7 @@
 					"$(inherited)",
 					"$(DERIVED_FILE_DIR)/OpenSSLHeaders/include",
 					"$(SRCROOT)/Sources/Application",
+					"$(SRCROOT)/Sources/Development",
 					"$(SRCROOT)/Sources/Discovery",
 					"$(SRCROOT)/Sources/Sending",
 					"$(SRCROOT)/Sources/Sending/Contacts",
@@ -2403,6 +2445,8 @@
 					"$(inherited)",
 					"$(SRCROOT)/Vendor/OpenSSL",
 				);
+				DEV_TESTING = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("$(inherited)", "DIPOLSHARE_DEV_TESTING=$(DEV_TESTING)");
 				OTHER_CFLAGS = "-fblocks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",

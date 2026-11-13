@@ -29,7 +29,7 @@ static NSString *const CertificateWarningShownKey = @"LocalSendCertificateWarnin
     } else {
         DiscoveryViewController *send = [[DiscoveryViewController alloc] init];
         ReceivedFilesViewController *received =
-            [[ReceivedFilesViewController alloc] initWithReceiveStatus:nil active:NO];
+            [[ReceivedFilesViewController alloc] initWithReceiveActive:NO];
         SettingsViewController *settings = [[SettingsViewController alloc] init];
 
         NSArray *screens = [NSArray arrayWithObjects:send, received, settings, nil];

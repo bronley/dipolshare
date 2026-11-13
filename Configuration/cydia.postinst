@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+[ "${1:-}" = "configure" ] || exit 0
+[ -n "${CYDIA:-}" ] || exit 0
+read -r cydia_fd cydia_protocol <<EOF
+$CYDIA
+EOF
+case "$cydia_fd" in
+    ''|*[!0-9]*) exit 0 ;;
+esac
+case "$cydia_protocol" in
+    ''|*[!0-9]*) exit 0 ;;
+esac
+[ "$cydia_protocol" -ge 1 ] || exit 0
+printf '%s\n' 'finish:restart' >&"$cydia_fd"
+exit 0

@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <QuickLook/QuickLook.h>
 #import "PhotoLibrarySaver.h"
+@class LocalSendPhotoPreviewViewController;
 
 @interface ReceivedFilesViewController
     : UITableViewController <UIActionSheetDelegate, UIAlertViewDelegate, QLPreviewControllerDataSource,
@@ -17,13 +18,12 @@
     UIDocumentInteractionController *_documentInteractionController;
     UIBarButtonItem *_cancelReceiveButton;
     UIView *_emptyStateView;
-    NSString *_receiveStatus;
     BOOL _isReceivingFiles;
     UIActionSheet *_fileActionsSheet;
     PhotoLibrarySaver *_photoSaver;
     UIView *_photoSaveOverlay;
-    UINavigationController *_photoPreviewNavigation;
+    LocalSendPhotoPreviewViewController *_photoPreview;
 }
-- (id)initWithReceiveStatus:(NSString *)status active:(BOOL)active;
+- (id)initWithReceiveActive:(BOOL)active;
 - (void)refreshBadge;
 @end
